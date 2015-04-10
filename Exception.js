@@ -1,4 +1,6 @@
-var GollumJs = GollumJs || {};
+var GollumJS = GollumJS || {};
+
+console.log (this);
 
 /**
  *  Class exception générique
@@ -6,7 +8,7 @@ var GollumJs = GollumJs || {};
  *  @author     Damien Duboeuf
  *  @version 	1.0
  */
-GollumJs.Exception = new GollumJs.Class ({
+GollumJS.Exception = new GollumJS.Class ({
 	
 	Extends: Error,
 	

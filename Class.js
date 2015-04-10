@@ -1,4 +1,4 @@
-var GollumJs = GollumJs || {};
+var GollumJS = GollumJS || {};
 
 /**
  * Objet permettant d'implémenter un system objet avec héritage simple
@@ -19,7 +19,7 @@ var GollumJs = GollumJs || {};
   * Objet Class permettant de créer une otion objet avancé
   * @param {} implementation
   */
-GollumJs.Class = function (implementation) {
+GollumJS.Class = function (implementation) {
 	var parentInScope = function () {
 		throw new Error ('L\'objet n\'a pas de Class parente', this);
 	};
