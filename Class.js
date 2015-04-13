@@ -1,4 +1,4 @@
-var GollumJS = GollumJS || {};
+GollumJS = {};
 
 /**
  * Objet permettant d'implémenter un system objet avec héritage simple
@@ -163,22 +163,24 @@ GollumJS.Class = function (implementation) {
 	}
 	
 	var addEvent = function (el, eventType, handler) {
-	  if (el.addEventListener) { // DOM Level 2 browsers
-	    el.addEventListener(eventType, handler, false);
-	  } else if (el.attachEvent) { // IE <= 8
-	    el.attachEvent('on' + eventType, handler);
-	  } else { // ancient browsers
-	    el['on' + eventType] = handler;
-	  }
+		if (el.addEventListener) { // DOM Level 2 browsers
+			el.addEventListener(eventType, handler, false);
+		} else if (el.attachEvent) { // IE <= 8
+			el.attachEvent('on' + eventType, handler);
+		} else { // ancient browsers
+			el['on' + eventType] = handler;
+		}
 	}
 
-	(function (newClass) {
-		addEvent (window, "load", function () {
-			if (newClass.domReady !== undefined && typeof (newClass.domReady) == 'function') {
-				newClass.domReady.call (newClass);
-			}
-		});
-	}) (newClass);
+	if (typeof window != 'undefined' && window) {
+		(function (newClass) {
+			addEvent (window, "load", function () {
+				if (newClass.domReady !== undefined && typeof (newClass.domReady) == 'function') {
+					newClass.domReady.call (newClass);
+				}
+			});
+		}) (newClass);
+	}
 	
 	newClass.prototype.self = newClass; // Racourcis
 	

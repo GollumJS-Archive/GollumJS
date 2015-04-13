@@ -1,7 +1,3 @@
-var GollumJS = GollumJS || {};
-
-console.log (this);
-
 /**
  *  Class exception générique
  *
