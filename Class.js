@@ -68,7 +68,7 @@ GollumJS.Class = function (implementation) {
 		return target;
 	};
 	
-	var newClass = function () {
+	var gjsObject = function () {
 		
 		for (var i in this) {
 			this[i] = recopie(this[i]);
@@ -97,7 +97,7 @@ GollumJS.Class = function (implementation) {
 	
 	if (implementation.Extends) {
 		for (var i in implementation.Extends.prototype) {
-			newClass.prototype[i] = recopie(implementation.Extends.prototype[i]);
+			gjsObject.prototype[i] = recopie(implementation.Extends.prototype[i]);
 		}
 		
 		// Recopie des Static
@@ -105,7 +105,7 @@ GollumJS.Class = function (implementation) {
 			if (i != 'prototype') {
 				(
 					function (name, called) {
-						newClass[name] = recopie(called);
+						gjsObject[name] = recopie(called);
 					} (i, implementation.Extends[i])
 				);
 			}
@@ -115,7 +115,7 @@ GollumJS.Class = function (implementation) {
 	
 	if (implementation.Static) {
 		for (var i in implementation.Static) {
-			newClass[i] = recopie(implementation.Static[i]);
+			gjsObject[i] = recopie(implementation.Static[i]);
 		}
 	}
 	
@@ -133,7 +133,7 @@ GollumJS.Class = function (implementation) {
 					(
 						function (name, called) {
 							if (typeof (called) == 'function') {
-								newClass.prototype[name] = function () {
+								gjsObject.prototype[name] = function () {
 									var oldParent = null;
 									if (this.parent) {
 										oldParent = this.parent;
@@ -152,7 +152,7 @@ GollumJS.Class = function (implementation) {
 									return value;
 								};
 							} else {
-								newClass.prototype[name] = recopie (called);
+								gjsObject.prototype[name] = recopie (called);
 								
 							}
 						} (i,  implementation[i])
@@ -173,18 +173,18 @@ GollumJS.Class = function (implementation) {
 	}
 
 	if (typeof window != 'undefined' && window) {
-		(function (newClass) {
+		(function (gjsObject) {
 			addEvent (window, "load", function () {
-				if (newClass.domReady !== undefined && typeof (newClass.domReady) == 'function') {
-					newClass.domReady.call (newClass);
+				if (gjsObject.domReady !== undefined && typeof (gjsObject.domReady) == 'function') {
+					gjsObject.domReady.call (gjsObject);
 				}
 			});
-		}) (newClass);
+		}) (gjsObject);
 	}
 	
-	newClass.prototype.self = newClass; // Racourcis
+	gjsObject.prototype.self = gjsObject; // Racourcis
 	
-	return newClass;
+	return gjsObject;
 };
 
 
