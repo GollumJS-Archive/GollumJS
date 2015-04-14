@@ -12,9 +12,6 @@ GollumJS.Reflection.ReflectionClass = new GollumJS.Class ({
 	},
 
 	createByIdentifiers: function (identifers) {
-
-		console.log (identifers, this.getContructorByIdentifers (identifers, window));
-
 		return this.createByConstructor (this.getContructorByIdentifers (identifers, window));
 	},
 
@@ -30,11 +27,9 @@ GollumJS.Reflection.ReflectionClass = new GollumJS.Class ({
 	getContructorByIdentifers: function (identifiers, target, i) {
 		i = i || 0;
 
-		if (i > identifiers.length) {
+		if (i >= identifiers.length) {
 			return target;
 		}
-		
-		console.log (target[identifiers[i]], identifiers[i]);
 
 		if (typeof target[identifiers[i]] !== 'undefined') {
 			return this.getContructorByIdentifers (identifiers, target[identifiers[i]], i+1);
