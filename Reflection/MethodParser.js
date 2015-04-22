@@ -8,7 +8,7 @@ GollumJS.Reflection.MethodParser = new GollumJS.Class ({
 	
 	Extends: GollumJS.Reflection.AbstractParser,
 	
-	reflectionProperty: null,
+	reflectionMethod: null,
 	begin: 0,
 	end: 0,
 
@@ -18,7 +18,7 @@ GollumJS.Reflection.MethodParser = new GollumJS.Class ({
 		this.begin  = begin;
 		this.end    = begin;
 
-		this.reflectionProperty = new GollumJS.Reflection.ReflectionMethod (reflectionClass, name);
+		this.reflectionMethod = new GollumJS.Reflection.ReflectionMethod (reflectionClass, name);
 		
 		this.parse ();
 	},

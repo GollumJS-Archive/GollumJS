@@ -113,22 +113,40 @@ GollumJS.Reflection.ClassParser = new GollumJS.Class ({
 					)
 				) {
 
-					var parser = new GollumJS.Reflection.PropertyParser(this.tokens, i, rClass, name);
+					try {
 
-					rClass.properties[name] = parser.reflectionProperty;
-					rClass.properties[name].comment = this.getComment(this.getPosOfStartNameDeclaration(i-1));
+						var parser = new GollumJS.Reflection.PropertyParser(this.tokens, i, rClass, name);
 
-					i = parser.end;
+						if (parser.reflectionProperty) {
+							rClass.properties[name] = parser.reflectionProperty;
+							rClass.properties[name].comment = this.getComment(this.getPosOfStartNameDeclaration(i-1));
+						} else {
+							throw "Error parse property "+name;
+						}
+						i = parser.end;
 
+					} catch (e) {
+						console.log (e);
+					}
 				} else
 
 				if (t.type == "Keyword" && t.value == "function") {
 
-					var parser = new GollumJS.Reflection.MethodParser(this.tokens, i, rClass, name);
+					try {
 
-					rClass.methods[name] = parser.reflectionMethod;
-					rClass.methods[name].comment = this.getComment(this.getPosOfStartNameDeclaration(i-1));
-					i = parser.end;
+						var parser = new GollumJS.Reflection.MethodParser(this.tokens, i, rClass, name);
+
+						if (parser.reflectionMethod) {
+							rClass.methods[name] = parser.reflectionMethod;
+							rClass.methods[name].comment = this.getComment(this.getPosOfStartNameDeclaration(i-1));
+						} else {
+							throw "Error parse method "+name;
+						}
+						i = parser.end;
+
+					} catch (e) {
+						console.log (e);
+					}
 				} 
 
 				else {
