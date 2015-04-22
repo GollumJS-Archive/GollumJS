@@ -20,6 +20,7 @@ GollumJS = {};
   * @param {} implementation
   */
 GollumJS.Class = function (implementation) {
+
 	var parentInScope = function () {
 		throw new Error ('L\'objet n\'a pas de Class parente', this);
 	};
@@ -184,6 +185,25 @@ GollumJS.Class = function (implementation) {
 	
 	gjsObject.prototype.self = gjsObject; // Racourcis
 	
+	(function () {
+
+		var _reflectionClass = null;
+
+		gjsObject.getReflectionClass = function () {
+
+			if (!_reflectionClass) {
+				var parser = GollumJS.Reflection.FileJSParser.getInstance ();
+				for (var i = 0; i < parser.classList.length; i++) {
+					if (gjsObject == parser.classList[i].constructor) {
+						_reflectionClass = parser.classList[i];
+					}
+				}
+			}
+
+			return _reflectionClass;
+		};
+	})();
+
 	return gjsObject;
 };
 
