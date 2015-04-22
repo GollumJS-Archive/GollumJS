@@ -160,15 +160,7 @@ GollumJS.Reflection.ClassParser = new GollumJS.Class ({
 
 		t = this.tokens[i];
 		
-		if (t.type != "Punctuator" || t.value != ":") { return i; } i++; t = this.tokens[i];
-		if (
-			t.type != "Identifier" &&
-			t.type != "String"     &&
-			t.type != "Numeric"    
-		) {
-			return i;
-		}
-
+		if (t.type != "Punctuator" || t.value != ":") { return i; }
 		return i-1;
 	},
 
