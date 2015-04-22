@@ -5,37 +5,48 @@ GollumJS.Reflection = GollumJS.Reflection || {};
  */
 GollumJS.Reflection.ReflectionClass = new GollumJS.Class ({
 	
+	identifiers: null,
 	constructor: null,
+	comment: null,
+	methods: {},
+	properties: {},
+	staticProperties: {},
+	staticMethods: {},
 
-	createByName: function (name) {
-		return this.createByIdentifiers (name.split('.'));
+	Static: {
+
+		getClassByName: function (name, target) {
+
+			target = target || window;
+
+			return this.getClassByIdentifers (name.split ('.'), target);
+		},
+
+		getClassByIdentifers: function (identifiers, target, i) {
+
+			target = target || window;
+			i = i || 0;
+
+			if (i >= identifiers.length) {
+				return target;
+			}
+			
+			if (typeof target[identifiers[i]] !== 'undefined') {
+				return this.getClassByIdentifers (identifiers, target[identifiers[i]], i+1);
+			}
+
+			return null;
+		},
+
 	},
 
-	createByIdentifiers: function (identifers) {
-		return this.createByConstructor (this.getContructorByIdentifers (identifers, window));
+	initialize: function (identifiers) {
+		this.identifiers  = identifiers;
+		this.constructor = this.self.getClassByIdentifers (identifiers);
 	},
 
-	createByConstructor: function (constructor) {
-		if (!constructor) {
-			throw new GollumJS.Exception ("ReflectionClass on null element");
-		}
-		this.constructor = constructor;
-		return this;
-	},
-
-
-	getContructorByIdentifers: function (identifiers, target, i) {
-		i = i || 0;
-
-		if (i >= identifiers.length) {
-			return target;
-		}
-
-		if (typeof target[identifiers[i]] !== 'undefined') {
-			return this.getContructorByIdentifers (identifiers, target[identifiers[i]], i+1);
-		}
-
-		return null;
+	getName: function () {
+		return this.identifiers.join ('.');
 	}
 
 

@@ -5,6 +5,9 @@ GollumJS.Reflection = GollumJS.Reflection || {};
  */
 GollumJS.Reflection.FileJSParser = new GollumJS.Class ({
 
+	/**
+	 * @var [GollumJS.Reflection.ReflectionClass]
+	 */
 	classList: [],
 
 	Static: {
@@ -26,8 +29,9 @@ GollumJS.Reflection.FileJSParser = new GollumJS.Class ({
 
 	parseSources: function () {
 
- 		this.parseFiles (this.getFiles ('src'             , ['.git', '.svn']));
- 		this.parseFiles (this.getFiles ('vendors/GollumJS', ['.git', '.svn']));
+ 		this.parseFiles (this.getFiles ('src/SMC/Entity'    , ['.git', '.svn']));
+ 		//this.parseFiles (this.getFiles ('src'             , ['.git', '.svn']));
+ 		//this.parseFiles (this.getFiles ('vendors/GollumJS', ['.git', '.svn']));
 
 	},
 
@@ -60,17 +64,18 @@ GollumJS.Reflection.FileJSParser = new GollumJS.Class ({
 		for (var i = 0; i < files.length; i++) {
 			
 			var file = files[i];
-
+			
 			if (file.substr (-3) == '.js') {
 
 				content = fs.readFileSync(file, {encoding: 'utf-8'});
 
 				var parser = new GollumJS.Reflection.ClassParser(content);
-				for(var i = 0; i < parser.classList.length; i++) {
-					this.classList.push (parser.classList[i]);
+				for(var j = 0; j < parser.classList.length; j++) {
+					this.classList.push (parser.classList[j]);
 				}
 
 			}
+			
 		}
 	}
 
