@@ -29,9 +29,8 @@ GollumJS.Reflection.FileJSParser = new GollumJS.Class ({
 
 	parseSources: function () {
 
- 		this.parseFiles (this.getFiles ('src/SMC/Entity'    , ['.git', '.svn']));
- 		//this.parseFiles (this.getFiles ('src'             , ['.git', '.svn']));
- 		//this.parseFiles (this.getFiles ('vendors/GollumJS', ['.git', '.svn']));
+ 		this.parseFiles (this.getFiles ('src'             , ['.git', '.svn']));
+ 		this.parseFiles (this.getFiles ('vendors/GollumJS', ['.git', '.svn']));
 
 	},
 

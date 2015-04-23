@@ -62,8 +62,6 @@ GollumJS.Reflection.ClassParser = new GollumJS.Class ({
 						rClass.comment = this.getComment(this.getPosOfStartIdentifierDeclaration(i));
 						
 						i = this.setImplementation (rClass, i+1);
-						
-						console.log (rClass);
 
 						this.classList.push (rClass);
 					}
