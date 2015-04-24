@@ -39,38 +39,10 @@ GollumJS.Class = function (implementation) {
 		}
 	}
 	
-	var recopie = function (value) {
-		if (value === null) {
-			return null;
-		}
-		var target = null;
-		
-		switch (typeof (value)) {
-			case 'object':
-				
-				if (Object.prototype.toString.call( value ) === '[object Array]') {
-					target = [];
-					for (var k = 0; k < value.length; k++) {
-						target[k] = recopie (value[k]);
-					}
-				} else {
-					target = {};
-					for (var k in value) {
-						target[k] = recopie(value[k]);
-					}
-				}
-				break;
-			default:
-				target = value;
-				break;
-		}
-		return target;
-	};
-	
 	var gjsObject = function () {
 		
 		for (var i in this) {
-			this[i] = recopie(this[i]);
+			this[i] = GollumJS.Utils.clone(this[i]);
 		}
 		
 		if (implementation.initialize) {
@@ -96,7 +68,7 @@ GollumJS.Class = function (implementation) {
 	
 	if (implementation.Extends) {
 		for (var i in implementation.Extends.prototype) {
-			gjsObject.prototype[i] = recopie(implementation.Extends.prototype[i]);
+			gjsObject.prototype[i] = GollumJS.Utils.clone(implementation.Extends.prototype[i]);
 		}
 		
 		// Recopie des Static
@@ -104,7 +76,7 @@ GollumJS.Class = function (implementation) {
 			if (i != 'prototype') {
 				(
 					function (name, called) {
-						gjsObject[name] = recopie(called);
+						gjsObject[name] = GollumJS.Utils.clone(called);
 					} (i, implementation.Extends[i])
 				);
 			}
@@ -114,7 +86,7 @@ GollumJS.Class = function (implementation) {
 	
 	if (implementation.Static) {
 		for (var i in implementation.Static) {
-			gjsObject[i] = recopie(implementation.Static[i]);
+			gjsObject[i] = GollumJS.Utils.clone(implementation.Static[i]);
 		}
 	}
 	
@@ -151,7 +123,7 @@ GollumJS.Class = function (implementation) {
 									return value;
 								};
 							} else {
-								gjsObject.prototype[name] = recopie (called);
+								gjsObject.prototype[name] = GollumJS.Utils.clone (called);
 								
 							}
 						} (i,  implementation[i])
