@@ -192,8 +192,6 @@ GollumJS.Class = function (implementation) {
 			if (!_reflectionClass) {
 
 				var parser = GollumJS.get('fileJSParser');
-
-				console.log (parser);
 				
 				for (var i = 0; i < parser.classList.length; i++) {
 					if (gjsObject == parser.classList[i].constructor) {

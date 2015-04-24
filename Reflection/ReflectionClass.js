@@ -13,6 +13,8 @@ GollumJS.Reflection.ReflectionClass = new GollumJS.Class ({
 	staticProperties: {},
 	staticMethods: {},
 
+	_annotations: null,
+
 	Static: {
 
 		getClassByName: function (name, target) {
@@ -47,8 +49,14 @@ GollumJS.Reflection.ReflectionClass = new GollumJS.Class ({
 
 	getName: function () {
 		return this.identifiers.join ('.');
+	},
+
+	getAnnotations: function () {
+		if (this._annotations === null) {
+			var  parser = new GollumJS.AnnotationParser (this.comment);
+			this._annotations = parser.annotions;
+		}
+		return this._annotations;
 	}
-
-
 
 });

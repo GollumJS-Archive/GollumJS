@@ -1,1 +1,1 @@
-GollumJS = {};
+GollumJS = typeof GollumJS != 'undefined' ? GollumJS : {};
