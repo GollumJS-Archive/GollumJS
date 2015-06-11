@@ -13,7 +13,7 @@ GollumJS.Reflection.ReflectionClass = new GollumJS.Class ({
 	staticMethods: {},
 	staticProperties: {},
 
-	_annotations: null,
+	annotations: [],
 
 	Static: {
 
@@ -33,7 +33,7 @@ GollumJS.Reflection.ReflectionClass = new GollumJS.Class ({
 					target = window;
 				}
 			}
-			
+
 			i = i || 0;
 
 			if (i >= identifiers.length) {
@@ -53,19 +53,16 @@ GollumJS.Reflection.ReflectionClass = new GollumJS.Class ({
 		if (identifiers) {
 			this.identifiers  = identifiers;
 			this.constructor = this.self.getClassByIdentifers (identifiers);
+
+			var parser = new GollumJS.AnnotationParser (this.comment);
+			this.annotations = parser.annotions;
+
+			console.log (this.annotations);
 		}
 	},
 
 	getName: function () {
 		return this.identifiers.join ('.');
-	},
-
-	getAnnotations: function () {
-		if (this._annotations === null) {
-			var  parser = new GollumJS.AnnotationParser (this.comment);
-			this._annotations = parser.annotions;
-		}
-		return this._annotations;
 	},
 
 	serialiseInfos: function () {

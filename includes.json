@@ -14,5 +14,8 @@
 	"Reflection/PropertyParser.js",
 	"Reflection/ReflectionClass.js",
 	"Reflection/ReflectionMethod.js",
-	"Reflection/ReflectionProperty.js"
+	"Reflection/ReflectionProperty.js",
+
+	"Annotation/AbstractAnnotation.js",
+	"Annotation/AnnotationParser.js"
 ]

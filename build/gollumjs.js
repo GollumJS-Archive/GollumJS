@@ -1,5 +1,5 @@
 GollumJS = typeof GollumJS != 'undefined' ? GollumJS : {};
-GollumJS.__init = true;
+GollumJS.__init__ = true;
 
 GollumJS.Utils = {
 
@@ -1142,7 +1142,7 @@ GollumJS.Reflection.ReflectionClass = new GollumJS.Class ({
 	staticMethods: {},
 	staticProperties: {},
 
-	_annotations: null,
+	annotations: [],
 
 	Static: {
 
@@ -1162,7 +1162,7 @@ GollumJS.Reflection.ReflectionClass = new GollumJS.Class ({
 					target = window;
 				}
 			}
-			
+
 			i = i || 0;
 
 			if (i >= identifiers.length) {
@@ -1182,19 +1182,16 @@ GollumJS.Reflection.ReflectionClass = new GollumJS.Class ({
 		if (identifiers) {
 			this.identifiers  = identifiers;
 			this.constructor = this.self.getClassByIdentifers (identifiers);
+
+			var parser = new GollumJS.AnnotationParser (this.comment);
+			this.annotations = parser.annotions;
+
+			console.log (this.annotations);
 		}
 	},
 
 	getName: function () {
 		return this.identifiers.join ('.');
-	},
-
-	getAnnotations: function () {
-		if (this._annotations === null) {
-			var  parser = new GollumJS.AnnotationParser (this.comment);
-			this._annotations = parser.annotions;
-		}
-		return this._annotations;
 	},
 
 	serialiseInfos: function () {
@@ -1311,4 +1308,53 @@ GollumJS.Reflection.ReflectionProperty = new GollumJS.Class ({
 	}
 });
 
+
+GollumJS.AbstractAnnotation = new GollumJS.Class ({
+
+	Static: {
+
+		ANNOTATION_CLASS   : 0x1,
+		ANNOTATION_METHOD  : 0x2,
+		ANNOTATION_PROPERTY: 0x4,
+
+		getClassWhichUse: function (target) {
+			target = target ? target : (this.ANNOTATION_CLASS | this.ANNOTATION_METHOD | this.ANNOTATION_PROPERTY);
+
+			// TODO not implement
+
+			console.log (target);
+		}
+
+	},
+
+	initialize: function (values) {
+
+		if (typeof values == 'object') {
+			for (var i in values) {
+				if (typeof this[i] != 'undefined') {
+					this[i] = values[i];
+				}
+			}
+		}
+
+	}
+
+});
+
+GollumJS.Annotation = {};
+
+GollumJS.AnnotationParser = new GollumJS.Class ({
+
+	comment: null,
+	annotions: [],
+
+	initialize: function (comment) {
+		this.comment = comment;
+		this.parse();
+	},
+
+	parse : function () {
+		console.log (this.comment);
+	}
+});
 

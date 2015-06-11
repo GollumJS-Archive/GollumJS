@@ -1,16 +1,20 @@
 
 var exec = require('child_process').exec;
+var rmdir = require('rimraf').sync;
 
 
 var generate = function () {
 	var GollumJS = require('../index.js');
 
+	if (process.argv.indexOf('--clear') != -1) {
+		console.log ("Clear file : "+GollumJS.config.cache.path);
+		rmdir (GollumJS.config.cache.path);
+	}
+
 	GollumJS.get("fileJSParser");
 
 	GollumJS.get("cache").writeJS();
 };
-
-
 
 if (process.argv.indexOf('--build') != -1) {
 
