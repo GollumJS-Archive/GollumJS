@@ -10,8 +10,8 @@ GollumJS.Reflection.ReflectionClass = new GollumJS.Class ({
 	comment: null,
 	methods: {},
 	properties: {},
-	staticProperties: {},
 	staticMethods: {},
+	staticProperties: {},
 
 	_annotations: null,
 
@@ -26,7 +26,14 @@ GollumJS.Reflection.ReflectionClass = new GollumJS.Class ({
 
 		getClassByIdentifers: function (identifiers, target, i) {
 
-			target = target || window;
+			if (!target) {
+				if (typeof module !== 'undefined' && module.exports) {
+					target = global;
+				} else {
+					target = window;
+				}
+			}
+			
 			i = i || 0;
 
 			if (i >= identifiers.length) {
@@ -43,8 +50,10 @@ GollumJS.Reflection.ReflectionClass = new GollumJS.Class ({
 	},
 
 	initialize: function (identifiers) {
-		this.identifiers  = identifiers;
-		this.constructor = this.self.getClassByIdentifers (identifiers);
+		if (identifiers) {
+			this.identifiers  = identifiers;
+			this.constructor = this.self.getClassByIdentifers (identifiers);
+		}
 	},
 
 	getName: function () {
@@ -57,6 +66,47 @@ GollumJS.Reflection.ReflectionClass = new GollumJS.Class ({
 			this._annotations = parser.annotions;
 		}
 		return this._annotations;
+	},
+
+	serialiseInfos: function () {
+
+		var serialiseInfosObject = function (o) {
+			var datas = {};
+			for (var i in o) {
+				datas[i] = o[i].serialiseInfos();
+			}
+			return datas;
+		} 
+
+		return {
+			identifiers     : this.identifiers,
+			comment         : this.comment,
+			methods         : serialiseInfosObject(this.methods),
+			properties      : serialiseInfosObject(this.properties),
+			staticMethods   : serialiseInfosObject(this.staticMethods),
+			staticProperties: serialiseInfosObject(this.staticProperties),
+		};
+	},
+
+	unserialiseInfos: function (infos) {
+		
+		var _this = this;
+		var unserialiseInfosObject = function (datas, clazz) {
+			var os = {};
+			for (var i in datas) {
+				os[i] = new clazz (_this);
+				os[i].unserialiseInfos(datas[i]);
+			}
+			return os;
+		} 
+
+		this.identifiers      = infos.identifiers;
+		this.constructor      = this.self.getClassByIdentifers (infos.identifiers);
+		this.comment          = infos.comment;
+		this.methods          = unserialiseInfosObject(infos.methods         , GollumJS.Reflection.ReflectionMethod);
+		this.properties       = unserialiseInfosObject(infos.properties      , GollumJS.Reflection.ReflectionProperty);
+		this.staticMethods    = unserialiseInfosObject(infos.staticMethods   , GollumJS.Reflection.ReflectionMethod);
+		this.staticProperties = unserialiseInfosObject(infos.staticProperties, GollumJS.Reflection.ReflectionProperty);
 	}
 
 });

@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "esprima": "^2.2.0",
+    "node-fs": "^0.1.7"
+  }
+}

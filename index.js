@@ -1,3 +1,5 @@
+if (typeof global.GollumJS == 'undefined' || typeof global.GollumJS.__init == 'undefined') {
+
 GollumJS = typeof GollumJS != 'undefined' ? GollumJS : {};
 GollumJS.__init = true;
 
@@ -1312,3 +1314,6 @@ GollumJS.Reflection.ReflectionProperty = new GollumJS.Class ({
 });
 
 
+
+global.GollumJS = GollumJS; 
+} module.exports = global.GollumJS; 

@@ -8,10 +8,30 @@ GollumJS.Reflection.FileJSParser = new GollumJS.Class ({
 	/**
 	 * @var [GollumJS.Reflection.ReflectionClass]
 	 */
-	classList: [],
+	classList: null,
 
 	initialize: function () {
-		this.parseSources ();
+		
+		var cache = GollumJS.get("cache");
+		var datas = cache.get("app.classList");
+
+		if (datas) {
+			this.classList = {};
+			for (var i in datas) {
+				var clazz = new GollumJS.Reflection.ReflectionClass();
+				clazz.unserialiseInfos(datas[i]);
+				this.classList[i] = clazz;
+			}
+		}
+		if (!this.classList) {
+			this.classList = {};
+			this.parseSources ();
+			datas = {};
+			for (var i in this.classList) {
+				datas[i] = this.classList[i].serialiseInfos();
+			}
+			cache.set("app.classList", datas);
+		}
 	},
 
 	parseSources: function () {
@@ -33,12 +53,14 @@ GollumJS.Reflection.FileJSParser = new GollumJS.Class ({
 
 		for (var i in files){
 			var name = dir + '/' + files[i];
-			if (fs.statSync(name).isDirectory()) {
-				if (excludes.indexOf(files[i]) == -1) {
-					this.getFiles(name, excludes, files_);
+			if (excludes.indexOf(files[i]) == -1) {
+
+				if (fs.statSync(name).isDirectory()) {
+						this.getFiles(name, excludes, files_);
+					
+				} else {
+					files_.push(name);
 				}
-			} else {
-				files_.push(name);
 			}
 		}
 		return files_;
@@ -60,7 +82,9 @@ GollumJS.Reflection.FileJSParser = new GollumJS.Class ({
 				try {
 					var parser = new GollumJS.Reflection.ClassParser(content);
 					for(var j = 0; j < parser.classList.length; j++) {
- 						this.classList.push (parser.classList[j]);
+						if (typeof this.classList[parser.classList[j].getName()] == 'undefined') {
+ 							this.classList[parser.classList[j].getName()] = parser.classList[j];
+ 						}
 					}
 				} catch (e) {
 				}

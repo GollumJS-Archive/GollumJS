@@ -3,5 +3,16 @@
 	"Utils.js",
 	"GollumJS.js",
 	"Class.js",
-	"Exception.js"
+	"Exception.js",
+
+	"Cache/Cache.js",
+
+	"Reflection/AbstractParser.js",
+	"Reflection/ClassParser.js",
+	"Reflection/FileJSParser.js",
+	"Reflection/MethodParser.js",
+	"Reflection/PropertyParser.js",
+	"Reflection/ReflectionClass.js",
+	"Reflection/ReflectionMethod.js",
+	"Reflection/ReflectionProperty.js"
 ]

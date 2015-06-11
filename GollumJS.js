@@ -4,12 +4,16 @@
 
 		fileJSParser: {
 			srcPath: [ './' ],
-			excludes: ['.git', '.svn']
+			excludes: ['.git', '.svn', 'gollumjs.js', 'gollumjs-min.js', 'index.js']
+		},
+		cache: {
+			path: './tmp/cache',
 		},
 
 		services: {
 
-			fileJSParser: 'GollumJS.Reflection.FileJSParser'
+			fileJSParser: 'GollumJS.Reflection.FileJSParser',
+			cache       : 'GollumJS.Cache.Cache'
 
 		}
 
@@ -19,6 +23,7 @@
 		GollumJS.Utils.extend (config, GollumJS.config);
 	}
 	GollumJS.config = config;
+	GollumJS.cache = {};
 
 	var _instances = {};
 
@@ -26,7 +31,7 @@
 
 		if (!_instances[name] && GollumJS.config.services[name]) {
 
-			var service = eval (GollumJS.config.services[name]);
+			var service = GollumJS.Reflection.ReflectionClass.getClassByIdentifers (GollumJS.config.services[name].split('.'));
 			if (service) {
 				_instances[name] = new service ();
 			}

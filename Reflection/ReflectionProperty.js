@@ -17,6 +17,17 @@ GollumJS.Reflection.ReflectionProperty = new GollumJS.Class ({
 
 	getDefaultValue: function () {
 		return this.reflectionClass.constructor.prototype[this.name];
-	}
+	},
 
+	serialiseInfos: function () {
+		return {
+			name   : this.name,
+			comment: this.comment
+		};
+	},
+
+	unserialiseInfos: function (infos) {
+		this.name    = infos.name;
+		this.comment = infos.comment;
+	}
 });

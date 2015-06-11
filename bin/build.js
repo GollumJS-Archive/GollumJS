@@ -31,4 +31,15 @@ var files = fs.readFile(__dirname+"/../includes.json", "utf8", function(err, dat
 		}
 		console.log (__dirname+"/../build/gollumjs-min.js => OK");
 	});
+	fs.writeFile(
+		__dirname+"/../index.js", 
+		"if (typeof global.GollumJS == 'undefined' || typeof global.GollumJS.__init == 'undefined') {\n\n"+
+		content+
+		"\nglobal.GollumJS = GollumJS; \n} module.exports = global.GollumJS; ",
+		function(err) {
+		if(err) {
+			return console.error(err);
+		}
+		console.log (__dirname+"/../index.js => OK");
+	});
 });
