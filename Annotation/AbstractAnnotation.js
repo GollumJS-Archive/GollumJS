@@ -1,4 +1,6 @@
-GollumJS.AbstractAnnotation = new GollumJS.Class ({
+GollumJS.Annotation = GollumJS.Annotation ? GollumJS.Annotation : {};
+
+GollumJS.Annotation.AbstractAnnotation = new GollumJS.Class ({
 
 	Static: {
 

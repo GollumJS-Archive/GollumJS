@@ -1,6 +1,6 @@
-GollumJS.Annotation = {};
+GollumJS.Annotation = GollumJS.Annotation ? GollumJS.Annotation : {};
 
-GollumJS.AnnotationParser = new GollumJS.Class ({
+GollumJS.Annotation.Parser = new GollumJS.Class ({
 
 	comment: null,
 	annotions: [],

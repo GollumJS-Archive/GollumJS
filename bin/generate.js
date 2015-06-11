@@ -6,10 +6,8 @@ var rmdir = require('rimraf').sync;
 var generate = function () {
 	var GollumJS = require('../index.js');
 
-	if (process.argv.indexOf('--clear') != -1) {
-		console.log ("Clear file : "+GollumJS.config.cache.path);
-		rmdir (GollumJS.config.cache.path);
-	}
+	console.log ("Clear file : "+GollumJS.config.cache.path);
+	rmdir (GollumJS.config.cache.path);
 
 	GollumJS.get("fileJSParser");
 

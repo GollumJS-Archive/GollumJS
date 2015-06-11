@@ -8,11 +8,16 @@ GollumJS.Reflection.ReflectionMethod = new GollumJS.Class ({
 	name: null,
 	reflectionClass: null,
 	comment: null,
+
+	annotations: [],
 	
 
 	initialize: function (reflectionClass, name) {
 		this.reflectionClass = reflectionClass;
 		this.name            = name;
+
+		var parser = new GollumJS.Annotation.Parser (this.comment);
+		this.annotations = parser.annotions;
 	},
 
 	getDefaultValue: function () {
