@@ -53,9 +53,6 @@ GollumJS.Reflection.ReflectionClass = new GollumJS.Class ({
 		if (identifiers) {
 			this.identifiers  = identifiers;
 			this.constructor = this.self.getClassByIdentifers (identifiers);
-
-			var parser = new GollumJS.Annotation.Parser (this.comment);
-			this.annotations = parser.annotions;
 		}
 	},
 

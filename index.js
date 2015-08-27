@@ -701,6 +701,9 @@ GollumJS.Reflection.ClassParser = new GollumJS.Class ({
 						var rClass = new GollumJS.Reflection.ReflectionClass (identifiers);
 						rClass.comment = this.getComment(this.getPosOfStartIdentifierDeclaration(i));
 						
+						var parser = new GollumJS.Annotation.Parser (rClass.comment);
+						rClass.annotations = parser.annotions;
+
 						i = this.setImplementation (rClass, i+1);
 
 						this.classList.push (rClass);
@@ -758,6 +761,10 @@ GollumJS.Reflection.ClassParser = new GollumJS.Class ({
 						if (parser.reflectionProperty) {
 							rClass.properties[name] = parser.reflectionProperty;
 							rClass.properties[name].comment = this.getComment(this.getPosOfStartNameDeclaration(i-1));
+
+							var parser = new GollumJS.Annotation.Parser (rClass.properties[name].comment);
+							rClass.properties[name].annotations = parser.annotions;
+
 						} else {
 							throw "Error parse property "+name;
 						}
@@ -777,6 +784,9 @@ GollumJS.Reflection.ClassParser = new GollumJS.Class ({
 						if (parser.reflectionMethod) {
 							rClass.methods[name] = parser.reflectionMethod;
 							rClass.methods[name].comment = this.getComment(this.getPosOfStartNameDeclaration(i-1));
+							
+							var parser = new GollumJS.Annotation.Parser (rClass.methods[name].comment);
+							rClass.methods[name].annotations = parser.annotions;
 						} else {
 							throw "Error parse method "+name;
 						}
@@ -1184,9 +1194,6 @@ GollumJS.Reflection.ReflectionClass = new GollumJS.Class ({
 		if (identifiers) {
 			this.identifiers  = identifiers;
 			this.constructor = this.self.getClassByIdentifers (identifiers);
-			
-			var parser = new GollumJS.AnnotationParser (this.comment);
-			this.annotations = parser.annotions;
 		}
 	},
 
@@ -1248,34 +1255,31 @@ GollumJS.Reflection.ReflectionMethod = new GollumJS.Class ({
 	name: null,
 	reflectionClass: null,
 	comment: null,
-	
+
 	annotations: [],
 	
-	
+
 	initialize: function (reflectionClass, name) {
 		this.reflectionClass = reflectionClass;
 		this.name            = name;
-		
-		var parser = new GollumJS.AnnotationParser (this.comment);
-		this.annotations = parser.annotions;
 	},
-	
+
 	getDefaultValue: function () {
 		return this.reflectionClass.constructor.prototype[this.name];
 	},
-	
+
 	serialiseInfos: function () {
 		return {
 			name   : this.name,
 			comment: this.comment
 		};
 	},
-	
+
 	unserialiseInfos: function (infos) {
 		this.name    = infos.name;
 		this.comment = infos.comment;
 	}
-	
+
 });
 
 
@@ -1296,9 +1300,6 @@ GollumJS.Reflection.ReflectionProperty = new GollumJS.Class ({
 	initialize: function (reflectionClass, name) {
 		this.reflectionClass = reflectionClass;
 		this.name            = name;
-		
-		var parser = new GollumJS.AnnotationParser (this.comment);
-		this.annotations = parser.annotions;
 	},
 	
 	getDefaultValue: function () {
@@ -1319,7 +1320,26 @@ GollumJS.Reflection.ReflectionProperty = new GollumJS.Class ({
 });
 
 
-GollumJS.AbstractAnnotation = new GollumJS.Class ({
+GollumJS.Annotation = GollumJS.Annotation ? GollumJS.Annotation : {};
+
+GollumJS.Annotation.Parser = new GollumJS.Class ({
+
+	comment: null,
+	annotions: [],
+
+	initialize: function (comment) {
+		this.comment = comment;
+		this.parse();
+	},
+
+	parse : function () {
+		console.log (this.comment);
+	}
+});
+
+GollumJS.Annotation = GollumJS.Annotation ? GollumJS.Annotation : {};
+
+GollumJS.Annotation.AbstractAnnotation = new GollumJS.Class ({
 
 	Static: {
 
@@ -1349,23 +1369,6 @@ GollumJS.AbstractAnnotation = new GollumJS.Class ({
 
 	}
 
-});
-
-GollumJS.Annotation = {};
-
-GollumJS.AnnotationParser = new GollumJS.Class ({
-
-	comment: null,
-	annotions: [],
-
-	initialize: function (comment) {
-		this.comment = comment;
-		this.parse();
-	},
-
-	parse : function () {
-		console.log (this.comment);
-	}
 });
 
 

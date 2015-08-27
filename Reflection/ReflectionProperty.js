@@ -15,9 +15,6 @@ GollumJS.Reflection.ReflectionProperty = new GollumJS.Class ({
 	initialize: function (reflectionClass, name) {
 		this.reflectionClass = reflectionClass;
 		this.name            = name;
-		
-		var parser = new GollumJS.Annotation.Parser (this.comment);
-		this.annotations = parser.annotions;
 	},
 	
 	getDefaultValue: function () {

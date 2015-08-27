@@ -61,6 +61,9 @@ GollumJS.Reflection.ClassParser = new GollumJS.Class ({
 						var rClass = new GollumJS.Reflection.ReflectionClass (identifiers);
 						rClass.comment = this.getComment(this.getPosOfStartIdentifierDeclaration(i));
 						
+						var parser = new GollumJS.Annotation.Parser (rClass.comment);
+						rClass.annotations = parser.annotions;
+
 						i = this.setImplementation (rClass, i+1);
 
 						this.classList.push (rClass);
@@ -118,6 +121,10 @@ GollumJS.Reflection.ClassParser = new GollumJS.Class ({
 						if (parser.reflectionProperty) {
 							rClass.properties[name] = parser.reflectionProperty;
 							rClass.properties[name].comment = this.getComment(this.getPosOfStartNameDeclaration(i-1));
+
+							var parser = new GollumJS.Annotation.Parser (rClass.properties[name].comment);
+							rClass.properties[name].annotations = parser.annotions;
+
 						} else {
 							throw "Error parse property "+name;
 						}
@@ -137,6 +144,9 @@ GollumJS.Reflection.ClassParser = new GollumJS.Class ({
 						if (parser.reflectionMethod) {
 							rClass.methods[name] = parser.reflectionMethod;
 							rClass.methods[name].comment = this.getComment(this.getPosOfStartNameDeclaration(i-1));
+							
+							var parser = new GollumJS.Annotation.Parser (rClass.methods[name].comment);
+							rClass.methods[name].annotations = parser.annotions;
 						} else {
 							throw "Error parse method "+name;
 						}
