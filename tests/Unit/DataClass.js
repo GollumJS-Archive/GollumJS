@@ -1,6 +1,33 @@
 var ClassSimple = new GollumJS.Class ({
 });
 
+var ClassParentA = new GollumJS.Class ({
+
+	prop1: 4,
+	prop2: "a",
+	prop3: [1 , 12 ,"3"],
+
+	func1: function () {
+		return "func1";
+	},
+	func2: function () {
+		return "func2";
+	}
+
+
+});
+var ClassChildA1 = new GollumJS.Class ({
+	Extends: ClassParentA
+});
+var ClassChildA2 = new GollumJS.Class ({
+	Extends: ClassParentA,
+
+	func2: function () {
+		return "func2|extend";
+	}
+});
+
+
 var ClassA = new GollumJS.Class ({
 	
 	Static: {

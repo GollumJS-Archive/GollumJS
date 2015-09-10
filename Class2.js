@@ -56,44 +56,6 @@
 			}
 		};
 
-		/////////////////////
-		// Generate Static //
-		/////////////////////
-
-		if (implementation.Static) {
-			for (var i in implementation.Static) {
-				gjsObject[i] = GollumJS.Utils.clone(implementation.Static[i]);
-			}
-		}
-
-		//////////////////////
-		// Generate Methods //
-		//////////////////////
-
-		for (var i in implementation) {
-			
-			switch (i) {
-				
-				case 'Extends' :     // Déjà traité
-				case 'Static' :   // Déjà traité
-					break;
-
-				default : // Toute les functions et attribut
-					(
-						function (name, called) {
-							if (typeof (called) == 'function') {
-								gjsObject.prototype[name] = called;
-							} else {
-								gjsObject.prototype[name] = GollumJS.Utils.clone (called);
-							}
-						} (i,  implementation[i])
-					);
-					break;
-			}
-
-
-		}
-
 		(function () {
 
 			/////////////////////////////
@@ -122,10 +84,56 @@
 						}
 					}
 					
+					// Recopie des methode depuis les extends					
+					for (var i in implementation.Extends.prototype) {
+						(function (name, called) {
+							if (typeof (called) == 'function') {
+								gjsObject.prototype[name] = called;
+							} else {
+								gjsObject.prototype[name] = GollumJS.Utils.clone (called);
+							}
+						})(i,  implementation.Extends.prototype[i]);
+					}
+
+					// Ajoute a la liste des extends
 					__entends__.push (implementation.Extends);
 					if (typeof(implementation.Extends.getExtendsClass) == 'function') {
 						__entends__ = __entends__.concat(implementation.Extends.getExtendsClass());
 					}
+				}
+			}
+			
+			/////////////////////
+			// Generate Static //
+			/////////////////////
+			
+			if (implementation.Static) {
+				for (var i in implementation.Static) {
+					gjsObject[i] = GollumJS.Utils.clone(implementation.Static[i]);
+				}
+			}
+
+			//////////////////////
+			// Generate Methods //
+			//////////////////////
+
+			for (var i in implementation) {
+				
+				switch (i) {
+					
+					case 'Extends' :     // Déjà traité
+					case 'Static' :   // Déjà traité
+						break;
+
+					default : // Toute les functions et attribut
+						(function (name, called) {
+							if (typeof (called) == 'function') {
+								gjsObject.prototype[name] = called;
+							} else {
+								gjsObject.prototype[name] = GollumJS.Utils.clone (called);
+							}
+						}) (i,  implementation[i]);
+						break;
 				}
 			}
 

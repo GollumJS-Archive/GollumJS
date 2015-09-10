@@ -15,9 +15,9 @@
 	GT.Assert.AssertStop = { name: "EndAssert" };
 
 	GT.Assert.prototype.assertTrue = function(obj) {
-		
+
 		var val = {
-			infos: GT.infosScript(3)
+			stack: GT.stackScript(3)
 		};
 
 		if (obj === true) {
@@ -29,20 +29,55 @@
 			throw GT.Assert.AssertStop;
 		}
 	};
-	
-	GT.infosScript = function (up) {
 
-		var getErrorObject = function (){
-		    try { throw Error('') } catch(err) { return err; }
+	GT.Assert.prototype.assertCompare = function(obj1, obj2) {
+		return this.assertTrue(this.testCompare(obj1, obj2));
+	};
+
+	GT.Assert.prototype.testCompare = function(obj1, obj2) {
+		if (obj1 === obj2) {
+			return true;
 		}
 
-		var lines = getErrorObject().stack.split("\n");
-		for (var i = 0; i < lines.length;i++) {
-			if (lines[i].indexOf("GT.infosScript") != -1) {
-				return lines[i+up].replace(/^\s+|\s+$/gm,'');
+		if (
+			typeof obj1 == typeof obj2
+		) {
+			if (typeof obj1 == 'object') {
+				for (var i in obj1.length) {
+					if (!this.testCompare(obj1[i], obj2[i])) {
+						return false;
+					}
+				}
+				for (var i in obj2.length) {
+					if (!this.testCompare(obj1[i], obj2[i])) {
+						return false;
+					}
+				}
+				return true; 
+			}
+			if (typeof obj1 == 'function') {
+				return true;
 			}
 		}
-		return null;
+
+		return false;
+	};
+
+	GT.getErrorObject = function (){
+		try { throw Error('') } catch(err) { return err; }
+	};
+	
+	GT.stackScript = function (up) {
+
+		var lines = GT.getErrorObject().stack.split("\n");
+		for (var i = lines.length-1; i >= 0; i--) {
+			lines[i] = lines[i].replace(/^\s+|\s+$/gm,'');
+			if (lines[i].indexOf("GT.stackScript") != -1) {
+				break;
+			}
+			delete lines[i];
+		}
+		return lines;
 	};
 
 	GT.create = function (testGroup) {
@@ -67,9 +102,13 @@
 			test(a);
 		} catch (e) {
 			if (e != GT.Assert.AssertStop) {
-				console.log(e);
+				__rtn__.exception = "JS Exception"
 			}
 			__rtn__.result = GT.Assert.RESULT_KO;
+			__rtn__.stack =  e.stack ? e.stack.split("\n") : [];
+			for (var i = 0; i < __rtn__.stack.length; i++) {
+				__rtn__.stack[i] = __rtn__.stack[i].replace(/^\s+|\s+$/gm,'');
+			}
 		}
 
 		for (var i = 0; i < a.results.length; i++) {
@@ -77,8 +116,9 @@
 				__rtn__.sucessNumber++;
 			} else {
 				__rtn__.errorNumber++;
+				__rtn__.exception = "Assert Failure"
 				__rtn__.result = GT.Assert.RESULT_KO;
-				__rtn__.infos =  a.results[i].infos;
+				__rtn__.stack =  a.results[i].stack;
 			}
 		}
 
