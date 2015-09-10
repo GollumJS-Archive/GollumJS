@@ -9,6 +9,10 @@ GT.create({
 		
 		var simpleObject = new ClassSimple();
 
+		
+		console.log (simpleObject.self);
+		console.log (ClassSimple);
+
 		a.assertCompare (
 			simpleObject,
 			{

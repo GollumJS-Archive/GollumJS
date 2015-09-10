@@ -2,6 +2,19 @@ var ClassSimple = new GollumJS.Class ({
 });
 
 var ClassParentA = new GollumJS.Class ({
+	
+	Static: {
+		staticProp1 : 1,
+		staticProp2 : "42a",
+
+		staticFunc1: function () {
+			return "staticFunc1";
+		},
+
+		staticFunc2: function () {
+			return "staticFunc2";
+		}
+	},
 
 	prop1: 4,
 	prop2: "a",
@@ -22,6 +35,8 @@ var ClassChildA1 = new GollumJS.Class ({
 var ClassChildA2 = new GollumJS.Class ({
 	Extends: ClassParentA,
 
+	prop2: 42,
+
 	func2: function () {
 		return "func2|extend";
 	}
@@ -31,16 +46,14 @@ var ClassChildA2 = new GollumJS.Class ({
 var ClassA = new GollumJS.Class ({
 	
 	Static: {
-		static1 : 1,
-		static2 : {},
+		staticProp2 : -42,
 
-		staticFunc: function () {
-			console.log ("staticFunc", this);
-			this.staticFunc2();
+		staticFunc1: function () {
+			return "staticFunc1";
 		},
 
 		staticFunc2: function () {
-			console.log ("staticFunc2", this);
+			return "staticFunc2|extends";
 		}
 	},
 
