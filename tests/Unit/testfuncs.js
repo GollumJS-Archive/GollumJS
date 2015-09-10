@@ -69,15 +69,18 @@
 	
 	GT.stackScript = function (up) {
 
-		var lines = GT.getErrorObject().stack.split("\n");
-		for (var i = lines.length-1; i >= 0; i--) {
-			lines[i] = lines[i].replace(/^\s+|\s+$/gm,'');
-			if (lines[i].indexOf("GT.stackScript") != -1) {
+		var __rtn__ = [];
+		var __lines__ = GT.getErrorObject().stack.split("\n");
+		for (var i = __lines__.length-1; i >= 0; i--) {
+			__lines__[i] = __lines__[i].replace(/^\s+|\s+$/gm,'');
+			if (__lines__[i].indexOf("GT.stackScript") != -1) {
 				break;
 			}
-			delete lines[i];
+			if (__lines__[i]) {
+				__rtn__.push(__lines__[i]);
+			}
 		}
-		return lines;
+		return __rtn__;
 	};
 
 	GT.create = function (testGroup) {
