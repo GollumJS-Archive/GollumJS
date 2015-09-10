@@ -18,7 +18,7 @@
   * @param {} implementation
   */
 GollumJS.Class = function (implementation) {
-
+	
 	var parentInScope = function () {
 		throw new Error ('L\'objet n\'a pas de Class parente', this);
 	};
