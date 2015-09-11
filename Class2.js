@@ -57,14 +57,16 @@
 		};
 
 		(function () {
-
-			/////////////////////////////
-			// Generate Extends Methods //
-			/////////////////////////////
-
+			
 			var __entends__ = [];
-			if (implementation.Extends) {
-				if (
+			var __reflectionClass__ = null;
+			var __idClass__ = ++__countClass__;
+
+			//////////////////////////////
+			// Generate Extends Methods //
+			//////////////////////////////
+
+			if (implementation.Extends) {				if (
 					typeof(implementation.Extends) == 'object' && 
 					Object.prototype.toString.call(implementation.Extends) === '[object Array]'
 				) {
@@ -72,36 +74,64 @@
 						
 					}
 				} else {
-					
+					// Ajoute a la liste des extends
+					__entends__.push (implementation.Extends);
+					if (GollumJS.Utils.isGollumJsClass (implementation.Extends)) {
+						__entends__ = __entends__.concat(implementation.Extends.getExtendsClass());
+					}
+				}
+			}
+			for (var i = 0; i < __entends__.length; i++) {
 					// Recopie des Static
-					for (var i in implementation.Extends) {
-						if (i != 'prototype') {
+					for (var j in __entends__[i]) {
+						if (j != 'prototype') {
 							(
 								function (name, called) {
 									gjsObject[name] = GollumJS.Utils.clone(called);
-								} (i, implementation.Extends[i])
+								} (j, __entends__[i][j])
 							);
 						}
 					}
 					
 					// Recopie des methode depuis les extends					
-					for (var i in implementation.Extends.prototype) {
+					for (var j in __entends__[i]) {
 						(function (name, called) {
 							if (typeof (called) == 'function') {
 								gjsObject.prototype[name] = called;
 							} else {
 								gjsObject.prototype[name] = GollumJS.Utils.clone (called);
 							}
-						})(i,  implementation.Extends.prototype[i]);
+						})(j,  __entends__[i].prototype[j]);
 					}
+			}
 
-					// Ajoute a la liste des extends
-					__entends__.push (implementation.Extends);
-					if (typeof(implementation.Extends.getExtendsClass) == 'function') {
-						__entends__ = __entends__.concat(implementation.Extends.getExtendsClass());
+			/////////////////////////////
+			// Generate Object Methods //
+			/////////////////////////////
+
+			gjsObject.getExtendsClass = function () {
+				return __entends__;
+			};
+
+			gjsObject.getIdClass = function () {
+				return __idClass__;
+			};
+
+			gjsObject.getReflectionClass = function () {
+
+				if (!__reflectionClass__) {
+
+					var parser = GollumJS.get('fileJSParser');
+					
+					for (var i = 0; i < parser.classList.length; i++) {
+						if (gjsObject == parser.classList[i].constructor) {
+							__reflectionClass__ = parser.classList[i];
+						}
 					}
 				}
-			}
+
+				return __reflectionClass__;
+			};
 
 			/////////////////////
 			// Generate Static //
@@ -142,36 +172,6 @@
 			////////////////////////////////
 
 			gjsObject.__gollumjs__ = GollumJS.__running__;	
-
-			/////////////////////////////
-			// Generate Object Methods //
-			/////////////////////////////
-
-			gjsObject.getExtendsClass = function () {
-				return __entends__;
-			};
-
-			var __idClass__ = ++__countClass__;
-			gjsObject.getIdClass = function () {
-				return __idClass__;
-			};
-
-			var __reflectionClass__ = null;
-			gjsObject.getReflectionClass = function () {
-
-				if (!__reflectionClass__) {
-
-					var parser = GollumJS.get('fileJSParser');
-					
-					for (var i = 0; i < parser.classList.length; i++) {
-						if (gjsObject == parser.classList[i].constructor) {
-							__reflectionClass__ = parser.classList[i];
-						}
-					}
-				}
-
-				return __reflectionClass__;
-			};
 
 			if (typeof(implementation.Extends) == 'function') {
 
