@@ -58,7 +58,7 @@
 
 		(function () {
 
-			var __entends__ = [];
+			var __extends__ = [];
 			var __reflectionClass__ = null;
 			var __idClass__ = ++__countClass__;
 			var __parent__ = null;
@@ -74,51 +74,51 @@
 				) {
 					for (var i = implementation.Extends.length-1; i >= 0 ; i--) {
 						// Ajoute a la liste des extends
-						__entends__.push (implementation.Extends[i]);
+						__extends__.push (implementation.Extends[i]);
 						if (GollumJS.Utils.isGollumJsClass (implementation.Extends[i])) {
-							__entends__ = __entends__.concat(implementation.Extends[i].getExtendsClass());
+							__extends__ = __extends__.concat(implementation.Extends[i].getExtendsClass());
 						}
 					}
 				} else {
 					// Ajoute a la liste des extends
-					__entends__.push (implementation.Extends);
+					__extends__.push (implementation.Extends);
 					if (GollumJS.Utils.isGollumJsClass (implementation.Extends)) {
-						__entends__ = __entends__.concat(implementation.Extends.getExtendsClass());
+						__extends__ = __extends__.concat(implementation.Extends.getExtendsClass());
 					}
 				}
 			}
-			__entends__ = __entends__.reverse();
-			for (var i = 0; i < __entends__.length; i++) {
+			__extends__ = __extends__.reverse();
+			for (var i = 0; i < __extends__.length; i++) {
 				// Recopie des Statics
-				for (var j in __entends__[i]) {
+				for (var j in __extends__[i]) {
 					if (j != 'prototype') {
 						(
 							function (name, called) {
 								gjsObject[name] = GollumJS.Utils.clone(called);
-							} (j, __entends__[i][j])
+							} (j, __extends__[i][j])
 						);
 					}
 				}
 				
 				// Recopie des methode depuis les extends					
-				for (var j in __entends__[i].prototype) {
+				for (var j in __extends__[i].prototype) {
 					(function (name, called) {
 						if (typeof (called) == 'function') {
 							gjsObject.prototype[name] = called;
 						} else {
 							gjsObject.prototype[name] = GollumJS.Utils.clone (called);
 						}
-					})(j,  __entends__[i].prototype[j]);
+					})(j,  __extends__[i].prototype[j]);
 				}
 			}
-			__entends__ = __entends__.reverse();
+			__extends__ = __extends__.reverse();
 
 			/////////////////////////////
 			// Generate Object Methods //
 			/////////////////////////////
 
 			gjsObject.getExtendsClass = function () {
-				return __entends__;
+				return __extends__;
 			};
 
 			gjsObject.getIdClass = function () {
@@ -187,38 +187,39 @@
 				if (__parent__ === null) {
 
 					__parent__ = function () {
-						
-						var target = __parent__.__scope__ !== undefined ? __parent__.__scope__ : __entends__[0];
-						
-						console.log (target);
-						console.log (__entends__);
-						console.log (__entends__.indexOf(target));
 
-						if (__entends__.indexOf(target) == -1) {
-							throw new Error("Class scopped not is parent on object when call method initialize");
-						}
+						var target = __parent__.__scope__ !== undefined ? __parent__.__scope__ : __parent__.__extends__[0];
+						
 						if (GollumJS.Utils.isGollumJsClass (target)) {
 							if (target) {
-								return target.prototype.initialize.apply(__this__, arguments);
+								var __oldExtends__ = __parent__.__extends__;
+								__parent__.__extends__ = target.getExtendsClass();
+								var __rtn__ = target.prototype.initialize.apply(__this__, arguments);
+								__parent__.__extends__ = __oldExtends__;
+								return __rtn__;
 							}
 						}
 					};
-					for (var i = 0; i < __entends__.length; i++) {
-						for (var j in __entends__[i].prototype) {
+					
+					__parent__.__extends__ = __extends__;
+
+					for (var i = 0; i < __parent__.__extends__.length; i++) {
+						for (var j in __parent__.__extends__[i].prototype) {
 							if (
-								typeof __entends__[i].prototype[j] == 'function' &&
+								typeof __parent__.__extends__[i].prototype[j] == 'function' &&
 								 typeof __parent__[j] == 'undefined'
 							) {
 								(function (i, j) {
 									__parent__[j] = function () {
-										var target = __parent__.__scope__ !== undefined ? __parent__.__scope__ : __entends__[i];
-										if (__entends__.indexOf(target) == -1) {
-											throw new Error("Class scopped not is parent on object when call method "+j);
-										}
-
+										var target = __parent__.__scope__ !== undefined ? __parent__.__scope__ : __parent__.__extends__[i];
+										
 										if (GollumJS.Utils.isGollumJsClass (target)) {
 											if (target) {
-												return target.prototype[j].apply(__this__, arguments);
+												var __oldExtends__ = __parent__.__extends__;
+												__parent__.__extends__ = target.getExtendsClass();
+												var __rtn__ = target.prototype[j].apply(__this__, arguments);
+												__parent__.__extends__ = __oldExtends__;
+												return __rtn__;
 											}
 										}
 									}

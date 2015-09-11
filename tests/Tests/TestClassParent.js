@@ -8,7 +8,7 @@ GT.create({
 	testParentSimple (a) {
 		
 		var child = new ClassChildForMethodParent1();
-
+		
 		a.assertCompare (
 			child,
 			{
@@ -38,7 +38,7 @@ GT.create({
 		a.assertCompare (
 			child,
 			{
-				value: "initialize:1|initialize:2",
+				value: "initialize:12|initialize:2",
 				
 				self: ClassChildForMethodParent1,
 				
@@ -48,7 +48,7 @@ GT.create({
 			}
 		);
 
-		a.assertTrue(child.func1() === 'func1:1|func1:2');
+		a.assertTrue(child.func1() === 'func1:12|func1:2');
 
 	}
 
