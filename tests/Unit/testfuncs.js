@@ -117,9 +117,6 @@
 			return false;
 		}
 		for (var i in obj1) {
-
-			console.log (i, obj1[i], obj2[i], obj1, obj2);
-			
 			if (!this.testCompare(obj1[i], obj2[i], showMessage, compare)) {
 				if(showMessage) this.messages.push ("property "+i+" not equal with 2 object in parameters");
 				return false;

@@ -8,6 +8,7 @@ var ClassParentA = new GollumJS.Class ({
 		staticProp2 : "42a",
 		staticPropNull1 : null,
 		staticPropNull2 : "null",
+		staticPropArray1 : [ "a", 1],
 
 		staticFunc1: function () {
 			return "staticFunc1";
@@ -43,6 +44,7 @@ var ClassChildA2 = new GollumJS.Class ({
 		staticProp2 : -42,
 		staticPropNull1 : "null",
 		staticPropNull2 : null,
+		staticPropArray1 : [ "b", 2],
 
 		staticFunc2: function () {
 			return "staticFunc2|extends";
@@ -163,4 +165,69 @@ var ClassChildTriple2 = new GollumJS.Class ({
 		return "funcLevel3:-3";
 	}
 	
+});
+
+var ClassParentScope = new GollumJS.Class ({
+	
+	Static: {
+
+		staticPropObject1: ["aa", 11, null],
+		staticPropObject1: ["bb", 22, "nullnull"],
+
+		staticFuncThis1: function () {
+			return this;
+		},
+
+		staticFuncObject1: function () {
+			return this.staticPropObject1;
+		}
+	},
+
+	propObject1: ["a", 1, null],
+	propObject2: ["b", 2, "null"],
+
+	funcThis1: function () {
+		return this;
+	},
+
+	funcThis2: function () {
+		return this.funcThis1();
+	},
+
+	funcObject1: function () {
+		return this.propObject1;
+	}
+	
+});
+
+var ClassChildScope = new GollumJS.Class ({
+	
+	Extends: ClassParentScope,
+
+	Static: {
+
+		staticPropObject1: ["aa2", -11, null],
+
+		staticFuncThis2: function () {
+			return this;
+		},
+
+		staticFuncObject2: function () {
+			return this.staticPropObject2;
+		}
+	},
+
+	propObject1: ["a2", -1, "exist"],
+
+	funcThis3: function () {
+		return this;
+	},
+
+	funcThis4: function () {
+		return this.funcThis1();
+	},
+
+	funcObject2: function () {
+		return this.propObject2;
+	}
 });

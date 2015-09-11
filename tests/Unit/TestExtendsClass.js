@@ -17,6 +17,7 @@ GT.create({
 				staticProp2: "42a",
 				staticPropNull1 : null,
 				staticPropNull2 : "null",
+				staticPropArray1 : [ "a", 1],
 				staticFunc1: function() {},
 				staticFunc2: function() {},
 				getExtendsClass: function() {},
@@ -49,6 +50,10 @@ GT.create({
 
 		a.assertTrue (child.func1 === ClassParentA.prototype.func1);
 		a.assertTrue (child.func2 === ClassParentA.prototype.func2);
+
+		ClassChildA1.staticPropArray1.push ("cool");
+		a.assertArraysEquals (ClassParentA.staticPropArray1, [ "a", 1]);
+		a.assertArraysEquals (ClassChildA1.staticPropArray1, [ "a", 1, "cool"]);
 	},
 
 	/**
@@ -65,6 +70,7 @@ GT.create({
 				staticProp2: -42,
 				staticPropNull1 : "null",
 				staticPropNull2 : null,
+				staticPropArray1 : [ "b", 2],
 				staticFunc1: function() {},
 				staticFunc2: function() {},
 				getExtendsClass: function() {},
@@ -88,8 +94,7 @@ GT.create({
 				propNull2 : "null",
 
 				self: ClassChildA2,           // Non pertinent pour le test
-				__proto__: parent.__proto__,  // Non pertinent pour le test
-
+				
 				initialize: function(){},
 				func1: function(){},
 				func2: function(){}
@@ -160,13 +165,18 @@ GT.create({
 				value: "initialize:3",
 
 				self: ClassChildTriple2,           // Non pertinent pour le test
-				__proto__: parent.__proto__,  // Non pertinent pour le test
-
+				
 				initialize: function(){},
 				funcLevel1: function(){},
 				funcLevel2: function(){},
 				funcLevel3: function(){}
 			}
 		);
+
+		a.assertTrue (child2.funcLevel1() == 'funcLevel1:a');
+		a.assertTrue (child2.funcLevel2() == 'funcLevel2:2');
+		a.assertTrue (child2.funcLevel3() == 'funcLevel3:-3');
+		a.assertTrue (child2.funcLevel1 === ClassParentTriple.prototype.funcLevel1);
+		a.assertTrue (child2.funcLevel2 === ClassChildTriple1.prototype.funcLevel2);
 	}
 });
