@@ -184,5 +184,17 @@ GT.create({
 		a.assertTrue (child2.funcLevel3() == 'funcLevel3:-3');
 		a.assertTrue (child2.funcLevel1 === ClassParentTriple.prototype.funcLevel1);
 		a.assertTrue (child2.funcLevel2 === ClassChildTriple1.prototype.funcLevel2);
+	},
+
+	testGetExtendsClass: function (a) {
+		
+		a.assertArraysEquals (ClassChildTriple6.getExtendsClass(), [
+			ClassChildTriple5,
+			ClassChildTriple4,
+			ClassChildTriple3,
+			ClassChildTriple2,
+			ClassChildTriple1,
+			ClassParentTriple
+		]);
 	}
 });

@@ -9,7 +9,7 @@ GollumJS.Utils = {
 
 	
 	isGollumJsClass: function (clazz) {
-		return clazz && clazz.__gollumjs__ === clazz.__running__;
+		return clazz && clazz.__gollumjs__ === GollumJS.__running__;
 	},
 
 	isGollumJsObject: function (obj) {

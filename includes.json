@@ -1,21 +1,21 @@
 [
-	"namespace.js",
-	"Utils.js",
-	"GollumJS.js",
-	"Class.js",
-	"Exception.js",
+	"src/namespace.js",
+	"src/Utils.js",
+	"src/GollumJS.js",
+	"src/Class.js",
+	"src/Exception.js",
 
-	"Cache/Cache.js",
+	"src/Cache/Cache.js",
 
-	"Reflection/AbstractParser.js",
-	"Reflection/ClassParser.js",
-	"Reflection/FileJSParser.js",
-	"Reflection/MethodParser.js",
-	"Reflection/PropertyParser.js",
-	"Reflection/ReflectionClass.js",
-	"Reflection/ReflectionMethod.js",
-	"Reflection/ReflectionProperty.js",
+	"src/Reflection/AbstractParser.js",
+	"src/Reflection/ClassParser.js",
+	"src/Reflection/FileJSParser.js",
+	"src/Reflection/MethodParser.js",
+	"src/Reflection/PropertyParser.js",
+	"src/Reflection/ReflectionClass.js",
+	"src/Reflection/ReflectionMethod.js",
+	"src/Reflection/ReflectionProperty.js",
 	
-	"Annotation/Parser.js",
-	"Annotation/AbstractAnnotation.js"
+	"src/Annotation/Parser.js",
+	"src/Annotation/AbstractAnnotation.js"
 ]

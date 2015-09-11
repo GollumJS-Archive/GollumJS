@@ -81,29 +81,31 @@
 					}
 				}
 			}
+			__entends__ = __entends__.reverse();
 			for (var i = 0; i < __entends__.length; i++) {
-					// Recopie des Statics
-					for (var j in __entends__[i]) {
-						if (j != 'prototype') {
-							(
-								function (name, called) {
-									gjsObject[name] = GollumJS.Utils.clone(called);
-								} (j, __entends__[i][j])
-							);
+				// Recopie des Statics
+				for (var j in __entends__[i]) {
+					if (j != 'prototype') {
+						(
+							function (name, called) {
+								gjsObject[name] = GollumJS.Utils.clone(called);
+							} (j, __entends__[i][j])
+						);
+					}
+				}
+				
+				// Recopie des methode depuis les extends					
+				for (var j in __entends__[i].prototype) {
+					(function (name, called) {
+						if (typeof (called) == 'function') {
+							gjsObject.prototype[name] = called;
+						} else {
+							gjsObject.prototype[name] = GollumJS.Utils.clone (called);
 						}
-					}
-					
-					// Recopie des methode depuis les extends					
-					for (var j in __entends__[i]) {
-						(function (name, called) {
-							if (typeof (called) == 'function') {
-								gjsObject.prototype[name] = called;
-							} else {
-								gjsObject.prototype[name] = GollumJS.Utils.clone (called);
-							}
-						})(j,  __entends__[i].prototype[j]);
-					}
+					})(j,  __entends__[i].prototype[j]);
+				}
 			}
+			__entends__ = __entends__.reverse();
 
 			/////////////////////////////
 			// Generate Object Methods //

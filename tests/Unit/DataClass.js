@@ -172,6 +172,10 @@ var ClassChildTriple2 = new GollumJS.Class ({
 	}
 	
 });
+var ClassChildTriple3 = new GollumJS.Class ({ Extends: ClassChildTriple2 });
+var ClassChildTriple4 = new GollumJS.Class ({ Extends: ClassChildTriple3 });
+var ClassChildTriple5 = new GollumJS.Class ({ Extends: ClassChildTriple4 });
+var ClassChildTriple6 = new GollumJS.Class ({ Extends: ClassChildTriple5 });
 
 var ClassParentScope = new GollumJS.Class ({
 	
