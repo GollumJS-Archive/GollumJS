@@ -70,8 +70,12 @@
 					typeof(implementation.Extends) == 'object' && 
 					Object.prototype.toString.call(implementation.Extends) === '[object Array]'
 				) {
-					for (var i = 0; i < implementation.Extends.length; i++) {
-						
+					for (var i = implementation.Extends.length-1; i >= 0 ; i--) {
+						// Ajoute a la liste des extends
+						__entends__.push (implementation.Extends[i]);
+						if (GollumJS.Utils.isGollumJsClass (implementation.Extends[i])) {
+							__entends__ = __entends__.concat(implementation.Extends[i].getExtendsClass());
+						}
 					}
 				} else {
 					// Ajoute a la liste des extends

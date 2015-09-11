@@ -241,3 +241,102 @@ var ClassChildScope = new GollumJS.Class ({
 		return this.propObject2;
 	}
 });
+
+var ClassParentMultile1 = new GollumJS.Class ({
+
+	Static: {
+
+		staticProp1: 1,
+		staticPropCommon: "staticPropCommon:1",
+
+		staticFunc1: function () {
+			return "staticFunc1";
+		},
+
+		staticFuncCommon: function () {
+			return "staticFuncCommon:1";
+		}
+
+	},
+
+	prop1: 1,
+	propCommon: "propCommon:1",
+
+	func1: function () {
+		return "func1";
+	},
+
+	funcCommon: function () {
+		return "funcCommon:1";
+	}
+
+});
+
+var ClassParentMultile2 = new GollumJS.Class ({
+
+	Static: {
+
+		staticProp2: 2,
+		staticPropCommon: "staticPropCommon:2",
+
+		staticFunc2: function () {
+			return "staticFunc2";
+		},
+
+		staticFuncCommon: function () {
+			return "staticFuncCommon:2";
+		}
+
+	},
+
+	prop2: 2,
+	propCommon: "propCommon:2",
+
+	func2: function () {
+		return "func2";
+	},
+
+	funcCommon: function () {
+		return "funcCommon:2";
+	}
+
+});
+
+var ClassParentMultile3 = new GollumJS.Class ({
+
+	Static: {
+
+		staticProp3: 3,
+		staticPropCommon: "staticPropCommon:3",
+
+		staticFunc3: function () {
+			return "staticFunc3";
+		},
+
+		staticFuncCommon: function () {
+			return "staticFuncCommon:3";
+		}
+
+	},
+
+	prop3: 3,
+	propCommon: "propCommon:3",
+
+	func3: function () {
+		return "func3";
+	},
+
+	funcCommon: function () {
+		return "funcCommon:3";
+	}
+
+});
+
+
+var ClassChildMultiple1 = new GollumJS.Class ({
+	Extends: [
+		ClassParentMultile1,
+		ClassParentMultile2,
+		ClassParentMultile3
+	]
+});
