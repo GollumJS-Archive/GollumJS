@@ -12,6 +12,7 @@ GT.create({
 		a.assertCompare (
 			ClassSimple,
 			{
+				__gollumjs__: GollumJS.__running__,
 				getExtendsClass: function() {},
 				getIdClass: function() {},
 				getReflectionClass: function() {},
@@ -34,6 +35,17 @@ GT.create({
 		);
 	},
 
+	testGollumJSObjectIdentifier (a) {
+		var simpleObject     = new ClassSimple();
+		var noGollumJsObject = new NoGollumJsClass();
+
+		a.assertTrue (GollumJS.Utils.isGollumJsClass (ClassSimple));
+		a.assertTrue (GollumJS.Utils.isGollumJsObject (simpleObject));
+		a.assertTrue (!GollumJS.Utils.isGollumJsClass (NoGollumJsClass));
+		a.assertTrue (!GollumJS.Utils.isGollumJsObject (noGollumJsObject));
+
+	},
+
 	/**
 	 * Test si un constructeur sans initialize en récupère un
 	 */
@@ -45,7 +57,7 @@ GT.create({
 	/**
 	 * Test les propriétés et méthodes
 	 */
-	testPropertiesAndMethodsConstructor (a) {
+	testPropertiesAndMethods (a) {
 
 		var parent = new ClassParentA();
 
@@ -59,6 +71,7 @@ GT.create({
 				staticPropNull2 : "null",
 				staticPropNull2 : "null",
 				staticPropArray1 : [ "a", 1],
+				__gollumjs__: GollumJS.__running__,
 				staticFunc1: function() {},
 				staticFunc2: function() {},
 				getExtendsClass: function() {},
@@ -70,17 +83,17 @@ GT.create({
 		
 		a.assertTrue (ClassParentA.staticFunc1() == 'staticFunc1');
 		a.assertTrue (ClassParentA.staticFunc2() == 'staticFunc2');
-		
+
 		a.assertCompare (
 			parent,
 			{
 				prop1: 4,
 				prop2: "a",
 				prop3: [1 , 12 ,"3"],
-				propNull1 : "null", //TODO devrait cracher
+				propNull1 : "null",
 				propNull2 : null,
 
-				self: ClassParentA,           // Non pertinent pour le test
+				self: ClassParentA,
 				
 				initialize: function(){},
 				func1: function(){},

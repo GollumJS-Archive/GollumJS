@@ -1,4 +1,16 @@
+
+"use strict";
+
 GollumJS.Utils = {
+
+	
+	isGollumJsClass: function (clazz) {
+		return clazz && clazz.__gollumjs__ === GollumJS.__running__;
+	},
+
+	isGollumJsObject: function (obj) {
+		return obj && obj.self !== undefined && GollumJS.Utils.isGollumJsClass(obj.self);
+	},
 
 	clone: function (value) {
 

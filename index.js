@@ -1,9 +1,22 @@
 if (typeof global.GollumJS == 'undefined' || typeof global.GollumJS.__init == 'undefined') {
 
-GollumJS = typeof GollumJS != 'undefined' ? GollumJS : {};
+var GollumJS = typeof GollumJS != 'undefined' ? GollumJS : {};
 GollumJS.__init__ = true;
+GollumJS.__running__ = "GollumJS_"+new Date().getTime()+"_"+parseInt(Math.random()*100000, 10);
+
+
+"use strict";
 
 GollumJS.Utils = {
+
+	
+	isGollumJsClass: function (clazz) {
+		return clazz && clazz.__gollumjs__ === clazz.__running__;
+	},
+
+	isGollumJsObject: function (obj) {
+		return obj && obj.self !== undefined && GollumJS.Utils.isGollumJsClass(obj.self);
+	},
 
 	clone: function (value) {
 
@@ -48,12 +61,22 @@ GollumJS.Utils = {
 			
 		}
 		return destination;
+	},
+
+	addDOMEvent: function (el, eventType, handler) {
+		if (el.addEventListener) { // DOM Level 2 browsers
+			el.addEventListener(eventType, handler, false);
+		} else if (el.attachEvent) { // IE <= 8
+			el.attachEvent('on' + eventType, handler);
+		} else { // ancient browsers
+			el['on' + eventType] = handler;
+		}
 	}
 
 };
 
 (function () {
-
+	
 	var config = {
 
 		fileJSParser: {
@@ -116,7 +139,7 @@ GollumJS.Utils = {
   * @param {} implementation
   */
 GollumJS.Class = function (implementation) {
-
+	
 	var parentInScope = function () {
 		throw new Error ('L\'objet n\'a pas de Class parente', this);
 	};

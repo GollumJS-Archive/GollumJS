@@ -18,6 +18,7 @@ GT.create({
 				staticPropNull1 : null,
 				staticPropNull2 : "null",
 				staticPropArray1 : [ "a", 1],
+				__gollumjs__: GollumJS.__running__,
 				staticFunc1: function() {},
 				staticFunc2: function() {},
 				getExtendsClass: function() {},
@@ -26,6 +27,7 @@ GT.create({
 				prototype: ClassChildA1.prototype
 			}
 		);
+		a.assertArraysEquals (ClassChildA1.getExtendsClass(), [ClassParentA]);
 		
 		a.assertTrue (ClassParentA.staticFunc1() == 'staticFunc1');
 		a.assertTrue (ClassParentA.staticFunc2() == 'staticFunc2');
@@ -71,6 +73,7 @@ GT.create({
 				staticPropNull1 : "null",
 				staticPropNull2 : null,
 				staticPropArray1 : [ "b", 2],
+				__gollumjs__: GollumJS.__running__,
 				staticFunc1: function() {},
 				staticFunc2: function() {},
 				getExtendsClass: function() {},
@@ -79,6 +82,7 @@ GT.create({
 				prototype: ClassChildA2.prototype
 			}
 		);
+		a.assertArraysEquals (ClassChildA2.getExtendsClass(), [ClassParentA]);
 		
 		a.assertTrue (ClassChildA2.staticFunc1() == 'staticFunc1');
 		a.assertTrue (ClassChildA2.staticFunc2() == 'staticFunc2|extends');
@@ -93,7 +97,7 @@ GT.create({
 				propNull1 : null,
 				propNull2 : "null",
 
-				self: ClassChildA2,           // Non pertinent pour le test
+				self: ClassChildA2,
 				
 				initialize: function(){},
 				func1: function(){},
@@ -140,6 +144,7 @@ GT.create({
 				staticPropLevel1: "aa",
 				staticPropLevel2: 22,
 				staticPropLevel3: -33,
+				__gollumjs__: GollumJS.__running__,
 				staticFuncLevel1: function() {},
 				staticFuncLevel2: function() {},
 				staticFuncLevel3: function() {},
@@ -149,6 +154,7 @@ GT.create({
 				prototype: ClassChildTriple2.prototype
 			}
 		);
+		a.assertArraysEquals (ClassChildTriple2.getExtendsClass(), [ClassChildTriple1, ClassParentTriple]);
 
 		a.assertTrue (ClassChildTriple2.staticFuncLevel1() == 'staticFuncLevel1:aa');
 		a.assertTrue (ClassChildTriple2.staticFuncLevel2() == 'staticFuncLevel2:22');
@@ -164,7 +170,7 @@ GT.create({
 				propLevel3: -3,
 				value: "initialize:3",
 
-				self: ClassChildTriple2,           // Non pertinent pour le test
+				self: ClassChildTriple2,
 				
 				initialize: function(){},
 				funcLevel1: function(){},

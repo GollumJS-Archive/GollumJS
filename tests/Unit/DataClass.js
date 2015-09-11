@@ -1,6 +1,12 @@
 var ClassSimple = new GollumJS.Class ({
 });
 
+var NoGollumJsClass = function () {
+};
+NoGollumJsClass.prototype.prop1 = 1;
+NoGollumJsClass.prototype.func1 = function () {
+};
+
 var ClassParentA = new GollumJS.Class ({
 	
 	Static: {

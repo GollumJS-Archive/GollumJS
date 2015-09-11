@@ -102,11 +102,11 @@
 					}
 				}
 			}
-			
+
 			/////////////////////
 			// Generate Static //
 			/////////////////////
-			
+
 			if (implementation.Static) {
 				for (var i in implementation.Static) {
 					gjsObject[i] = GollumJS.Utils.clone(implementation.Static[i]);
@@ -136,6 +136,12 @@
 						break;
 				}
 			}
+
+			////////////////////////////////
+			// Generate Object Properties //
+			////////////////////////////////
+
+			gjsObject.__gollumjs__ = GollumJS.__running__;	
 
 			/////////////////////////////
 			// Generate Object Methods //
