@@ -112,7 +112,7 @@
 				typeof obj2 != "object" &&
 				typeof obj2 != 'function'
 			) {
-				if(showMessage) this.messages.push ("param2 not an object or function is "+typeof obj1);
+				if(showMessage) this.messages.push ("param2 not an object or function is "+typeof obj2);
 			}
 			return false;
 		}

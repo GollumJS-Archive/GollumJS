@@ -8,16 +8,22 @@ GT.create({
 	testSimpleConstructor (a) {
 		
 		var simpleObject = new ClassSimple();
-
 		
-		console.log (simpleObject.self);
-		console.log (ClassSimple);
-
+		a.assertCompare (
+			ClassSimple,
+			{
+				getExtendsClass: function() {},
+				getIdClass: function() {},
+				getReflectionClass: function() {},
+				prototype: ClassSimple.prototype
+			}
+		);
+		
 		a.assertCompare (
 			simpleObject,
 			{
-				self: ClassSimple,                 // Non pertinent pour le test
-				__proto__: simpleObject.__proto__,  // Non pertinent pour le test
+				self: ClassSimple,
+				__proto__: simpleObject.__proto__,
 
 				initialize: function(){}
 			}
