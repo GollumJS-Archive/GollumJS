@@ -48,6 +48,7 @@ GT.create({
 				self: ClassChildMultiple1,
 				
 				initialize: function(){},
+				parent: function(){},
 				func1: function(){},
 				func2: function(){},
 				func3: function(){},
@@ -112,6 +113,7 @@ GT.create({
 				self: ClassChildMultiple2,
 				
 				initialize: function(){},
+				parent: function(){},
 				func1: function(){},
 				func2: function(){},
 				func3: function(){},
@@ -137,8 +139,6 @@ GT.create({
 			ClassParentMultile2,
 			ClassParentMultile1
 		]);
-
-		console.log (ClassChildMultiple2.getExtendsClass());
 
 		a.assertArraysEquals (ClassChildMultiple2.getExtendsClass(), [
 			// Direct extends

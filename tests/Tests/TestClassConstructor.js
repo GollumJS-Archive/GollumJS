@@ -28,9 +28,9 @@ GT.create({
 			simpleObject,
 			{
 				self: ClassSimple,
-				__proto__: simpleObject.__proto__,
 
-				initialize: function(){}
+				initialize: function(){},
+				parent: function(){}
 			}
 		);
 	},
@@ -96,6 +96,7 @@ GT.create({
 				self: ClassParentA,
 				
 				initialize: function(){},
+				parent: function(){},
 				func1: function(){},
 				func2: function(){}
 			}

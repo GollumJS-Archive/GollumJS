@@ -348,3 +348,69 @@ var ClassChildMultiple2 = new GollumJS.Class ({
 		ClassParentMultile2
 	]
 });
+
+
+var ClassParentForMethodParent1 = new GollumJS.Class ({
+
+	value: null,
+
+	initialize: function () {
+		this.value = "initialize:1";
+	},
+
+	func1: function () {
+		return "func1:1";
+	},
+
+});
+
+var ClassParentForMethodParent2 = new GollumJS.Class ({
+
+	value: null,
+
+	initialize: function () {
+		this.value = "initialize:2";
+	},
+
+	func1: function () {
+		return "func1:2";
+	},
+
+});
+
+var ClassChildForMethodParent1 = new GollumJS.Class ({
+
+	Extends: ClassParentForMethodParent1,
+
+	value: null,
+
+	initialize: function () {
+		this.parent()();
+		this.value += "2";
+	},
+
+	func1: function () {
+		return this.parent().func1()+"2";
+	},
+
+});
+
+
+var ClassChildForMethodParent2 = new GollumJS.Class ({
+
+	Extends: ClassParentForMethodParent1,
+
+	value: null,
+
+	initialize: function () {
+		this.parent()();
+		var val = this.value;
+		this.parent(ClassParentForMethodParent2)()
+		this.value = val+"|"+this.value;
+	},
+
+	func1: function () {
+		return this.parent().func1()+"|"+this.parent(ClassParentForMethodParent2).func1();
+	},
+
+});

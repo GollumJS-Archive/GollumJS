@@ -100,6 +100,7 @@ GT.create({
 				self: ClassChildA2,
 				
 				initialize: function(){},
+				parent: function(){},
 				func1: function(){},
 				func2: function(){}
 			}
@@ -173,6 +174,7 @@ GT.create({
 				self: ClassChildTriple2,
 				
 				initialize: function(){},
+				parent: function(){},
 				funcLevel1: function(){},
 				funcLevel2: function(){},
 				funcLevel3: function(){}
