@@ -8,49 +8,7 @@ GT.create({
 	testDirectExtend (a) {
 		var parent = new ClassParentA();
 		var child  = new ClassChildA1();
-
-		// Parent is good
-		a.assertCompare (
-			ClassParentA,
-			{
-				staticProp1: 1,
-				staticProp2: "42a",
-				staticPropNull1 : null,
-				staticPropNull2 : "null",
-				staticFunc1: function() {},
-				staticFunc2: function() {},
-				getExtendsClass: function() {},
-				getIdClass: function() {},
-				getReflectionClass: function() {},
-				prototype: ClassParentA.prototype
-			}
-		);
 		
-		a.assertTrue (ClassParentA.staticFunc1() == 'staticFunc1');
-		a.assertTrue (ClassParentA.staticFunc2() == 'staticFunc2');
-
-		console.log(parent);
-
-		a.assertCompare (
-			parent,
-			{
-				prop1: 4,
-				prop2: "a",
-				prop3: [1 , 12 ,"3"],
-				//propNull1 : "null", //TODO devrait cracher
-				//propNull2 : null,
-
-				self: ClassParentA,           // Non pertinent pour le test
-				__proto__: parent.__proto__,  // Non pertinent pour le test
-
-				initialize: function(){},
-				func1: function(){},
-				func2: function(){}
-			}
-		);
-		a.assertTrue (parent.func1() == 'func1');
-		a.assertTrue (parent.func2() == 'func2');
-
 		// Child is good
 		a.assertCompare (
 			ClassChildA1,
