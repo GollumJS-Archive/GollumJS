@@ -57,7 +57,7 @@
 		};
 
 		(function () {
-			
+
 			var __entends__ = [];
 			var __reflectionClass__ = null;
 			var __idClass__ = ++__countClass__;
@@ -82,7 +82,7 @@
 				}
 			}
 			for (var i = 0; i < __entends__.length; i++) {
-					// Recopie des Static
+					// Recopie des Statics
 					for (var j in __entends__[i]) {
 						if (j != 'prototype') {
 							(
