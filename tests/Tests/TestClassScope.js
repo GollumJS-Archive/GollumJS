@@ -1,7 +1,7 @@
 
 GT.create({
 
-	name: "TestScopeClass",
+	name: "TestClassScope",
 
 	/**
 	 * Test le this des methods

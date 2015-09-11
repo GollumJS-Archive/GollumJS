@@ -340,3 +340,11 @@ var ClassChildMultiple1 = new GollumJS.Class ({
 		ClassParentMultile3
 	]
 });
+
+var ClassChildMultiple2 = new GollumJS.Class ({
+	Extends: [
+		ClassParentMultile3,
+		ClassChildMultiple1,
+		ClassParentMultile2
+	]
+});

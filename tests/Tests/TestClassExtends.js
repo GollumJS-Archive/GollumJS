@@ -1,6 +1,6 @@
 GT.create({
 
-	name: "TestExtendsClass",
+	name: "TestClassExtends",
 
 	/**
 	 * Test si un heritage direct créer une class identique

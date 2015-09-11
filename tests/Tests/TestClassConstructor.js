@@ -1,6 +1,6 @@
 GT.create({
 
-	name: "TestContructorClass",
+	name: "TestClassConstructor",
 
 	/**
 	 * Test si un constructeur simple
