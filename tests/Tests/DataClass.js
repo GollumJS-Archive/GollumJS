@@ -398,7 +398,7 @@ var ClassChildForMethodParent1 = new GollumJS.Class ({
 
 var ClassChildForMethodParent2 = new GollumJS.Class ({
 
-	Extends: ClassParentForMethodParent1,
+	Extends: ClassChildForMethodParent1,
 
 	value: null,
 

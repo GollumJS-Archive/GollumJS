@@ -188,7 +188,12 @@
 
 					__parent__ = function () {
 						
-						var target = scope !== undefined ? scope : __entends__[0];
+						var target = __parent__.__scope__ !== undefined ? __parent__.__scope__ : __entends__[0];
+						
+						console.log (target);
+						console.log (__entends__);
+						console.log (__entends__.indexOf(target));
+
 						if (__entends__.indexOf(target) == -1) {
 							throw new Error("Class scopped not is parent on object when call method initialize");
 						}
@@ -206,7 +211,7 @@
 							) {
 								(function (i, j) {
 									__parent__[j] = function () {
-										var target = scope !== undefined ? scope : __entends__[i];
+										var target = __parent__.__scope__ !== undefined ? __parent__.__scope__ : __entends__[i];
 										if (__entends__.indexOf(target) == -1) {
 											throw new Error("Class scopped not is parent on object when call method "+j);
 										}
@@ -224,6 +229,7 @@
 
 
 				}
+				__parent__.__scope__ = scope;
 				return __parent__;
 			};
 
