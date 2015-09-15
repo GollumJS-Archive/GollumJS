@@ -33,6 +33,9 @@ GT.create({
 				parent: function(){}
 			}
 		);
+		
+		a.assertTrue (simpleObject instanceof Object);
+		a.assertTrue (simpleObject instanceof ClassSimple);
 	},
 
 	testGollumJSObjectIdentifier (a) {

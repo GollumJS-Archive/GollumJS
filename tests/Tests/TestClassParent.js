@@ -27,13 +27,11 @@ GT.create({
 	},
 
 	/**
-	 * Test this parent avec un scope forcer
+	 * Test this parent avec un scope forcersmart
 	 */
 	testForceScope (a) {
 		
 		var child = new ClassChildForMethodParent2();
-
-		console.log (child);
 
 		a.assertCompare (
 			child,

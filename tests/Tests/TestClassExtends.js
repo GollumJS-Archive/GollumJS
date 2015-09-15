@@ -56,6 +56,12 @@ GT.create({
 		ClassChildA1.staticPropArray1.push ("cool");
 		a.assertArraysEquals (ClassParentA.staticPropArray1, [ "a", 1]);
 		a.assertArraysEquals (ClassChildA1.staticPropArray1, [ "a", 1, "cool"]);
+
+		console.log (typeof child);
+		console.log (child instanceof Object);
+
+		a.assertTrue (child instanceof ClassChildA1);
+		a.assertTrue (child instanceof ClassParentA);
 	},
 
 	/**

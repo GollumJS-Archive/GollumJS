@@ -22,7 +22,6 @@
 	 * @param {} implementation
 	 */
 	GollumJS.Class = function (implementation) {
-
 		
 		var gjsObject = function () {
 
