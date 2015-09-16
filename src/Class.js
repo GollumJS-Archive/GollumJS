@@ -39,6 +39,7 @@
 
 		var gjsObject = function () {
 			implementation.initialize.apply(this, arguments);
+			return this;
 		};
 		
 		/////////////////////

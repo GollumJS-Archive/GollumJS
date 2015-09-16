@@ -5,7 +5,7 @@ GT.create({
 	/**
 	 * Test si un constructeur simple
 	 */
-	testParentSimple (a) {
+	testParentSimple: function (a) {
 		
 		var child = new ClassChildForMethodParent1();
 		
@@ -29,7 +29,7 @@ GT.create({
 	/**
 	 * Test this parent avec un scope forcersmart
 	 */
-	testForceScope (a) {
+	testForceScope: function (a) {
 		
 		var child = new ClassChildForMethodParent2();
 

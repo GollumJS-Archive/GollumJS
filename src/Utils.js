@@ -3,6 +3,10 @@
 
 GollumJS.Utils = {
 
+	ENGINE_GECKO : "gecko",
+	ENGINE_WEBKIT: "webkit",
+	ENGINE_MSIE  : "ie",
+	ENGINE_OTHER : "other",
 	
 	isGollumJsClass: function (clazz) {
 		return clazz && clazz.__gollumjs__ === GollumJS.__running__;
@@ -65,6 +69,49 @@ GollumJS.Utils = {
 		} else { // ancient browsers
 			el['on' + eventType] = handler;
 		}
+	},
+
+	global: function () {
+		return typeof window === undefined ? window : global; 
+	},
+
+	engine: function () {
+		
+		if (typeof module !== 'undefined' && module.exports) {
+			return this.ENGINE_WEBKIT;
+		}
+
+		if (
+			typeof navigator           != "undefined" &&
+			typeof navigator.userAgent != "undefined"
+		) {
+
+			var ua = navigator.userAgent.toLowerCase();
+			var match =
+				/(chrome)[ \/]([\w.]+)/.exec(ua) ||
+				/(webkit)[ \/]([\w.]+)/.exec(ua) ||
+				/(opera)(?:.*version|)[ \/]([\w.]+)/.exec(ua) ||
+				/(msie) ([\w.]+)/.exec(ua) ||
+				/(trident)[ \/]([\w.]+)/.exec(ua)||
+				ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) || []
+			;
+			var browser = match[1] || "";
+			
+			switch (browser) {
+				case 'msie':
+				case 'trident':
+					return this.ENGINE_MSIE;
+				case 'mozilla':
+					return this.ENGINE_GECKO;
+				case 'webkit':
+				case 'chrome':
+					return this.ENGINE_WEBKIT;
+				default:
+					break;
+			}
+		}
+ 
+		return this.ENGINE_OTHER;
 	}
 
 };

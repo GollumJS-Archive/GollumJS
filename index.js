@@ -9,6 +9,10 @@ GollumJS.__running__ = "GollumJS_"+new Date().getTime()+"_"+parseInt(Math.random
 
 GollumJS.Utils = {
 
+	ENGINE_GECKO : "gecko",
+	ENGINE_WEBKIT: "webkit",
+	ENGINE_MSIE  : "ie",
+	ENGINE_OTHER : "other",
 	
 	isGollumJsClass: function (clazz) {
 		return clazz && clazz.__gollumjs__ === GollumJS.__running__;
@@ -71,6 +75,47 @@ GollumJS.Utils = {
 		} else { // ancient browsers
 			el['on' + eventType] = handler;
 		}
+	},
+
+	global: function () {
+		return typeof window === undefined ? window : global; 
+	},
+
+	engine: function () {
+		
+		if (typeof module !== 'undefined' && module.exports) {
+			return this.ENGINE_WEBKIT;
+		}
+
+		if (
+			typeof navigator           != "undefined" &&
+			typeof navigator.userAgent != "undefined"
+		) {
+
+			var ua = navigator.userAgent.toLowerCase();
+			var match =
+				/(chrome)[ \/]([\w.]+)/.exec(ua) ||
+				/(webkit)[ \/]([\w.]+)/.exec(ua) ||
+				/(opera)(?:.*version|)[ \/]([\w.]+)/.exec(ua) ||
+				/(msie) ([\w.]+)/.exec(ua) ||
+				/(trident)[ \/]([\w.]+)/.exec(ua)||
+				ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) || []
+			;
+			var browser = match[1] || "";
+			switch (browser) {
+				case 'msie':
+				case 'trident':
+					return this.ENGINE_MSIE;
+				case 'mozilla':
+					return this.ENGINE_GECKO;
+				case 'webkit':
+					return this.ENGINE_WEBKIT;
+				default:
+					break;
+			}
+		}
+ 
+		return this.ENGINE_OTHER;
 	}
 
 };
@@ -122,349 +167,250 @@ GollumJS.Utils = {
 /**
  * Objet permettant d'implémenter un system objet avec héritage simple
  * 
- *  initialize : Implémente une methode constructeur avec la methode initialize ()
- * 	Extends    : Implémente l'héritage simple par l'attribut this.Extends
- *               Appel au methode parente par ce même attribut this.parent
+ *  initialize : Implémente une methode constructeur avec la methode initialize()
+ * 	Extends    : Implémente l'héritage simple par l'attribut Extends
+ *               Appel au methode parente par ce même attribut grâce à this.parent()
  *  Static   : insertion de variable Static dans l'objet 
  *             Si dans Static domReady existe elle sera appelé automatiquement à la fin du cahrgement de la page
- *  this.parent : Dans une methode this.parent permet d'accéder à la Class mère de l'objet
+ *  this.parent() : Dans une methode this.parent() permet d'accéder à la Class mère de l'objet
  *  this.self : self exist toujours dans l'objet et permet d'accéder au constructeur de l'objet
  *  @namespace	
  *  @author     Damien Duboeuf
  *  @version 	1.0
  */
- 
- /**
-  * Objet Class permettant de créer une otion objet avancé
-  * @param {} implementation
-  */
-GollumJS.Class = function (implementation) {
-	
-	var parentInScope = function () {
-		throw new Error ('L\'objet n\'a pas de Class parente', this);
-	};
-	if (implementation.Extends) {
-		parentInScope = function () {
-			implementation.Extends.apply(this, arguments);
-		};
-		for (var i in implementation.Extends.prototype) {
-			(
-				function (name, called) {
-					if (typeof (called) == 'function') {
-						parentInScope[name] = function () {
-							return called.apply(this.__this__, arguments);
-						};
-					}
-				}(i, implementation.Extends.prototype[i])
-			);
-		}
-	}
-	
-	var gjsObject = function () {
-		
-		for (var i in this) {
-			this[i] = GollumJS.Utils.clone(this[i]);
-		}
-		
-		if (implementation.initialize) {
-			var oldParent = null;
-			if (this.parent) {
-				oldParent = this.parent;
-			}
-			this.parent = parentInScope;
-			this.parent.__this__ = this;
-			
-			implementation.initialize.apply(this, arguments);
-			
-			if (oldParent) {
-				this.parent = oldParent;
-			} else {
-				delete (this.parent);
-			}
-			
-		} else if (implementation.Extends) {
-			implementation.Extends.apply(this, arguments);
-		}
-	};
-	
-	if (implementation.Extends) {
-		for (var i in implementation.Extends.prototype) {
-			gjsObject.prototype[i] = GollumJS.Utils.clone(implementation.Extends.prototype[i]);
-		}
-		
-		// Recopie des Static
-		for (var i in implementation.Extends) {
-			if (i != 'prototype') {
-				(
-					function (name, called) {
-						gjsObject[name] = GollumJS.Utils.clone(called);
-					} (i, implementation.Extends[i])
-				);
-			}
-		}
-	}
-	
-	
-	if (implementation.Static) {
-		for (var i in implementation.Static) {
-			gjsObject[i] = GollumJS.Utils.clone(implementation.Static[i]);
-		}
-	}
-	
-	if (implementation) {
-		for (var i in implementation) {
-		
-			switch (i) {
-				
-				case 'initialize' : // Déjà traité
-				case 'Extends' :     // Déjà traité
-				case 'Static' :   // Déjà traité
-					break;
-				
-				default : // Toute les functions et attribut
-					(
-						function (name, called) {
-							if (typeof (called) == 'function') {
-								gjsObject.prototype[name] = function () {
-									var oldParent = null;
-									if (this.parent) {
-										oldParent = this.parent;
-									}
-									this.parent = parentInScope;
-									this.parent.__this__ = this;
-								
-									var value = called.apply (this, arguments);
-								
-									if (oldParent) {
-										this.parent = oldParent;
-									} else {
-										delete (this.parent);
-									}
-								
-									return value;
-								};
-							} else {
-								gjsObject.prototype[name] = GollumJS.Utils.clone (called);
-								
-							}
-						} (i,  implementation[i])
-					);
-					break;
-			}
-		}
-	}
-	
-	var addEvent = function (el, eventType, handler) {
-		if (el.addEventListener) { // DOM Level 2 browsers
-			el.addEventListener(eventType, handler, false);
-		} else if (el.attachEvent) { // IE <= 8
-			el.attachEvent('on' + eventType, handler);
-		} else { // ancient browsers
-			el['on' + eventType] = handler;
-		}
-	}
 
-	if (typeof window != 'undefined' && window) {
-		(function (gjsObject) {
-			addEvent (window, "load", function () {
-				if (gjsObject.domReady !== undefined && typeof (gjsObject.domReady) == 'function') {
-					gjsObject.domReady.call (gjsObject);
+(function () {
+
+	var __countClass__ = 0;
+
+	/**
+	 * Objet Class permettant de créer une otion objet avancé
+	 * @param {} implementation
+	 */
+	GollumJS.Class = function (implementation) {
+
+		if (typeof(implementation.initialize) != 'function') {
+			implementation.initialize = function () {};
+			
+			if (implementation.Extends) {
+				if (GollumJS.Utils.isGollumJsClass (implementation.Extends)) {
+					implementation.initialize = implementation.Extends.prototype.initialize;
+				} else {
+					implementation.initialize = function () {
+						implementation.Extends.apply(this, arguments)
+					};
 				}
-			});
-		}) (gjsObject);
-	}
-	
-	gjsObject.prototype.self = gjsObject; // Racourcis
-	
-	(function () {
+			}
+		}
 
-		var _reflectionClass = null;
+		var gjsObject = function () {
+			implementation.initialize.apply(this, arguments);
+			return this;
+		};
+		
+		/////////////////////
+		// Generate exends //
+		/////////////////////
+
+		var __extends__ = [];
+		var __reflectionClass__ = null;
+		var __idClass__ = ++__countClass__;
+		var __parent__ = null;
+
+		if (implementation.Extends) {
+			gjsObject.prototype = Object.create(implementation.Extends.prototype);
+
+			__extends__.push (implementation.Extends);
+			if (GollumJS.Utils.isGollumJsClass (implementation.Extends)) {
+				__extends__ = __extends__.concat(implementation.Extends.getExtendsClass());
+			}
+
+		} else {
+			gjsObject.prototype = Object.create(Object.prototype);
+		}
+		if (
+			typeof(implementation.Uses) == 'object' && 
+			Object.prototype.toString.call(implementation.Uses) === '[object Array]'
+		) {
+			for (var i = implementation.Uses.length-1; i >= 0 ; i--) {
+				// Ajoute a la liste des extends
+				__extends__.push (implementation.Uses[i]);
+				if (GollumJS.Utils.isGollumJsClass (implementation.Uses[i])) {
+					__extends__ = __extends__.concat(implementation.Uses[i].getExtendsClass());
+				}
+			}
+		}
+
+		__extends__ = __extends__.reverse();
+		for (var i = 0; i < __extends__.length; i++) {
+			// Recopie des Statics
+			if (GollumJS.Utils.isGollumJsClass (__extends__[i])) {
+				for (var j in __extends__[i]) {
+					if (j != 'prototype') {
+						(
+							function (name, called) {
+								gjsObject[name] = GollumJS.Utils.clone(called);
+							} (j, __extends__[i][j])
+						);
+					}
+				}
+			}
+			
+			// Recopie des methode depuis les extends
+			for (var j in __extends__[i].prototype) {
+				(function (name, called) {
+					if (typeof (called) == 'function') {
+						gjsObject.prototype[name] = called;
+					} else {
+						gjsObject.prototype[name] = GollumJS.Utils.clone (called);
+					}
+				})(j,  __extends__[i].prototype[j]);
+			}
+		}
+		__extends__ = __extends__.reverse();
+		
+		/////////////////////////////
+		// Generate Object Methods //
+		/////////////////////////////
+
+		gjsObject.getExtendsClass = function () {
+			return __extends__;
+		};
+
+		gjsObject.getIdClass = function () {
+			return __idClass__;
+		};
 
 		gjsObject.getReflectionClass = function () {
 
-			if (!_reflectionClass) {
+			if (!__reflectionClass__) {
 
 				var parser = GollumJS.get('fileJSParser');
 				
 				for (var i = 0; i < parser.classList.length; i++) {
 					if (gjsObject == parser.classList[i].constructor) {
-						_reflectionClass = parser.classList[i];
+						__reflectionClass__ = parser.classList[i];
 					}
 				}
 			}
 
-			return _reflectionClass;
+			return __reflectionClass__;
 		};
-	})();
 
-	return gjsObject;
-};
+		gjsObject.isInstance = function (obj) {
+			return (
+				(obj instanceof this) || (
+					GollumJS.Utils.isGollumJsObject(obj) &&
+					obj.self.getExtendsClass().indexOf(this) != -1
+				)
+			);
+		};
 
+		/////////////////////
+		// Generate Static //
+		/////////////////////
 
-///////////////////////////
-// Exemple d'utilisation //
-///////////////////////////
-/*
-// Test recopie des attributs type object lors d'un héritage
+		if (implementation.Static) {
+			for (var i in implementation.Static) {
+				gjsObject[i] = GollumJS.Utils.clone(implementation.Static[i]);
+			}
+		}
 
-var ClassA = new Class ({
-	
-	tata: {},
-	
-});
+		/////////////////////////////////////
+		// Generate Methods and Properties //
+		/////////////////////////////////////
 
-var ClassB = new Class ({
-	Extends: ClassA
-});
+		for (var i in implementation) {
+			
+			switch (i) {
+				
+				case 'Extends': // Déjà traité
+				case 'Uses':    // Déjà traité
+				case 'Static':  // Déjà traité
+					break;
 
-var b1 = new ClassB ();
-b1.tata[0] = 'tutu';
-var b2 = new ClassB ();
-b2.tata[1] = 'toto';
+				default : // Toute les functions et attribut
+					(function (name, called) {
+						if (typeof (called) == 'function') {
+							gjsObject.prototype[name] = called;
+						} else {
+							gjsObject.prototype[name] = GollumJS.Utils.clone (called);
+						}
+					}) (i,  implementation[i]);
+					break;
+			}
+		}
 
-console.log ('ClassB : ', ClassB);
-console.log ('b1 : ', b1);
-console.log ('b2 : ', b2);
+		////////////////////////////
+		// Generate parent method //
+		////////////////////////////
 
-console.log ('============================================');
-console.log ('============================================');
-console.log ('============================================');
-console.log ('============================================');
-console.log ('============================================');
+		gjsObject.prototype.parent = function (scope) {
 
-/*
-var ClassA = new Class ({
-	
-	attribut1 : 1,
-	
-	TYPE:'A',
-	
-	A:function (){},
-	
-	initialize: function (param1, param2) {
-		console.log ('construction A this : ', this);
-		console.log ('construction A : ', param1);
-		console.log ('construction A : ', param2);
-		
-		this.attribut1 = 2;
-	},
-	
-	afficher: function (text) {
-		console.log ('je suis A : ',text );
-	},
-	
-	afficher2: function (text) {
-		console.log ('je suis A pour la 2eme fois: ',text );
-	},
-	
-	retourn10: function () {
-		return 10;
-	}
-});
+			var __this__ = this;
 
-console.log ('ClassA',ClassA);
+			if (__parent__ === null) {
 
-var ClassB = new Class ({
-	
-	Extends:ClassA,
-	
-	TYPE:'B',
-	
-	B:function (){},
-	
-	initialize: function (param1, param2) {
-		
-		console.log ('construction B : initialise 2');
-		
-		this.parent(param1, param2);
-		
-	},
-	
-	afficher: function (text) {
-		console.log ('Afficher B surcharger', text);
-		this.parent.afficher (text+' hhhola');
-	}
-	
-	
-});
+				__parent__ = function () {
 
-console.log ('ClassB',ClassB);
+					var target = __parent__.__scope__ !== undefined ? __parent__.__scope__ : __parent__.__extends__[0];
+					
+					if (GollumJS.Utils.isGollumJsClass (target)) {
+						if (target) {
+							var __oldExtends__ = __parent__.__extends__;
+							__parent__.__extends__ = target.getExtendsClass();
+							var __rtn__ = target.prototype.initialize.apply(__this__, arguments);
+							__parent__.__extends__ = __oldExtends__;
+							return __rtn__;
+						}
+					}
+				};
+				
+				__parent__.__extends__ = __extends__;
 
-var ClassC = new Class ({
-
-	Extends:ClassB,
-	
-	TYPE:'C',
-	
-	C:function (){},
-	
-	afficher: function (text) {
-		console.log ('Afficher C surcharger', text);
-		this.parent.afficher (text+' whawha');
-	},
-	
-	retourn10: function () {
-		return this.parent.retourn10 () + 0.10;
-	}
-	
-});
+				for (var i = 0; i < __parent__.__extends__.length; i++) {
+					for (var j in __parent__.__extends__[i].prototype) {
+						if (
+							typeof __parent__.__extends__[i].prototype[j] == 'function' &&
+							 typeof __parent__[j] == 'undefined'
+						) {
+							(function (i, j) {
+								__parent__[j] = function () {
+									var target = __parent__.__scope__ !== undefined ? __parent__.__scope__ : __parent__.__extends__[i];
+									
+									if (GollumJS.Utils.isGollumJsClass (target)) {
+										if (target) {
+											var __oldExtends__ = __parent__.__extends__;
+											__parent__.__extends__ = target.getExtendsClass();
+											var __rtn__ = target.prototype[j].apply(__this__, arguments);
+											__parent__.__extends__ = __oldExtends__;
+											return __rtn__;
+										}
+									}
+								}
+							})(i, j);
+						}
+					}
+				}
 
 
-console.log ('ClassC',ClassC);
+			}
+			__parent__.__scope__ = scope;
+			return __parent__;
+		};
 
-var ClassD = new Class ({
+		///////////////////////////////
+		// Generate Class Properties //
+		///////////////////////////////
 
-	Extends:ClassC,
-	
-	TYPE:'D',
-	
-	D:function (){},
-	
-	afficher: function (text) {
-		console.log ('Afficher D surcharger', text);
-		this.parent.afficher (text+' MUUUU');
-	}
-	
-});
+		gjsObject.__gollumjs__ = GollumJS.__running__;	
 
-console.log ('ClassD',ClassD);
+		gjsObject.prototype.self = gjsObject; // Racourcis
 
-console.log ('===============================================================');
+		return gjsObject;
+	};
 
-
-var a = new ClassA('parametre 1', 'parametre 2');
-console.log ('a',a);
-//a.afficher('HA ha ha!');
-//a.afficher2('HA ha ha!');
-
-
-
-console.log ('===============================================================');
-var b = new ClassB('parametreB 1', 'parametreB 2');
-b.afficher('HB hb hb!');
-b.afficher2('HB hb hb!');
-console.log ('b',b);
-
-
-
-
-console.log ('===============================================================');
-var c = new ClassC('parametreC 1', 'parametreC 2');
-c.afficher('HC hc hc!');
-console.log ('c',c);
-
-
-
-console.log ('===============================================================');
-var d = new ClassD('parametreD 1', 'parametreD 2');
-d.afficher('HD hd hd!');
-console.log(d.retourn10());
-console.log ('d',d);
-
-*/
-
-
-
+})();
 
 /**
  *  Class exception générique
@@ -475,79 +421,52 @@ console.log ('d',d);
 GollumJS.Exception = new GollumJS.Class ({
 	
 	Extends: Error,
-	
-	Static : {
-		parse: function (ex) {
-			if (ex.Exception) {
-				if (console && console.error) {
-					console.error ('type : ', ex.ExceptionType);
-					var args = {};
-					for (var i in ex.args) {
-						if (i == 0) {
-							console.error ('message : ', ex.args[i]);
-							continue;
+	name: "GollumJS.Exception",
+	code: 0,
+
+	initialize: function (message, code) {
+
+		var err          = Error.prototype.constructor.apply(this, arguments);
+		var fileName     = null;
+		var lineNumber   = null;
+		var columnNumber = null;
+		this.stack       = "";
+
+		if (err.stack) {
+			// remove one stack level:
+			switch (GollumJS.Utils.engine()) {
+				case GollumJS.Utils.ENGINE_GECKO:
+					var stack = err.stack.split("\n");
+					stack.shift();
+					stack.shift();
+					this.stack = stack.join("\n");
+					if (stack[0]) {
+						var caller = stack[0].split("@");
+						var file = ["", null, null];
+						if (caller[1]) {
+							file = caller[1].split(":");
 						}
-						args[i] = ex.args[i];
+						columnNumber = file[1] && file[1] == parseInt(file[1], 10) ? parseInt(file[1], 10) : null;
+						lineNumber  = file[2] && file[2] == parseInt(file[2], 10) ? parseInt(file[2], 10) : null;
+						file.pop();
+						file.pop();
+						fileName = file.join(':');
 					}
-					console.error ('arguments : ', args);
-					console.error ('pile : ', ex.pile);
-				}
-			}
-			throw ex;
-		}
-	},
-	
-	ExceptionType: 'Exception',
-
-	initialize: function () {
-		this.init (arguments);
-	},
-
-	/**
-	 * Initialise l'exception
-	 * @param args
-	 */
-	init: function (args) {
-		this.args = args;
-
-		try {
-			throw new Error ('backtrace');
-		} catch (e) {
-			if (e.stack) {
-				var lines = e.stack.split("\n");
-				this.pile = {};
-				var j = 0;
-				for (var i in lines) {
-					switch (i) {
-						case '0':
-						case '1':
-						case '2':
-						case '3':
-						case '4':
-							break;
-
-						default:
-							var func = lines[i].split ('@'); func = func[0];
-							lines[i] = lines[i].substr (func.length + 1);
-							var numLine = lines[i].split (':'); numLine = numLine[numLine.length-1];
-							lines[i] = lines[i].substr (0, lines[i].length - (numLine.length + 1));
-
-							if (lines[i].indexOf('core/Class.js') == -1) { // Evite de parasiter la pile avec Class
-								this.pile[j++] = {
-									'call': func+'()',
-									'file':lines[i],
-									'line':numLine
-								}
-							}
-							break;
-					}
-				}
+					break;
+				case GollumJS.Utils.ENGINE_WEBKIT:
+					break;
+				default:
+					this.stack = err.stack;
+					break;
 			}
 		}
-
+		this.message      = err.message  !== undefined ? err.message  : message;
+		this.fileName     = fileName     !== null      ? fileName     : (err.fileName     !== undefined ? err.fileName     : null);
+		this.lineNumber   = lineNumber   !== null      ? lineNumber   : (err.lineNumber   !== undefined ? err.lineNumber   : null);
+		this.columnNumber = columnNumber !== null      ? columnNumber : (err.columnNumber !== undefined ? err.columnNumber : null);
+		this.code         = code         !== undefined ? code         : this.code;
 	}
 });
-
 
 GollumJS.Cache = GollumJS.Cache || {};
 /**
