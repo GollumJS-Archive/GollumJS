@@ -131,21 +131,12 @@
 		};
 
 		gjsObject.isInstance = function (obj) {
-			console.log (
+			return (
 				(obj instanceof this) || (
 					GollumJS.Utils.isGollumJsObject(obj) &&
-					obj.self &&
-					__extends__.indexOf(obj.self) != -1
+					obj.self.getExtendsClass().indexOf(this) != -1
 				)
 			);
-			console.log (obj instanceof this);
-			return 
-				(obj instanceof this) || (
-					GollumJS.Utils.isGollumJsObject(obj) &&
-					obj.self &&
-					__extends__.indexOf(obj.self) != -1
-				)
-			;
 		};
 
 		/////////////////////

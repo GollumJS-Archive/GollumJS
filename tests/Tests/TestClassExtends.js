@@ -11,6 +11,8 @@ GT.create({
 
 		a.assertTrue (child instanceof ClassChildA1);
 		a.assertTrue (child instanceof ClassParentA);
+		a.assertTrue (ClassChildA1.isInstance (child));
+		a.assertTrue (ClassParentA.isInstance (child));
 		
 		// Child is good
 		a.assertCompare (
@@ -72,6 +74,8 @@ GT.create({
 
 		a.assertTrue (child instanceof ClassChildA2);
 		a.assertTrue (child instanceof ClassParentA);
+		a.assertTrue (ClassChildA2.isInstance (child));
+		a.assertTrue (ClassParentA.isInstance (child));
 		
 		a.assertCompare (
 			ClassChildA2,
@@ -151,6 +155,9 @@ GT.create({
 		a.assertTrue (child2 instanceof ClassParentTriple);
 		a.assertTrue (child2 instanceof ClassChildTriple1);
 		a.assertTrue (child2 instanceof ClassChildTriple2);
+		a.assertTrue (ClassParentTriple.isInstance (child2));
+		a.assertTrue (ClassChildTriple1.isInstance (child2));
+		a.assertTrue (ClassChildTriple2.isInstance (child2));
 
 		a.assertCompare (
 			ClassChildTriple2,
@@ -213,6 +220,13 @@ GT.create({
 		a.assertTrue (child instanceof ClassChildTriple4);
 		a.assertTrue (child instanceof ClassChildTriple5);
 		a.assertTrue (child instanceof ClassChildTriple6);
+		a.assertTrue (ClassParentTriple.isInstance (child));
+		a.assertTrue (ClassChildTriple1.isInstance (child));
+		a.assertTrue (ClassChildTriple2.isInstance (child));
+		a.assertTrue (ClassChildTriple3.isInstance (child));
+		a.assertTrue (ClassChildTriple4.isInstance (child));
+		a.assertTrue (ClassChildTriple5.isInstance (child));
+		a.assertTrue (ClassChildTriple6.isInstance (child));
 
 		a.assertArraysEquals (ClassChildTriple6.getExtendsClass(), [
 			ClassChildTriple5,
@@ -248,6 +262,7 @@ GT.create({
 		
 		a.assertTrue (child instanceof ClassParentNoGollumJS);
 		a.assertTrue (child instanceof ClassChildNoGollumJS);
+		a.assertTrue (ClassChildNoGollumJS.isInstance (child));
 
 		a.assertCompare (
 			ClassParentNoGollumJS,

@@ -13,6 +13,11 @@ GT.create({
 		a.assertTrue (!(child instanceof ClassParentMultile2));
 		a.assertTrue (child instanceof ClassParentMultile3);
 		a.assertTrue (child instanceof ClassChildMultiple1);
+		a.assertTrue (ClassParentMultile1.isInstance (child));
+		a.assertTrue (ClassParentMultile2.isInstance (child));
+		a.assertTrue (ClassParentMultile3.isInstance (child));
+		a.assertTrue (ClassChildMultiple1.isInstance (child));
+		a.assertTrue (!ClassChildMultiple2.isInstance (child));
 		
 		a.assertCompare (
 			ClassChildMultiple1,
@@ -85,6 +90,12 @@ GT.create({
 		a.assertTrue (child instanceof ClassParentMultile2);
 		a.assertTrue (!(child instanceof ClassParentMultile3));
 		a.assertTrue (child instanceof ClassChildMultiple2);
+		a.assertTrue (!(child instanceof ClassChildMultiple1));
+		a.assertTrue (ClassParentMultile1.isInstance (child));
+		a.assertTrue (ClassParentMultile2.isInstance (child));
+		a.assertTrue (ClassParentMultile3.isInstance (child));
+		a.assertTrue (ClassChildMultiple1.isInstance (child));
+		a.assertTrue (ClassChildMultiple2.isInstance (child));
 
 		a.assertCompare (
 			ClassChildMultiple2,
