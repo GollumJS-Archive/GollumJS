@@ -202,70 +202,70 @@ ClassChildNoGollumJS = new GollumJS.Class ({
 });
 
 
-// var ClassParentScope = new GollumJS.Class ({
+var ClassParentScope = new GollumJS.Class ({
 	
-// 	Static: {
+	Static: {
 
-// 		staticPropObject1: ["aa", 11, null],
-// 		staticPropObject1: ["bb", 22, "nullnull"],
+		staticPropObject1: ["aa", 11, null],
+		staticPropObject1: ["bb", 22, "nullnull"],
 
-// 		staticFuncThis1: function () {
-// 			return this;
-// 		},
+		staticFuncThis1: function () {
+			return this;
+		},
 
-// 		staticFuncObject1: function () {
-// 			return this.staticPropObject1;
-// 		}
-// 	},
+		staticFuncObject1: function () {
+			return this.staticPropObject1;
+		}
+	},
 
-// 	propObject1: ["a", 1, null],
-// 	propObject2: ["b", 2, "null"],
+	propObject1: ["a", 1, null],
+	propObject2: ["b", 2, "null"],
 
-// 	funcThis1: function () {
-// 		return this;
-// 	},
+	funcThis1: function () {
+		return this;
+	},
 
-// 	funcThis2: function () {
-// 		return this.funcThis1();
-// 	},
+	funcThis2: function () {
+		return this.funcThis1();
+	},
 
-// 	funcObject1: function () {
-// 		return this.propObject1;
-// 	}
+	funcObject1: function () {
+		return this.propObject1;
+	}
 	
-// });
+});
 
-// var ClassChildScope = new GollumJS.Class ({
+var ClassChildScope = new GollumJS.Class ({
 	
-// 	Extends: ClassParentScope,
+	Extends: ClassParentScope,
 
-// 	Static: {
+	Static: {
 
-// 		staticPropObject1: ["aa2", -11, null],
+		staticPropObject1: ["aa2", -11, null],
 
-// 		staticFuncThis2: function () {
-// 			return this;
-// 		},
+		staticFuncThis2: function () {
+			return this;
+		},
 
-// 		staticFuncObject2: function () {
-// 			return this.staticPropObject2;
-// 		}
-// 	},
+		staticFuncObject2: function () {
+			return this.staticPropObject2;
+		}
+	},
 
-// 	propObject1: ["a2", -1, "exist"],
+	propObject1: ["a2", -1, "exist"],
 
-// 	funcThis3: function () {
-// 		return this;
-// 	},
+	funcThis3: function () {
+		return this;
+	},
 
-// 	funcThis4: function () {
-// 		return this.funcThis1();
-// 	},
+	funcThis4: function () {
+		return this.funcThis1();
+	},
 
-// 	funcObject2: function () {
-// 		return this.propObject2;
-// 	}
-// });
+	funcObject2: function () {
+		return this.propObject2;
+	}
+});
 
 var ClassParentMultile1 = new GollumJS.Class ({
 
@@ -380,67 +380,67 @@ var ClassChildMultiple2 = new GollumJS.Class ({
 });
 
 
-// var ClassParentForMethodParent1 = new GollumJS.Class ({
+var ClassParentForMethodParent1 = new GollumJS.Class ({
 
-// 	value: null,
+	value: null,
 
-// 	initialize: function () {
-// 		this.value = "initialize:1";
-// 	},
+	initialize: function () {
+		this.value = "initialize:1";
+	},
 
-// 	func1: function () {
-// 		return "func1:1";
-// 	},
+	func1: function () {
+		return "func1:1";
+	},
 
-// });
+});
 
-// var ClassParentForMethodParent2 = new GollumJS.Class ({
+var ClassParentForMethodParent2 = new GollumJS.Class ({
 
-// 	value: null,
+	value: null,
 
-// 	initialize: function () {
-// 		this.value = "initialize:2";
-// 	},
+	initialize: function () {
+		this.value = "initialize:2";
+	},
 
-// 	func1: function () {
-// 		return "func1:2";
-// 	},
+	func1: function () {
+		return "func1:2";
+	},
 
-// });
+});
 
-// var ClassChildForMethodParent1 = new GollumJS.Class ({
+var ClassChildForMethodParent1 = new GollumJS.Class ({
 
-// 	Extends: ClassParentForMethodParent1,
+	Extends: ClassParentForMethodParent1,
 
-// 	value: null,
+	value: null,
 
-// 	initialize: function () {
-// 		this.parent()();
-// 		this.value += "2";
-// 	},
+	initialize: function () {
+		this.parent()();
+		this.value += "2";
+	},
 
-// 	func1: function () {
-// 		return this.parent().func1()+"2";
-// 	},
+	func1: function () {
+		return this.parent().func1()+"2";
+	},
 
-// });
+});
 
 
-// var ClassChildForMethodParent2 = new GollumJS.Class ({
+var ClassChildForMethodParent2 = new GollumJS.Class ({
 
-// 	Extends: ClassChildForMethodParent1,
+	Extends: ClassChildForMethodParent1,
 
-// 	value: null,
+	value: null,
 
-// 	initialize: function () {
-// 		this.parent()();
-// 		var val = this.value;
-// 		this.parent(ClassParentForMethodParent2)()
-// 		this.value = val+"|"+this.value;
-// 	},
+	initialize: function () {
+		this.parent()();
+		var val = this.value;
+		this.parent(ClassParentForMethodParent2)()
+		this.value = val+"|"+this.value;
+	},
 
-// 	func1: function () {
-// 		return this.parent().func1()+"|"+this.parent(ClassParentForMethodParent2).func1();
-// 	},
+	func1: function () {
+		return this.parent().func1()+"|"+this.parent(ClassParentForMethodParent2).func1();
+	},
 
-// });
+});

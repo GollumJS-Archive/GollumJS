@@ -180,6 +180,56 @@
 
 		gjsObject.prototype.parent = function (scope) {
 
+			var __this__ = this;
+
+			if (__parent__ === null) {
+
+				__parent__ = function () {
+
+					var target = __parent__.__scope__ !== undefined ? __parent__.__scope__ : __parent__.__extends__[0];
+					
+					if (GollumJS.Utils.isGollumJsClass (target)) {
+						if (target) {
+							var __oldExtends__ = __parent__.__extends__;
+							__parent__.__extends__ = target.getExtendsClass();
+							var __rtn__ = target.prototype.initialize.apply(__this__, arguments);
+							__parent__.__extends__ = __oldExtends__;
+							return __rtn__;
+						}
+					}
+				};
+				
+				__parent__.__extends__ = __extends__;
+
+				for (var i = 0; i < __parent__.__extends__.length; i++) {
+					for (var j in __parent__.__extends__[i].prototype) {
+						if (
+							typeof __parent__.__extends__[i].prototype[j] == 'function' &&
+							 typeof __parent__[j] == 'undefined'
+						) {
+							(function (i, j) {
+								__parent__[j] = function () {
+									var target = __parent__.__scope__ !== undefined ? __parent__.__scope__ : __parent__.__extends__[i];
+									
+									if (GollumJS.Utils.isGollumJsClass (target)) {
+										if (target) {
+											var __oldExtends__ = __parent__.__extends__;
+											__parent__.__extends__ = target.getExtendsClass();
+											var __rtn__ = target.prototype[j].apply(__this__, arguments);
+											__parent__.__extends__ = __oldExtends__;
+											return __rtn__;
+										}
+									}
+								}
+							})(i, j);
+						}
+					}
+				}
+
+
+			}
+			__parent__.__scope__ = scope;
+			return __parent__;
 		};
 
 		///////////////////////////////
