@@ -5,7 +5,7 @@ GT.create({
 	/**
 	 * Test si un constructeur simple
 	 */
-	testSimpleConstructor (a) {
+	testSimpleConstructor: function (a) {
 		
 		var simpleObject = new ClassSimple();
 		
@@ -16,6 +16,7 @@ GT.create({
 				getExtendsClass: function() {},
 				getIdClass: function() {},
 				getReflectionClass: function() {},
+				isInstance: function() {},
 				prototype: ClassSimple.prototype
 			}
 		);
@@ -23,7 +24,7 @@ GT.create({
 		a.assertArraysEquals (ClassSimple.getExtendsClass(), []);
 		a.assertTrue (typeof ClassParentA.getIdClass() == 'number');
 		a.assertTrue (ClassParentA.getIdClass() > 0);
-		
+
 		a.assertCompare (
 			simpleObject,
 			{
@@ -33,12 +34,20 @@ GT.create({
 				parent: function(){}
 			}
 		);
-		
-		a.assertTrue (simpleObject instanceof Object);
-		a.assertTrue (simpleObject instanceof ClassSimple);
 	},
 
-	testGollumJSObjectIdentifier (a) {
+	testIsIntance: function (a) {
+
+		var cNull = new ClassParentNoGollumJS();
+		var simpleObject = new ClassSimple();
+
+		a.assertTrue (simpleObject instanceof Object);
+		a.assertTrue (simpleObject instanceof ClassSimple);
+		a.assertTrue (ClassSimple.isInstance (simpleObject));
+		a.assertTrue (!ClassSimple.isInstance (cNull));
+	},
+
+	testGollumJSObjectIdentifier: function (a) {
 		var simpleObject     = new ClassSimple();
 		var noGollumJsObject = new NoGollumJsClass();
 
@@ -52,7 +61,7 @@ GT.create({
 	/**
 	 * Test si un constructeur sans initialize en récupère un
 	 */
-	testWithoutInitializeConstructor (a) {
+	testWithoutInitializeConstructor: function (a) {
 		var simpleObject = new ClassSimple();
 		a.assertTrue (typeof simpleObject.initialize == 'function');
 	},
@@ -60,7 +69,7 @@ GT.create({
 	/**
 	 * Test les propriétés et méthodes
 	 */
-	testPropertiesAndMethods (a) {
+	testPropertiesAndMethods: function (a) {
 
 		var parent = new ClassParentA();
 
@@ -80,6 +89,7 @@ GT.create({
 				getExtendsClass: function() {},
 				getIdClass: function() {},
 				getReflectionClass: function() {},
+				isInstance: function() {},
 				prototype: ClassParentA.prototype
 			}
 		);
@@ -106,6 +116,41 @@ GT.create({
 		);
 		a.assertTrue (parent.func1() == 'func1');
 		a.assertTrue (parent.func2() == 'func2');
+		a.assertTrue (parent.func1 === ClassParentA.prototype.func1);
+		a.assertTrue (parent.func2 === ClassParentA.prototype.func2);
+		a.assertTrue (parent.initialize === ClassParentA.prototype.initialize);
+	},
+
+	/**
+	 * Test les propriétés et méthodes
+	 */
+	testPropertyNull: function (a) {
+
+		var cNull = new ClassNull();
+		
+		a.assertCompare (
+			ClassNull,
+			{
+				__gollumjs__: GollumJS.__running__,
+				getExtendsClass: function() {},
+				getIdClass: function() {},
+				getReflectionClass: function() {},
+				isInstance: function() {},
+				prototype: ClassNull.prototype
+			}
+		);
+
+		a.assertCompare (
+			cNull,
+			{
+				prop1: null,
+				prop2: 0,
+				self: ClassNull,
+				
+				initialize: function(){},
+				parent: function(){}
+			}
+		);
 	}
 
 });

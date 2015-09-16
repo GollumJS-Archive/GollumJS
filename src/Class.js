@@ -112,33 +112,7 @@
 			}
 			__extends__ = __extends__.reverse();
 
-			/////////////////////////////
-			// Generate Object Methods //
-			/////////////////////////////
-
-			gjsObject.getExtendsClass = function () {
-				return __extends__;
-			};
-
-			gjsObject.getIdClass = function () {
-				return __idClass__;
-			};
-
-			gjsObject.getReflectionClass = function () {
-
-				if (!__reflectionClass__) {
-
-					var parser = GollumJS.get('fileJSParser');
-					
-					for (var i = 0; i < parser.classList.length; i++) {
-						if (gjsObject == parser.classList[i].constructor) {
-							__reflectionClass__ = parser.classList[i];
-						}
-					}
-				}
-
-				return __reflectionClass__;
-			};
+			
 
 			/////////////////////
 			// Generate Static //

@@ -5,10 +5,15 @@ GT.create({
 	/**
 	 * Test si un heritage simple
 	 */
-	testExtendsMutipleSimple (a) {
+	testExtendsMutipleSimple: function (a) {
 
 		child = new ClassChildMultiple1();
 
+		a.assertTrue (!(child instanceof ClassParentMultile1));
+		a.assertTrue (!(child instanceof ClassParentMultile2));
+		a.assertTrue (child instanceof ClassParentMultile3);
+		a.assertTrue (child instanceof ClassChildMultiple1);
+		
 		a.assertCompare (
 			ClassChildMultiple1,
 			{
@@ -24,6 +29,7 @@ GT.create({
 				getExtendsClass: function() {},
 				getIdClass: function() {},
 				getReflectionClass: function() {},
+				isInstance: function() {},
 				prototype: ClassChildMultiple1.prototype
 			}
 		);
@@ -70,9 +76,15 @@ GT.create({
 	/**
 	 * Test si un heritage multiple 2 niveau
 	 */
-	testExtendsMutipleSimple (a) {
+	testExtendsMutipleComplex: function (a) {
 
 		child = new ClassChildMultiple2();
+
+
+		a.assertTrue (!(child instanceof ClassParentMultile1));
+		a.assertTrue (child instanceof ClassParentMultile2);
+		a.assertTrue (!(child instanceof ClassParentMultile3));
+		a.assertTrue (child instanceof ClassChildMultiple2);
 
 		a.assertCompare (
 			ClassChildMultiple2,
@@ -89,6 +101,7 @@ GT.create({
 				getExtendsClass: function() {},
 				getIdClass: function() {},
 				getReflectionClass: function() {},
+				isInstance: function() {},
 				prototype: ClassChildMultiple2.prototype
 			}
 		);

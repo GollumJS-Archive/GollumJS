@@ -5,9 +5,12 @@ GT.create({
 	/**
 	 * Test si un heritage direct créer une class identique
 	 */
-	testDirectExtend (a) {
+	testDirectExtend: function (a) {
 		var parent = new ClassParentA();
 		var child  = new ClassChildA1();
+
+		a.assertTrue (child instanceof ClassChildA1);
+		a.assertTrue (child instanceof ClassParentA);
 		
 		// Child is good
 		a.assertCompare (
@@ -24,6 +27,7 @@ GT.create({
 				getExtendsClass: function() {},
 				getIdClass: function() {},
 				getReflectionClass: function() {},
+				isInstance: function() {},
 				prototype: ClassChildA1.prototype
 			}
 		);
@@ -57,19 +61,17 @@ GT.create({
 		a.assertArraysEquals (ClassParentA.staticPropArray1, [ "a", 1]);
 		a.assertArraysEquals (ClassChildA1.staticPropArray1, [ "a", 1, "cool"]);
 
-		console.log (typeof child);
-		console.log (child instanceof Object);
-
-		a.assertTrue (child instanceof ClassChildA1);
-		a.assertTrue (child instanceof ClassParentA);
 	},
 
 	/**
 	 * Test la surcharge
 	 */
-	testDirectExtendMethodAndProperty (a) {
+	testDirectExtendMethodAndProperty: function (a) {
 		var parent = new ClassParentA();
 		var child  = new ClassChildA2();
+
+		a.assertTrue (child instanceof ClassChildA2);
+		a.assertTrue (child instanceof ClassParentA);
 		
 		a.assertCompare (
 			ClassChildA2,
@@ -85,6 +87,7 @@ GT.create({
 				getExtendsClass: function() {},
 				getIdClass: function() {},
 				getReflectionClass: function() {},
+				isInstance: function() {},
 				prototype: ClassChildA2.prototype
 			}
 		);
@@ -139,11 +142,15 @@ GT.create({
 	/**
 	 * Test le triple heritage
 	 */
-	testTripleExtends (a) {
+	testTripleExtends: function (a) {
 
 		var parent = new ClassParentTriple();
 		var child1 = new ClassChildTriple1();
 		var child2 = new ClassChildTriple2();
+		
+		a.assertTrue (child2 instanceof ClassParentTriple);
+		a.assertTrue (child2 instanceof ClassChildTriple1);
+		a.assertTrue (child2 instanceof ClassChildTriple2);
 
 		a.assertCompare (
 			ClassChildTriple2,
@@ -158,6 +165,7 @@ GT.create({
 				getExtendsClass: function() {},
 				getIdClass: function() {},
 				getReflectionClass: function() {},
+				isInstance: function() {},
 				prototype: ClassChildTriple2.prototype
 			}
 		);
@@ -196,6 +204,16 @@ GT.create({
 
 	testGetExtendsClass: function (a) {
 		
+		var child = new ClassChildTriple6();
+
+		a.assertTrue (child instanceof ClassParentTriple);
+		a.assertTrue (child instanceof ClassChildTriple1);
+		a.assertTrue (child instanceof ClassChildTriple2);
+		a.assertTrue (child instanceof ClassChildTriple3);
+		a.assertTrue (child instanceof ClassChildTriple4);
+		a.assertTrue (child instanceof ClassChildTriple5);
+		a.assertTrue (child instanceof ClassChildTriple6);
+
 		a.assertArraysEquals (ClassChildTriple6.getExtendsClass(), [
 			ClassChildTriple5,
 			ClassChildTriple4,
@@ -204,5 +222,74 @@ GT.create({
 			ClassChildTriple1,
 			ClassParentTriple
 		]);
+
+		a.assertCompare (
+			child,
+			{
+				propLevel1: "a",
+				propLevel2: 2,
+				propLevel3: -3,
+				value: "initialize:3",
+
+				self: ClassChildTriple6,
+				
+				initialize: function(){},
+				parent: function(){},
+				funcLevel1: function(){},
+				funcLevel2: function(){},
+				funcLevel3: function(){}
+			}
+		);
+	},
+
+	testNoGollumJSClass: function (a) {
+
+		var child = new ClassChildNoGollumJS();
+		
+		a.assertTrue (child instanceof ClassParentNoGollumJS);
+		a.assertTrue (child instanceof ClassChildNoGollumJS);
+
+		a.assertCompare (
+			ClassParentNoGollumJS,
+			{
+				staticPropNoCopy1: "staticPropNoCopy1",
+				Static: {
+					staticPropNoCopy2: "staticPropNoCopy2"
+				},
+				prototype: ClassParentNoGollumJS.prototype
+			}
+		);
+
+		a.assertCompare (
+			ClassChildNoGollumJS,
+			{
+				__gollumjs__: GollumJS.__running__,
+				getExtendsClass: function() {},
+				getIdClass: function() {},
+				getReflectionClass: function() {},
+				isInstance: function() {},
+				prototype: ClassChildNoGollumJS.prototype
+			}
+		);
+		
+		a.assertCompare (
+			child,
+			{
+				prop1: "prop1",
+				prop2: null,
+				value: "func1",
+
+				self: ClassChildNoGollumJS,
+				
+				initialize: function(){},
+				parent: function(){},
+				func1: function(){},
+			}
+		);
+
+		a.assertTrue (child.func1() == 'func1');
+		a.assertTrue (child.func1 === ClassChildNoGollumJS.prototype.func1);
+		a.assertTrue (ClassParentNoGollumJS.prototype.func1 === ClassChildNoGollumJS.prototype.func1);
+
 	}
 });

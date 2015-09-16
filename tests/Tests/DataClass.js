@@ -6,6 +6,10 @@ var NoGollumJsClass = function () {
 NoGollumJsClass.prototype.prop1 = 1;
 NoGollumJsClass.prototype.func1 = function () {
 };
+var ClassNull = new GollumJS.Class ({
+	prop1: null,
+	prop2: 0,
+});
 
 var ClassParentA = new GollumJS.Class ({
 	
@@ -177,70 +181,91 @@ var ClassChildTriple4 = new GollumJS.Class ({ Extends: ClassChildTriple3 });
 var ClassChildTriple5 = new GollumJS.Class ({ Extends: ClassChildTriple4 });
 var ClassChildTriple6 = new GollumJS.Class ({ Extends: ClassChildTriple5 });
 
-var ClassParentScope = new GollumJS.Class ({
-	
-	Static: {
+var ClassParentNoGollumJS = function() {
+	this.value = "func1";
+}
+ClassParentNoGollumJS.prototype = {
 
-		staticPropObject1: ["aa", 11, null],
-		staticPropObject1: ["bb", 22, "nullnull"],
+	prop1: "prop1",
+	prop2: null,
 
-		staticFuncThis1: function () {
-			return this;
-		},
-
-		staticFuncObject1: function () {
-			return this.staticPropObject1;
-		}
-	},
-
-	propObject1: ["a", 1, null],
-	propObject2: ["b", 2, "null"],
-
-	funcThis1: function () {
-		return this;
-	},
-
-	funcThis2: function () {
-		return this.funcThis1();
-	},
-
-	funcObject1: function () {
-		return this.propObject1;
+	func1: function() {
+		return this.value;
 	}
-	
+};
+ClassParentNoGollumJS.staticPropNoCopy1 = "staticPropNoCopy1";
+ClassParentNoGollumJS.Static = {
+	staticPropNoCopy2: "staticPropNoCopy2"
+};
+ClassChildNoGollumJS = new GollumJS.Class ({
+	Extends: ClassParentNoGollumJS
 });
 
-var ClassChildScope = new GollumJS.Class ({
+
+// var ClassParentScope = new GollumJS.Class ({
 	
-	Extends: ClassParentScope,
+// 	Static: {
 
-	Static: {
+// 		staticPropObject1: ["aa", 11, null],
+// 		staticPropObject1: ["bb", 22, "nullnull"],
 
-		staticPropObject1: ["aa2", -11, null],
+// 		staticFuncThis1: function () {
+// 			return this;
+// 		},
 
-		staticFuncThis2: function () {
-			return this;
-		},
+// 		staticFuncObject1: function () {
+// 			return this.staticPropObject1;
+// 		}
+// 	},
 
-		staticFuncObject2: function () {
-			return this.staticPropObject2;
-		}
-	},
+// 	propObject1: ["a", 1, null],
+// 	propObject2: ["b", 2, "null"],
 
-	propObject1: ["a2", -1, "exist"],
+// 	funcThis1: function () {
+// 		return this;
+// 	},
 
-	funcThis3: function () {
-		return this;
-	},
+// 	funcThis2: function () {
+// 		return this.funcThis1();
+// 	},
 
-	funcThis4: function () {
-		return this.funcThis1();
-	},
+// 	funcObject1: function () {
+// 		return this.propObject1;
+// 	}
+	
+// });
 
-	funcObject2: function () {
-		return this.propObject2;
-	}
-});
+// var ClassChildScope = new GollumJS.Class ({
+	
+// 	Extends: ClassParentScope,
+
+// 	Static: {
+
+// 		staticPropObject1: ["aa2", -11, null],
+
+// 		staticFuncThis2: function () {
+// 			return this;
+// 		},
+
+// 		staticFuncObject2: function () {
+// 			return this.staticPropObject2;
+// 		}
+// 	},
+
+// 	propObject1: ["a2", -1, "exist"],
+
+// 	funcThis3: function () {
+// 		return this;
+// 	},
+
+// 	funcThis4: function () {
+// 		return this.funcThis1();
+// 	},
+
+// 	funcObject2: function () {
+// 		return this.propObject2;
+// 	}
+// });
 
 var ClassParentMultile1 = new GollumJS.Class ({
 
@@ -334,83 +359,88 @@ var ClassParentMultile3 = new GollumJS.Class ({
 
 
 var ClassChildMultiple1 = new GollumJS.Class ({
-	Extends: [
-		ClassParentMultile1,
-		ClassParentMultile2,
-		ClassParentMultile3
-	]
-});
-
-var ClassChildMultiple2 = new GollumJS.Class ({
-	Extends: [
+	
+	Extends: 
 		ClassParentMultile3,
-		ClassChildMultiple1,
+
+	Uses: [
+		ClassParentMultile1,
 		ClassParentMultile2
 	]
 });
 
+var ClassChildMultiple2 = new GollumJS.Class ({
+	
+	Extends: ClassParentMultile2,
 
-var ClassParentForMethodParent1 = new GollumJS.Class ({
-
-	value: null,
-
-	initialize: function () {
-		this.value = "initialize:1";
-	},
-
-	func1: function () {
-		return "func1:1";
-	},
-
-});
-
-var ClassParentForMethodParent2 = new GollumJS.Class ({
-
-	value: null,
-
-	initialize: function () {
-		this.value = "initialize:2";
-	},
-
-	func1: function () {
-		return "func1:2";
-	},
-
-});
-
-var ClassChildForMethodParent1 = new GollumJS.Class ({
-
-	Extends: ClassParentForMethodParent1,
-
-	value: null,
-
-	initialize: function () {
-		this.parent()();
-		this.value += "2";
-	},
-
-	func1: function () {
-		return this.parent().func1()+"2";
-	},
-
+	Uses: [
+		ClassParentMultile3,
+		ClassChildMultiple1
+	]
 });
 
 
-var ClassChildForMethodParent2 = new GollumJS.Class ({
+// var ClassParentForMethodParent1 = new GollumJS.Class ({
 
-	Extends: ClassChildForMethodParent1,
+// 	value: null,
 
-	value: null,
+// 	initialize: function () {
+// 		this.value = "initialize:1";
+// 	},
 
-	initialize: function () {
-		this.parent()();
-		var val = this.value;
-		this.parent(ClassParentForMethodParent2)()
-		this.value = val+"|"+this.value;
-	},
+// 	func1: function () {
+// 		return "func1:1";
+// 	},
 
-	func1: function () {
-		return this.parent().func1()+"|"+this.parent(ClassParentForMethodParent2).func1();
-	},
+// });
 
-});
+// var ClassParentForMethodParent2 = new GollumJS.Class ({
+
+// 	value: null,
+
+// 	initialize: function () {
+// 		this.value = "initialize:2";
+// 	},
+
+// 	func1: function () {
+// 		return "func1:2";
+// 	},
+
+// });
+
+// var ClassChildForMethodParent1 = new GollumJS.Class ({
+
+// 	Extends: ClassParentForMethodParent1,
+
+// 	value: null,
+
+// 	initialize: function () {
+// 		this.parent()();
+// 		this.value += "2";
+// 	},
+
+// 	func1: function () {
+// 		return this.parent().func1()+"2";
+// 	},
+
+// });
+
+
+// var ClassChildForMethodParent2 = new GollumJS.Class ({
+
+// 	Extends: ClassChildForMethodParent1,
+
+// 	value: null,
+
+// 	initialize: function () {
+// 		this.parent()();
+// 		var val = this.value;
+// 		this.parent(ClassParentForMethodParent2)()
+// 		this.value = val+"|"+this.value;
+// 	},
+
+// 	func1: function () {
+// 		return this.parent().func1()+"|"+this.parent(ClassParentForMethodParent2).func1();
+// 	},
+
+// });
