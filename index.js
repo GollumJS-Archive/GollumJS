@@ -102,6 +102,7 @@ GollumJS.Utils = {
 				ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) || []
 			;
 			var browser = match[1] || "";
+			
 			switch (browser) {
 				case 'msie':
 				case 'trident':
@@ -109,6 +110,7 @@ GollumJS.Utils = {
 				case 'mozilla':
 					return this.ENGINE_GECKO;
 				case 'webkit':
+				case 'chrome':
 					return this.ENGINE_WEBKIT;
 				default:
 					break;
@@ -430,9 +432,11 @@ GollumJS.Exception = new GollumJS.Class ({
 		var fileName     = null;
 		var lineNumber   = null;
 		var columnNumber = null;
-		this.stack       = "";
-
+		this.stack       = err.stack ? err.stack : "";
+		this.message     = err.message  !== undefined ? err.message  : message;
+		
 		if (err.stack) {
+
 			// remove one stack level:
 			switch (GollumJS.Utils.engine()) {
 				case GollumJS.Utils.ENGINE_GECKO:
@@ -446,21 +450,35 @@ GollumJS.Exception = new GollumJS.Class ({
 						if (caller[1]) {
 							file = caller[1].split(":");
 						}
-						columnNumber = file[1] && file[1] == parseInt(file[1], 10) ? parseInt(file[1], 10) : null;
-						lineNumber  = file[2] && file[2] == parseInt(file[2], 10) ? parseInt(file[2], 10) : null;
+						columnNumber = file[file.length-1] && file[file.length-1] == parseInt(file[file.length-1], 10) ? parseInt(file[file.length-1], 10) : null;
+						lineNumber   = file[file.length-2] && file[file.length-2] == parseInt(file[file.length-2], 10) ? parseInt(file[file.length-2], 10) : null;
 						file.pop();
 						file.pop();
 						fileName = file.join(':');
 					}
 					break;
 				case GollumJS.Utils.ENGINE_WEBKIT:
+					var stack = err.stack.split("\n");
+					stack.shift();
+					stack.shift();
+					stack.shift();
+					stack.shift();
+					stack.unshift(this.name+": "+this.message);
+					this.stack = stack.join("\n");
+					if (stack[1]) {
+						var file = stack[1].substr(stack[1].lastIndexOf("(")+1);
+						file = file.substr(0, file.indexOf(")")).split(":");
+						columnNumber = file[file.length-1] && file[file.length-1] == parseInt(file[file.length-1], 10) ? parseInt(file[file.length-1], 10) : null;
+						lineNumber   = file[file.length-2] && file[file.length-2] == parseInt(file[file.length-2], 10) ? parseInt(file[file.length-2], 10) : null;
+						file.pop();
+						file.pop();
+						fileName = file.join(':');
+					}
 					break;
 				default:
-					this.stack = err.stack;
 					break;
 			}
 		}
-		this.message      = err.message  !== undefined ? err.message  : message;
 		this.fileName     = fileName     !== null      ? fileName     : (err.fileName     !== undefined ? err.fileName     : null);
 		this.lineNumber   = lineNumber   !== null      ? lineNumber   : (err.lineNumber   !== undefined ? err.lineNumber   : null);
 		this.columnNumber = columnNumber !== null      ? columnNumber : (err.columnNumber !== undefined ? err.columnNumber : null);

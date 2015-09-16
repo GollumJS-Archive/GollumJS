@@ -17,8 +17,10 @@ GollumJS.Exception = new GollumJS.Class ({
 		var lineNumber   = null;
 		var columnNumber = null;
 		this.stack       = err.stack ? err.stack : "";
-
+		this.message     = err.message  !== undefined ? err.message  : message;
+		
 		if (err.stack) {
+
 			// remove one stack level:
 			switch (GollumJS.Utils.engine()) {
 				case GollumJS.Utils.ENGINE_GECKO:
@@ -45,11 +47,11 @@ GollumJS.Exception = new GollumJS.Class ({
 					stack.shift();
 					stack.shift();
 					stack.shift();
+					stack.unshift(this.name+": "+this.message);
 					this.stack = stack.join("\n");
-					if (stack[0]) {
-						var scope = stack[0].substr(stack[0].indexOf('at ')+3);
-						var file = scope.substr(scope.indexOf("(")+1);
-						file = file.substr(0, file.lastIndexOf(")")).split(":");
+					if (stack[1]) {
+						var file = stack[1].substr(stack[1].lastIndexOf("(")+1);
+						file = file.substr(0, file.indexOf(")")).split(":");
 						columnNumber = file[file.length-1] && file[file.length-1] == parseInt(file[file.length-1], 10) ? parseInt(file[file.length-1], 10) : null;
 						lineNumber   = file[file.length-2] && file[file.length-2] == parseInt(file[file.length-2], 10) ? parseInt(file[file.length-2], 10) : null;
 						file.pop();
@@ -61,7 +63,6 @@ GollumJS.Exception = new GollumJS.Class ({
 					break;
 			}
 		}
-		this.message      = err.message  !== undefined ? err.message  : message;
 		this.fileName     = fileName     !== null      ? fileName     : (err.fileName     !== undefined ? err.fileName     : null);
 		this.lineNumber   = lineNumber   !== null      ? lineNumber   : (err.lineNumber   !== undefined ? err.lineNumber   : null);
 		this.columnNumber = columnNumber !== null      ? columnNumber : (err.columnNumber !== undefined ? err.columnNumber : null);

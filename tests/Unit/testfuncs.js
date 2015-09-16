@@ -202,9 +202,14 @@
 					__rtn__.sucessNumber++;
 				} else {
 					__rtn__.errorNumber++;
-					__rtn__.exception = "Assert Failure"
-					__rtn__.result = GT.Assert.RESULT_KO;
-					__rtn__.stack =  a.results[i].stack;
+					__rtn__.exception    = "Assert Failure"
+					__rtn__.result       = GT.Assert.RESULT_KO;
+					__rtn__.stack        = a.results[i].stack;
+					__rtn__.stack0        = a.results[i].stack[0];
+					__rtn__.stack1        = a.results[i].stack[1];
+					__rtn__.stack2        = a.results[i].stack[2];
+					__rtn__.stack3        = a.results[i].stack[3];
+					__rtn__.stack4        = a.results[i].stack[4];
 				}
 			}
 

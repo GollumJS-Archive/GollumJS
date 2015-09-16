@@ -19,7 +19,7 @@ GT.create({
 			GollumJS.Utils.engine() == GollumJS.Utils.ENGINE_WEBKIT ||
 			GollumJS.Utils.engine() == GollumJS.Utils.ENGINE_GECKO
 		) {
-		//	a.assertTrue (exception.fileName.indexOf("TestException.js") != -1);
+			a.assertTrue (exception.fileName.indexOf("TestException.js") != -1);
 		// 	a.assertTrue (exception.columnNumber == 19);
 		// 	a.assertTrue (exception.lineNumber == 10);
 		}
