@@ -155,6 +155,9 @@ GT.create({
 		a.assertTrue (child2 instanceof ClassParentTriple);
 		a.assertTrue (child2 instanceof ClassChildTriple1);
 		a.assertTrue (child2 instanceof ClassChildTriple2);
+		a.assertTrue (ClassParentTriple.isInstance (child1));
+		a.assertTrue (ClassChildTriple1.isInstance (child1));
+		a.assertTrue (!ClassChildTriple2.isInstance (child1));
 		a.assertTrue (ClassParentTriple.isInstance (child2));
 		a.assertTrue (ClassChildTriple1.isInstance (child2));
 		a.assertTrue (ClassChildTriple2.isInstance (child2));
@@ -258,11 +261,16 @@ GT.create({
 
 	testNoGollumJSClass: function (a) {
 
+		var parent = new ClassParentNoGollumJS();
 		var child = new ClassChildNoGollumJS();
 		
 		a.assertTrue (child instanceof ClassParentNoGollumJS);
 		a.assertTrue (child instanceof ClassChildNoGollumJS);
 		a.assertTrue (ClassChildNoGollumJS.isInstance (child));
+
+		a.assertTrue (parent instanceof ClassParentNoGollumJS);
+		a.assertTrue (!(parent instanceof ClassChildNoGollumJS));
+		a.assertTrue (!ClassChildNoGollumJS.isInstance (parent));
 
 		a.assertCompare (
 			ClassParentNoGollumJS,

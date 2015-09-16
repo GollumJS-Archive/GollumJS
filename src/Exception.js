@@ -6,12 +6,9 @@
  */
 GollumJS.Exception = new GollumJS.Class ({
 	
-	Extends: Error,
-	
-	initialize: function () {
-		Error.apply(this, arguments);
-		// this.init (arguments);
-	}//,
+	Extends: Error
+
+	//,
 
 	// /**
 	//  * Initialise l'exception
