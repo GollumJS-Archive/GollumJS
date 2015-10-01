@@ -13,6 +13,8 @@ require(__dirname+'/Tests/Class/TestClassParent.js'        );
 require(__dirname+'/Tests/Exception/DataException.js');
 require(__dirname+'/Tests/Exception/TestException.js');
 
+var results = GT.runAll();
+
 console.log ("");
 console.log ("");
 console.log ("=======================");
@@ -20,4 +22,4 @@ console.log ("= Result unit testing =");
 console.log ("=======================");
 console.log ("");
 
-console.log (GT.runAll());
+console.log (results);
