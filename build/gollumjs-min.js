@@ -76,7 +76,7 @@ GollumJS.Utils = {
 	},
 
 	global: function () {
-		return typeof window === undefined ? window : global; 
+		return typeof window !== 'undefined' ? window : global; 
 	},
 
 	engine: function () {

@@ -1,17 +1,17 @@
-var ClassSimple = new GollumJS.Class ({
+GollumJS.Utils.global().ClassSimple = new GollumJS.Class ({
 });
 
-var NoGollumJsClass = function () {
+GollumJS.Utils.global().NoGollumJsClass = function () {
 };
 NoGollumJsClass.prototype.prop1 = 1;
 NoGollumJsClass.prototype.func1 = function () {
 };
-var ClassNull = new GollumJS.Class ({
+GollumJS.Utils.global().ClassNull = new GollumJS.Class ({
 	prop1: null,
 	prop2: 0,
 });
 
-var ClassParentA = new GollumJS.Class ({
+GollumJS.Utils.global().ClassParentA = new GollumJS.Class ({
 	
 	Static: {
 		staticProp1 : 1,
@@ -44,10 +44,10 @@ var ClassParentA = new GollumJS.Class ({
 
 
 });
-var ClassChildA1 = new GollumJS.Class ({
+GollumJS.Utils.global().ClassChildA1 = new GollumJS.Class ({
 	Extends: ClassParentA
 });
-var ClassChildA2 = new GollumJS.Class ({
+GollumJS.Utils.global().ClassChildA2 = new GollumJS.Class ({
 	Extends: ClassParentA,
 
 	Static: {
@@ -71,7 +71,7 @@ var ClassChildA2 = new GollumJS.Class ({
 });
 
 
-var ClassParentTriple = new GollumJS.Class ({
+GollumJS.Utils.global().ClassParentTriple = new GollumJS.Class ({
 	
 	Static: {
 		staticPropLevel1 : "aa",
@@ -115,7 +115,7 @@ var ClassParentTriple = new GollumJS.Class ({
 	
 });
 
-var ClassChildTriple1 = new GollumJS.Class ({
+GollumJS.Utils.global().ClassChildTriple1 = new GollumJS.Class ({
 	
 	Extends: ClassParentTriple,
 	
@@ -151,7 +151,7 @@ var ClassChildTriple1 = new GollumJS.Class ({
 	
 });
 
-var ClassChildTriple2 = new GollumJS.Class ({
+GollumJS.Utils.global().ClassChildTriple2 = new GollumJS.Class ({
 	
 	Extends: ClassChildTriple1,
 	
@@ -176,12 +176,12 @@ var ClassChildTriple2 = new GollumJS.Class ({
 	}
 	
 });
-var ClassChildTriple3 = new GollumJS.Class ({ Extends: ClassChildTriple2 });
-var ClassChildTriple4 = new GollumJS.Class ({ Extends: ClassChildTriple3 });
-var ClassChildTriple5 = new GollumJS.Class ({ Extends: ClassChildTriple4 });
-var ClassChildTriple6 = new GollumJS.Class ({ Extends: ClassChildTriple5 });
+GollumJS.Utils.global().ClassChildTriple3 = new GollumJS.Class ({ Extends: ClassChildTriple2 });
+GollumJS.Utils.global().ClassChildTriple4 = new GollumJS.Class ({ Extends: ClassChildTriple3 });
+GollumJS.Utils.global().ClassChildTriple5 = new GollumJS.Class ({ Extends: ClassChildTriple4 });
+GollumJS.Utils.global().ClassChildTriple6 = new GollumJS.Class ({ Extends: ClassChildTriple5 });
 
-var ClassParentNoGollumJS = function() {
+GollumJS.Utils.global().ClassParentNoGollumJS = function() {
 	this.value = "func1";
 }
 ClassParentNoGollumJS.prototype = {
@@ -202,7 +202,7 @@ ClassChildNoGollumJS = new GollumJS.Class ({
 });
 
 
-var ClassParentScope = new GollumJS.Class ({
+GollumJS.Utils.global().ClassParentScope = new GollumJS.Class ({
 	
 	Static: {
 
@@ -235,7 +235,7 @@ var ClassParentScope = new GollumJS.Class ({
 	
 });
 
-var ClassChildScope = new GollumJS.Class ({
+GollumJS.Utils.global().ClassChildScope = new GollumJS.Class ({
 	
 	Extends: ClassParentScope,
 
@@ -267,7 +267,7 @@ var ClassChildScope = new GollumJS.Class ({
 	}
 });
 
-var ClassParentMultile1 = new GollumJS.Class ({
+GollumJS.Utils.global().ClassParentMultile1 = new GollumJS.Class ({
 
 	Static: {
 
@@ -297,7 +297,7 @@ var ClassParentMultile1 = new GollumJS.Class ({
 
 });
 
-var ClassParentMultile2 = new GollumJS.Class ({
+GollumJS.Utils.global().ClassParentMultile2 = new GollumJS.Class ({
 
 	Static: {
 
@@ -327,7 +327,7 @@ var ClassParentMultile2 = new GollumJS.Class ({
 
 });
 
-var ClassParentMultile3 = new GollumJS.Class ({
+GollumJS.Utils.global().ClassParentMultile3 = new GollumJS.Class ({
 
 	Static: {
 
@@ -358,7 +358,7 @@ var ClassParentMultile3 = new GollumJS.Class ({
 });
 
 
-var ClassChildMultiple1 = new GollumJS.Class ({
+GollumJS.Utils.global().ClassChildMultiple1 = new GollumJS.Class ({
 	
 	Extends: 
 		ClassParentMultile3,
@@ -369,7 +369,7 @@ var ClassChildMultiple1 = new GollumJS.Class ({
 	]
 });
 
-var ClassChildMultiple2 = new GollumJS.Class ({
+GollumJS.Utils.global().ClassChildMultiple2 = new GollumJS.Class ({
 	
 	Extends: ClassParentMultile2,
 
@@ -380,7 +380,7 @@ var ClassChildMultiple2 = new GollumJS.Class ({
 });
 
 
-var ClassParentForMethodParent1 = new GollumJS.Class ({
+GollumJS.Utils.global().ClassParentForMethodParent1 = new GollumJS.Class ({
 
 	value: null,
 
@@ -394,7 +394,7 @@ var ClassParentForMethodParent1 = new GollumJS.Class ({
 
 });
 
-var ClassParentForMethodParent2 = new GollumJS.Class ({
+GollumJS.Utils.global().ClassParentForMethodParent2 = new GollumJS.Class ({
 
 	value: null,
 
@@ -408,7 +408,7 @@ var ClassParentForMethodParent2 = new GollumJS.Class ({
 
 });
 
-var ClassChildForMethodParent1 = new GollumJS.Class ({
+GollumJS.Utils.global().ClassChildForMethodParent1 = new GollumJS.Class ({
 
 	Extends: ClassParentForMethodParent1,
 
@@ -426,7 +426,7 @@ var ClassChildForMethodParent1 = new GollumJS.Class ({
 });
 
 
-var ClassChildForMethodParent2 = new GollumJS.Class ({
+GollumJS.Utils.global().ClassChildForMethodParent2 = new GollumJS.Class ({
 
 	Extends: ClassChildForMethodParent1,
 
