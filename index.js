@@ -173,15 +173,14 @@ GollumJS.Utils = {
 	GollumJS.get = function (name) {
 
 		if (!_instances[name] && GollumJS.config.services[name] && GollumJS.config.services[name].class) {
-			/*
+			
 			var service = GollumJS.Reflection.ReflectionClass.getClassByIdentifers (GollumJS.config.services[name].class.split('.'));
 			if (service) {
 				_instances[name] = new (Function.prototype.bind.apply(
 					service,
-					(new GollumJS.Parser.ArgumentsParser(GollumJS.config.services[name].args ? GollumJS.config.services[name].args : [] )).parse();
+					(new GollumJS.Parser.ArgumentsParser(GollumJS.config.services[name].args ? GollumJS.config.services[name].args : [] )).parse()
 				));
 			}
-			*/
 		}
 
 		return _instances[name];
@@ -547,13 +546,9 @@ GollumJS.Parser.ArgumentsParser = new GollumJS.Class ({
 
 			case 'string':
 				// TODO no implement
-				str.replace(/\%[a-zA-Z0-9.]+\%/g, function (match) {
-//				str.replace(new RegExp('[A-Z]', 'g'), function (match) {
-					console.log ("str", str, "match", match, _this._findConfigValue(match.substr(0, match.length-1).substr(1).split('.')));
-					return "cool";
+				str = str.replace(new RegExp('\%[a-zA-Z0-9.]+\%', 'g'), function (match, start) {
 					return _this._findConfigValue(match.substr(0, match.length-1).substr(1).split('.'));
 				});
-				console.log ("NEW str: ", str);
 				break;
 			default:
 				break;
