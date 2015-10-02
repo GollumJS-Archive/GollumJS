@@ -71,8 +71,8 @@ GollumJS.Cache.Cache = new GollumJS.Class ({
      */
 	_createCacheDir: function () {
 		if (this.fs) {
-			if (!this.fs.existsSync(GollumJS.config.cache.path)) {
-				this.fs.mkdirSync(GollumJS.config.cache.path, 0777, true);
+			if (!this.fs.existsSync(this.pathDirectory)) {
+				this.fs.mkdirSync(this.pathDirectory, 0777, true);
 			}
 			return true;
 		}
@@ -91,7 +91,7 @@ GollumJS.Cache.Cache = new GollumJS.Class ({
 		if (this.fs) {
 			if(this._createCacheDir()) {
 				
-				var path = GollumJS.config.cache.path+"/datas.json";
+				var path = this.pathDirectory+"/datas.json";
 				this.fs.writeFile(path, JSON.stringify(GollumJS.cache), function(err) {
 					if(err) {
 						console.error(err);		
@@ -100,7 +100,7 @@ GollumJS.Cache.Cache = new GollumJS.Class ({
 				});
 
 			} else {
-				callback ("Can't create cache directory: "+GollumJS.config.cache.path);
+				callback ("Can't create cache directory: "+this.pathDirectory);
 			}
 		} else {
 			callback ("For write cache you must be in mode NodeJS.");
@@ -119,7 +119,7 @@ GollumJS.Cache.Cache = new GollumJS.Class ({
 		if (this.fs) {
 			if(this._createCacheDir()) {
 			
-				var path = GollumJS.config.cache.path+"/datas.js";
+				var path = this.pathDirectory+"/datas.js";
 				this.fs.writeFile(
 					path,
 					"GollumJS = typeof GollumJS != undefined ? GollumJS : {};\n" +
@@ -136,7 +136,7 @@ GollumJS.Cache.Cache = new GollumJS.Class ({
 				);
 
 			} else {
-				callback ("Can't create cache directory: "+GollumJS.config.cache.path);
+				callback ("Can't create cache directory: "+this.pathDirectory);
 			}
 		} else {
 			callback ("For write cache you must be in mode NodeJS.");
