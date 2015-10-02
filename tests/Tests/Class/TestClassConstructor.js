@@ -7,28 +7,28 @@ GT.create({
 	 */
 	testSimpleConstructor: function (a) {
 		
-		var simpleObject = new ClassSimple();
+		var simpleObject = new DataTest.ClassSimple();
 		
 		a.assertCompare (
-			ClassSimple,
+			DataTest.ClassSimple,
 			{
 				__gollumjs__: GollumJS.__running__,
 				getExtendsClass: function() {},
 				getIdClass: function() {},
 				getReflectionClass: function() {},
 				isInstance: function() {},
-				prototype: ClassSimple.prototype
+				prototype: DataTest.ClassSimple.prototype
 			}
 		);
 
-		a.assertArraysEquals (ClassSimple.getExtendsClass(), []);
-		a.assertTrue (typeof ClassParentA.getIdClass() == 'number');
-		a.assertTrue (ClassParentA.getIdClass() > 0);
+		a.assertArraysEquals (DataTest.ClassSimple.getExtendsClass(), []);
+		a.assertTrue (typeof DataTest.ClassParentA.getIdClass() == 'number');
+		a.assertTrue (DataTest.ClassParentA.getIdClass() > 0);
 
 		a.assertCompare (
 			simpleObject,
 			{
-				self: ClassSimple,
+				self: DataTest.ClassSimple,
 
 				initialize: function(){},
 				parent: function(){}
@@ -38,23 +38,23 @@ GT.create({
 
 	testIsIntance: function (a) {
 
-		var cNull = new ClassParentNoGollumJS();
-		var simpleObject = new ClassSimple();
+		var cNull = new DataTest.ClassParentNoGollumJS();
+		var simpleObject = new DataTest.ClassSimple();
 
 		a.assertTrue (simpleObject instanceof Object);
-		a.assertTrue (simpleObject instanceof ClassSimple);
-		a.assertTrue (ClassSimple.isInstance (simpleObject));
-		a.assertTrue (!ClassSimple.isInstance (cNull));
+		a.assertTrue (simpleObject instanceof DataTest.ClassSimple);
+		a.assertTrue (DataTest.ClassSimple.isInstance (simpleObject));
+		a.assertTrue (!DataTest.ClassSimple.isInstance (cNull));
 	},
 
 	testGollumJSObjectIdentifier: function (a) {
-		var simpleObject     = new ClassSimple();
-		var noGollumJsObject = new NoGollumJsClass();
+		var simpleObject     = new DataTest.ClassSimple();
+		var noGollumJsObject = new DataTest.NoGollumJsClass();
 
-		a.assertTrue (GollumJS.Utils.isGollumJsClass (ClassSimple));
+		a.assertTrue (GollumJS.Utils.isGollumJsClass (DataTest.ClassSimple));
 		a.assertTrue (GollumJS.Utils.isGollumJsObject (simpleObject));
-		a.assertTrue (!GollumJS.Utils.isGollumJsClass (NoGollumJsClass));
-		a.assertTrue (!GollumJS.Utils.isGollumJsObject (noGollumJsObject));
+		a.assertTrue (!GollumJS.Utils.isGollumJsClass (DataTest.NoGollumJsClass));
+		a.assertTrue (!GollumJS.Utils.isGollumJsObject (DataTest.noGollumJsObject));
 
 	},
 
@@ -62,7 +62,7 @@ GT.create({
 	 * Test si un constructeur sans initialize en récupère un
 	 */
 	testWithoutInitializeConstructor: function (a) {
-		var simpleObject = new ClassSimple();
+		var simpleObject = new DataTest.ClassSimple();
 		a.assertTrue (typeof simpleObject.initialize == 'function');
 	},
 
@@ -71,11 +71,11 @@ GT.create({
 	 */
 	testPropertiesAndMethods: function (a) {
 
-		var parent = new ClassParentA();
+		var parent = new DataTest.ClassParentA();
 
 		// Parent is good
 		a.assertCompare (
-			ClassParentA,
+			DataTest.ClassParentA,
 			{
 				staticProp1: 1,
 				staticProp2: "42a",
@@ -90,12 +90,12 @@ GT.create({
 				getIdClass: function() {},
 				getReflectionClass: function() {},
 				isInstance: function() {},
-				prototype: ClassParentA.prototype
+				prototype: DataTest.ClassParentA.prototype
 			}
 		);
 		
-		a.assertTrue (ClassParentA.staticFunc1() == 'staticFunc1');
-		a.assertTrue (ClassParentA.staticFunc2() == 'staticFunc2');
+		a.assertTrue (DataTest.ClassParentA.staticFunc1() == 'staticFunc1');
+		a.assertTrue (DataTest.ClassParentA.staticFunc2() == 'staticFunc2');
 
 		a.assertCompare (
 			parent,
@@ -106,7 +106,7 @@ GT.create({
 				propNull1 : "null",
 				propNull2 : null,
 
-				self: ClassParentA,
+				self: DataTest.ClassParentA,
 				
 				initialize: function(){},
 				parent: function(){},
@@ -116,9 +116,9 @@ GT.create({
 		);
 		a.assertTrue (parent.func1() == 'func1');
 		a.assertTrue (parent.func2() == 'func2');
-		a.assertTrue (parent.func1 === ClassParentA.prototype.func1);
-		a.assertTrue (parent.func2 === ClassParentA.prototype.func2);
-		a.assertTrue (parent.initialize === ClassParentA.prototype.initialize);
+		a.assertTrue (parent.func1 === DataTest.ClassParentA.prototype.func1);
+		a.assertTrue (parent.func2 === DataTest.ClassParentA.prototype.func2);
+		a.assertTrue (parent.initialize === DataTest.ClassParentA.prototype.initialize);
 	},
 
 	/**
@@ -126,17 +126,17 @@ GT.create({
 	 */
 	testPropertyNull: function (a) {
 
-		var cNull = new ClassNull();
+		var cNull = new DataTest.ClassNull();
 		
 		a.assertCompare (
-			ClassNull,
+			DataTest.ClassNull,
 			{
 				__gollumjs__: GollumJS.__running__,
 				getExtendsClass: function() {},
 				getIdClass: function() {},
 				getReflectionClass: function() {},
 				isInstance: function() {},
-				prototype: ClassNull.prototype
+				prototype: DataTest.ClassNull.prototype
 			}
 		);
 
@@ -145,7 +145,7 @@ GT.create({
 			{
 				prop1: null,
 				prop2: 0,
-				self: ClassNull,
+				self: DataTest.ClassNull,
 				
 				initialize: function(){},
 				parent: function(){}

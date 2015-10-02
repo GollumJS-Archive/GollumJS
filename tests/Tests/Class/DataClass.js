@@ -1,17 +1,19 @@
-GollumJS.Utils.global().ClassSimple = new GollumJS.Class ({
+GollumJS.Utils.global().DataTest = GollumJS.Utils.global().DataTest || {};
+
+DataTest.ClassSimple = new GollumJS.Class ({
 });
 
-GollumJS.Utils.global().NoGollumJsClass = function () {
+DataTest.NoGollumJsClass = function () {
 };
-NoGollumJsClass.prototype.prop1 = 1;
-NoGollumJsClass.prototype.func1 = function () {
+DataTest.NoGollumJsClass.prototype.prop1 = 1;
+DataTest.NoGollumJsClass.prototype.func1 = function () {
 };
-GollumJS.Utils.global().ClassNull = new GollumJS.Class ({
+DataTest.ClassNull = new GollumJS.Class ({
 	prop1: null,
 	prop2: 0,
 });
 
-GollumJS.Utils.global().ClassParentA = new GollumJS.Class ({
+DataTest.ClassParentA = new GollumJS.Class ({
 	
 	Static: {
 		staticProp1 : 1,
@@ -44,11 +46,11 @@ GollumJS.Utils.global().ClassParentA = new GollumJS.Class ({
 
 
 });
-GollumJS.Utils.global().ClassChildA1 = new GollumJS.Class ({
-	Extends: ClassParentA
+DataTest.ClassChildA1 = new GollumJS.Class ({
+	Extends: DataTest.ClassParentA
 });
-GollumJS.Utils.global().ClassChildA2 = new GollumJS.Class ({
-	Extends: ClassParentA,
+DataTest.ClassChildA2 = new GollumJS.Class ({
+	Extends: DataTest.ClassParentA,
 
 	Static: {
 		staticProp2 : -42,
@@ -71,7 +73,7 @@ GollumJS.Utils.global().ClassChildA2 = new GollumJS.Class ({
 });
 
 
-GollumJS.Utils.global().ClassParentTriple = new GollumJS.Class ({
+DataTest.ClassParentTriple = new GollumJS.Class ({
 	
 	Static: {
 		staticPropLevel1 : "aa",
@@ -115,9 +117,9 @@ GollumJS.Utils.global().ClassParentTriple = new GollumJS.Class ({
 	
 });
 
-GollumJS.Utils.global().ClassChildTriple1 = new GollumJS.Class ({
+DataTest.ClassChildTriple1 = new GollumJS.Class ({
 	
-	Extends: ClassParentTriple,
+	Extends: DataTest.ClassParentTriple,
 	
 	Static: {
 		staticPropLevel2 : 22,
@@ -151,9 +153,9 @@ GollumJS.Utils.global().ClassChildTriple1 = new GollumJS.Class ({
 	
 });
 
-GollumJS.Utils.global().ClassChildTriple2 = new GollumJS.Class ({
+DataTest.ClassChildTriple2 = new GollumJS.Class ({
 	
-	Extends: ClassChildTriple1,
+	Extends: DataTest.ClassChildTriple1,
 	
 	Static: {
 		staticPropLevel3 : -33,
@@ -176,15 +178,15 @@ GollumJS.Utils.global().ClassChildTriple2 = new GollumJS.Class ({
 	}
 	
 });
-GollumJS.Utils.global().ClassChildTriple3 = new GollumJS.Class ({ Extends: ClassChildTriple2 });
-GollumJS.Utils.global().ClassChildTriple4 = new GollumJS.Class ({ Extends: ClassChildTriple3 });
-GollumJS.Utils.global().ClassChildTriple5 = new GollumJS.Class ({ Extends: ClassChildTriple4 });
-GollumJS.Utils.global().ClassChildTriple6 = new GollumJS.Class ({ Extends: ClassChildTriple5 });
+DataTest.ClassChildTriple3 = new GollumJS.Class ({ Extends: DataTest.ClassChildTriple2 });
+DataTest.ClassChildTriple4 = new GollumJS.Class ({ Extends: DataTest.ClassChildTriple3 });
+DataTest.ClassChildTriple5 = new GollumJS.Class ({ Extends: DataTest.ClassChildTriple4 });
+DataTest.ClassChildTriple6 = new GollumJS.Class ({ Extends: DataTest.ClassChildTriple5 });
 
-GollumJS.Utils.global().ClassParentNoGollumJS = function() {
+DataTest.ClassParentNoGollumJS = function() {
 	this.value = "func1";
 }
-ClassParentNoGollumJS.prototype = {
+DataTest.ClassParentNoGollumJS.prototype = {
 
 	prop1: "prop1",
 	prop2: null,
@@ -193,16 +195,16 @@ ClassParentNoGollumJS.prototype = {
 		return this.value;
 	}
 };
-ClassParentNoGollumJS.staticPropNoCopy1 = "staticPropNoCopy1";
-ClassParentNoGollumJS.Static = {
+DataTest.ClassParentNoGollumJS.staticPropNoCopy1 = "staticPropNoCopy1";
+DataTest.ClassParentNoGollumJS.Static = {
 	staticPropNoCopy2: "staticPropNoCopy2"
 };
-ClassChildNoGollumJS = new GollumJS.Class ({
-	Extends: ClassParentNoGollumJS
+DataTest.ClassChildNoGollumJS = new GollumJS.Class ({
+	Extends: DataTest.ClassParentNoGollumJS
 });
 
 
-GollumJS.Utils.global().ClassParentScope = new GollumJS.Class ({
+DataTest.ClassParentScope = new GollumJS.Class ({
 	
 	Static: {
 
@@ -235,9 +237,9 @@ GollumJS.Utils.global().ClassParentScope = new GollumJS.Class ({
 	
 });
 
-GollumJS.Utils.global().ClassChildScope = new GollumJS.Class ({
+DataTest.ClassChildScope = new GollumJS.Class ({
 	
-	Extends: ClassParentScope,
+	Extends: DataTest.ClassParentScope,
 
 	Static: {
 
@@ -267,7 +269,7 @@ GollumJS.Utils.global().ClassChildScope = new GollumJS.Class ({
 	}
 });
 
-GollumJS.Utils.global().ClassParentMultile1 = new GollumJS.Class ({
+DataTest.ClassParentMultile1 = new GollumJS.Class ({
 
 	Static: {
 
@@ -297,7 +299,7 @@ GollumJS.Utils.global().ClassParentMultile1 = new GollumJS.Class ({
 
 });
 
-GollumJS.Utils.global().ClassParentMultile2 = new GollumJS.Class ({
+DataTest.ClassParentMultile2 = new GollumJS.Class ({
 
 	Static: {
 
@@ -327,7 +329,7 @@ GollumJS.Utils.global().ClassParentMultile2 = new GollumJS.Class ({
 
 });
 
-GollumJS.Utils.global().ClassParentMultile3 = new GollumJS.Class ({
+DataTest.ClassParentMultile3 = new GollumJS.Class ({
 
 	Static: {
 
@@ -358,29 +360,29 @@ GollumJS.Utils.global().ClassParentMultile3 = new GollumJS.Class ({
 });
 
 
-GollumJS.Utils.global().ClassChildMultiple1 = new GollumJS.Class ({
+DataTest.ClassChildMultiple1 = new GollumJS.Class ({
 	
 	Extends: 
-		ClassParentMultile3,
+		DataTest.ClassParentMultile3,
 
 	Uses: [
-		ClassParentMultile1,
-		ClassParentMultile2
+		DataTest.ClassParentMultile1,
+		DataTest.ClassParentMultile2
 	]
 });
 
-GollumJS.Utils.global().ClassChildMultiple2 = new GollumJS.Class ({
+DataTest.ClassChildMultiple2 = new GollumJS.Class ({
 	
-	Extends: ClassParentMultile2,
+	Extends: DataTest.ClassParentMultile2,
 
 	Uses: [
-		ClassParentMultile3,
-		ClassChildMultiple1
+		DataTest.ClassParentMultile3,
+		DataTest.ClassChildMultiple1
 	]
 });
 
 
-GollumJS.Utils.global().ClassParentForMethodParent1 = new GollumJS.Class ({
+DataTest.ClassParentForMethodParent1 = new GollumJS.Class ({
 
 	value: null,
 
@@ -394,7 +396,7 @@ GollumJS.Utils.global().ClassParentForMethodParent1 = new GollumJS.Class ({
 
 });
 
-GollumJS.Utils.global().ClassParentForMethodParent2 = new GollumJS.Class ({
+DataTest.ClassParentForMethodParent2 = new GollumJS.Class ({
 
 	value: null,
 
@@ -408,9 +410,9 @@ GollumJS.Utils.global().ClassParentForMethodParent2 = new GollumJS.Class ({
 
 });
 
-GollumJS.Utils.global().ClassChildForMethodParent1 = new GollumJS.Class ({
+DataTest.ClassChildForMethodParent1 = new GollumJS.Class ({
 
-	Extends: ClassParentForMethodParent1,
+	Extends: DataTest.ClassParentForMethodParent1,
 
 	value: null,
 
@@ -426,21 +428,21 @@ GollumJS.Utils.global().ClassChildForMethodParent1 = new GollumJS.Class ({
 });
 
 
-GollumJS.Utils.global().ClassChildForMethodParent2 = new GollumJS.Class ({
+DataTest.ClassChildForMethodParent2 = new GollumJS.Class ({
 
-	Extends: ClassChildForMethodParent1,
+	Extends: DataTest.ClassChildForMethodParent1,
 
 	value: null,
 
 	initialize: function () {
 		this.parent()();
 		var val = this.value;
-		this.parent(ClassParentForMethodParent2)()
+		this.parent(DataTest.ClassParentForMethodParent2)()
 		this.value = val+"|"+this.value;
 	},
 
 	func1: function () {
-		return this.parent().func1()+"|"+this.parent(ClassParentForMethodParent2).func1();
+		return this.parent().func1()+"|"+this.parent(DataTest.ClassParentForMethodParent2).func1();
 	},
 
 });

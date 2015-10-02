@@ -8,10 +8,10 @@ GT.create({
 	 */
 	testScopeSimple: function (a) {
 
-		var parent = new ClassParentScope();
+		var parent = new DataTest.ClassParentScope();
 
-		a.assertTrue (ClassParentScope.staticFuncThis1()  === ClassParentScope);
-		a.assertTrue (ClassParentScope.staticFuncObject1() === ClassParentScope.staticPropObject1);
+		a.assertTrue (DataTest.ClassParentScope.staticFuncThis1()  === DataTest.ClassParentScope);
+		a.assertTrue (DataTest.ClassParentScope.staticFuncObject1() === DataTest.ClassParentScope.staticPropObject1);
 
 		a.assertTrue (parent === parent.funcThis1());
 		a.assertTrue (parent === parent.funcThis2());
@@ -24,14 +24,14 @@ GT.create({
 	 */
 	testScopeExtend: function (a) {
 		
-		var child = new ClassChildScope();
+		var child = new DataTest.ClassChildScope();
 
-		a.assertTrue (ClassChildScope.staticFuncThis1()  === ClassChildScope);
-		a.assertTrue (ClassChildScope.staticFuncThis2()  === ClassChildScope);
-		a.assertTrue (ClassChildScope.staticFuncObject1() !== ClassParentScope.staticPropObject1);
-		a.assertTrue (ClassChildScope.staticFuncObject2() === ClassParentScope.staticPropObject2);
-		a.assertTrue (ClassChildScope.staticFuncObject1() === ClassChildScope.staticPropObject1);
-		a.assertTrue (ClassChildScope.staticFuncObject2() === ClassChildScope.staticPropObject2);
+		a.assertTrue (DataTest.ClassChildScope.staticFuncThis1()  === DataTest.ClassChildScope);
+		a.assertTrue (DataTest.ClassChildScope.staticFuncThis2()  === DataTest.ClassChildScope);
+		a.assertTrue (DataTest.ClassChildScope.staticFuncObject1() !== DataTest.ClassParentScope.staticPropObject1);
+		a.assertTrue (DataTest.ClassChildScope.staticFuncObject2() === DataTest.ClassParentScope.staticPropObject2);
+		a.assertTrue (DataTest.ClassChildScope.staticFuncObject1() === DataTest.ClassChildScope.staticPropObject1);
+		a.assertTrue (DataTest.ClassChildScope.staticFuncObject2() === DataTest.ClassChildScope.staticPropObject2);
 
 		a.assertTrue (child === child.funcThis1());
 		a.assertTrue (child === child.funcThis2());

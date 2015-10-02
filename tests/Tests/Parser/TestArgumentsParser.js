@@ -51,20 +51,20 @@ GT.create({
 	testServiceArg: function (a) {
 		
 		GollumJS.config.services.fakeService = {
-			class: "FakeServiceForParser"
+			class: "DataTest.FakeServiceForParser"
 		}
 
 		var args = new GollumJS.Parser.ArgumentsParser([ "@fakeService" ]);
 
 		a.assertArraysEquals (args.parse(), [ GollumJS.get("fakeService") ]);
-		a.assertTrue (args.parse()[0] instanceof FakeServiceForParser);
+		a.assertTrue (args.parse()[0] instanceof DataTest.FakeServiceForParser);
 
 		delete GollumJS.config.services.fakeService;
 	},
 
 	testComplexArg: function (a) {
 		GollumJS.config.services.fakeService = {
-			class: "FakeServiceForParser"
+			class: "DataTest.FakeServiceForParser"
 		}
 		GollumJS.config.testFakeConfig = {
 			config1: "configurationTest1"

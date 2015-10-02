@@ -1,4 +1,4 @@
+GollumJS.Utils.global().DataTest = GollumJS.Utils.global().DataTest || {};
 
-GollumJS.Utils.global().FakeServiceForParser = new GollumJS.Class ({
-	
+DataTest.FakeServiceForParser = new GollumJS.Class ({	
 });

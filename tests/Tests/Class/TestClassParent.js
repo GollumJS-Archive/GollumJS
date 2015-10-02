@@ -7,14 +7,14 @@ GT.create({
 	 */
 	testParentSimple: function (a) {
 		
-		var child = new ClassChildForMethodParent1();
+		var child = new DataTest.ClassChildForMethodParent1();
 		
 		a.assertCompare (
 			child,
 			{
 				value: "initialize:12",
 				
-				self: ClassChildForMethodParent1,
+				self: DataTest.ClassChildForMethodParent1,
 				
 				initialize: function(){},
 				parent: function(){},
@@ -31,14 +31,14 @@ GT.create({
 	 */
 	testForceScope: function (a) {
 		
-		var child = new ClassChildForMethodParent2();
+		var child = new DataTest.ClassChildForMethodParent2();
 
 		a.assertCompare (
 			child,
 			{
 				value: "initialize:12|initialize:2",
 				
-				self: ClassChildForMethodParent1,
+				self: DataTest.ClassChildForMethodParent1,
 				
 				initialize: function(){},
 				parent: function(){},

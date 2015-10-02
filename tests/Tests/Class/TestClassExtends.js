@@ -6,17 +6,17 @@ GT.create({
 	 * Test si un heritage direct créer une class identique
 	 */
 	testDirectExtend: function (a) {
-		var parent = new ClassParentA();
-		var child  = new ClassChildA1();
+		var parent = new DataTest.ClassParentA();
+		var child  = new DataTest.ClassChildA1();
 
-		a.assertTrue (child instanceof ClassChildA1);
-		a.assertTrue (child instanceof ClassParentA);
-		a.assertTrue (ClassChildA1.isInstance (child));
-		a.assertTrue (ClassParentA.isInstance (child));
+		a.assertTrue (child instanceof DataTest.ClassChildA1);
+		a.assertTrue (child instanceof DataTest.ClassParentA);
+		a.assertTrue (DataTest.ClassChildA1.isInstance (child));
+		a.assertTrue (DataTest.ClassParentA.isInstance (child));
 		
 		// Child is good
 		a.assertCompare (
-			ClassChildA1,
+			DataTest.ClassChildA1,
 			{
 				staticProp1: 1,
 				staticProp2: "42a",
@@ -30,38 +30,38 @@ GT.create({
 				getIdClass: function() {},
 				getReflectionClass: function() {},
 				isInstance: function() {},
-				prototype: ClassChildA1.prototype
+				prototype: DataTest.ClassChildA1.prototype
 			}
 		);
-		a.assertArraysEquals (ClassChildA1.getExtendsClass(), [ClassParentA]);
+		a.assertArraysEquals (DataTest.ClassChildA1.getExtendsClass(), [DataTest.ClassParentA]);
 		
-		a.assertTrue (ClassParentA.staticFunc1() == 'staticFunc1');
-		a.assertTrue (ClassParentA.staticFunc2() == 'staticFunc2');
+		a.assertTrue (DataTest.ClassParentA.staticFunc1() == 'staticFunc1');
+		a.assertTrue (DataTest.ClassParentA.staticFunc2() == 'staticFunc2');
 
 		a.assertCompare (parent, child);
 		a.assertTrue (child.func1() == 'func1');
 		a.assertTrue (child.func2() == 'func2');
 
-		a.assertTrue (ClassChildA1.prototype.func1 === ClassParentA.prototype.func1);
-		a.assertTrue (ClassChildA1.prototype.func2 === ClassParentA.prototype.func2);
+		a.assertTrue (DataTest.ClassChildA1.prototype.func1 === DataTest.ClassParentA.prototype.func1);
+		a.assertTrue (DataTest.ClassChildA1.prototype.func2 === DataTest.ClassParentA.prototype.func2);
 
-		a.assertTrue (ClassChildA1.prototype.prop1 === ClassParentA.prototype.prop1);
-		a.assertTrue (ClassChildA1.prototype.prop2 === ClassParentA.prototype.prop2);
-		a.assertArraysEquals (ClassChildA1.prototype.prop3, ClassParentA.prototype.prop3);
+		a.assertTrue (DataTest.ClassChildA1.prototype.prop1 === DataTest.ClassParentA.prototype.prop1);
+		a.assertTrue (DataTest.ClassChildA1.prototype.prop2 === DataTest.ClassParentA.prototype.prop2);
+		a.assertArraysEquals (DataTest.ClassChildA1.prototype.prop3, DataTest.ClassParentA.prototype.prop3);
 
-		a.assertTrue (child.func1 === ClassParentA.prototype.func1);
-		a.assertTrue (child.func2 === ClassParentA.prototype.func2);
+		a.assertTrue (child.func1 === DataTest.ClassParentA.prototype.func1);
+		a.assertTrue (child.func2 === DataTest.ClassParentA.prototype.func2);
 
-		a.assertTrue (child.prop1 === ClassParentA.prototype.prop1);
-		a.assertTrue (child.prop2 === ClassParentA.prototype.prop2);
-		a.assertArraysEquals (child.prop3, ClassParentA.prototype.prop3);
+		a.assertTrue (child.prop1 === DataTest.ClassParentA.prototype.prop1);
+		a.assertTrue (child.prop2 === DataTest.ClassParentA.prototype.prop2);
+		a.assertArraysEquals (child.prop3, DataTest.ClassParentA.prototype.prop3);
 
-		a.assertTrue (child.func1 === ClassParentA.prototype.func1);
-		a.assertTrue (child.func2 === ClassParentA.prototype.func2);
+		a.assertTrue (child.func1 === DataTest.ClassParentA.prototype.func1);
+		a.assertTrue (child.func2 === DataTest.ClassParentA.prototype.func2);
 
-		ClassChildA1.staticPropArray1.push ("cool");
-		a.assertArraysEquals (ClassParentA.staticPropArray1, [ "a", 1]);
-		a.assertArraysEquals (ClassChildA1.staticPropArray1, [ "a", 1, "cool"]);
+		DataTest.ClassChildA1.staticPropArray1.push ("cool");
+		a.assertArraysEquals (DataTest.ClassParentA.staticPropArray1, [ "a", 1]);
+		a.assertArraysEquals (DataTest.ClassChildA1.staticPropArray1, [ "a", 1, "cool"]);
 
 	},
 
@@ -69,16 +69,16 @@ GT.create({
 	 * Test la surcharge
 	 */
 	testDirectExtendMethodAndProperty: function (a) {
-		var parent = new ClassParentA();
-		var child  = new ClassChildA2();
+		var parent = new DataTest.ClassParentA();
+		var child  = new DataTest.ClassChildA2();
 
-		a.assertTrue (child instanceof ClassChildA2);
-		a.assertTrue (child instanceof ClassParentA);
-		a.assertTrue (ClassChildA2.isInstance (child));
-		a.assertTrue (ClassParentA.isInstance (child));
+		a.assertTrue (child instanceof DataTest.ClassChildA2);
+		a.assertTrue (child instanceof DataTest.ClassParentA);
+		a.assertTrue (DataTest.ClassChildA2.isInstance (child));
+		a.assertTrue (DataTest.ClassParentA.isInstance (child));
 		
 		a.assertCompare (
-			ClassChildA2,
+			DataTest.ClassChildA2,
 			{
 				staticProp1: 1,
 				staticProp2: -42,
@@ -92,14 +92,14 @@ GT.create({
 				getIdClass: function() {},
 				getReflectionClass: function() {},
 				isInstance: function() {},
-				prototype: ClassChildA2.prototype
+				prototype: DataTest.ClassChildA2.prototype
 			}
 		);
-		a.assertArraysEquals (ClassChildA2.getExtendsClass(), [ClassParentA]);
+		a.assertArraysEquals (DataTest.ClassChildA2.getExtendsClass(), [DataTest.ClassParentA]);
 		
-		a.assertTrue (ClassChildA2.staticFunc1() == 'staticFunc1');
-		a.assertTrue (ClassChildA2.staticFunc2() == 'staticFunc2|extends');
-		a.assertTrue (ClassChildA2.staticFunc1 === ClassParentA.staticFunc1);
+		a.assertTrue (DataTest.ClassChildA2.staticFunc1() == 'staticFunc1');
+		a.assertTrue (DataTest.ClassChildA2.staticFunc2() == 'staticFunc2|extends');
+		a.assertTrue (DataTest.ClassChildA2.staticFunc1 === DataTest.ClassParentA.staticFunc1);
 		
 		a.assertCompare (
 			child,
@@ -110,7 +110,7 @@ GT.create({
 				propNull1 : null,
 				propNull2 : "null",
 
-				self: ClassChildA2,
+				self: DataTest.ClassChildA2,
 				
 				initialize: function(){},
 				parent: function(){},
@@ -123,24 +123,24 @@ GT.create({
 		a.assertTrue (child.func2() == 'func2|extend');
 
 
-		a.assertTrue (ClassChildA2.prototype.func1 === ClassParentA.prototype.func1);
-		a.assertTrue (ClassChildA2.prototype.func2 !== ClassParentA.prototype.func2);
+		a.assertTrue (DataTest.ClassChildA2.prototype.func1 === DataTest.ClassParentA.prototype.func1);
+		a.assertTrue (DataTest.ClassChildA2.prototype.func2 !== DataTest.ClassParentA.prototype.func2);
 		
-		a.assertTrue (ClassChildA2.prototype.prop1 === ClassParentA.prototype.prop1);
-		a.assertTrue (ClassChildA2.prototype.prop2 !== ClassParentA.prototype.prop2);
-		a.assertArraysEquals (ClassChildA2.prototype.prop3, ClassParentA.prototype.prop3);
+		a.assertTrue (DataTest.ClassChildA2.prototype.prop1 === DataTest.ClassParentA.prototype.prop1);
+		a.assertTrue (DataTest.ClassChildA2.prototype.prop2 !== DataTest.ClassParentA.prototype.prop2);
+		a.assertArraysEquals (DataTest.ClassChildA2.prototype.prop3, DataTest.ClassParentA.prototype.prop3);
 
-		a.assertTrue (child.func1 === ClassParentA.prototype.func1);
-		a.assertTrue (child.func2 !== ClassParentA.prototype.func2);
+		a.assertTrue (child.func1 === DataTest.ClassParentA.prototype.func1);
+		a.assertTrue (child.func2 !== DataTest.ClassParentA.prototype.func2);
 
-		a.assertTrue (child.prop1 === ClassParentA.prototype.prop1);
-		a.assertTrue (child.prop2 !== ClassParentA.prototype.prop2);
-		a.assertTrue (child.prop2 === ClassChildA2.prototype.prop2);
-		a.assertArraysEquals (child.prop3, ClassParentA.prototype.prop3);
+		a.assertTrue (child.prop1 === DataTest.ClassParentA.prototype.prop1);
+		a.assertTrue (child.prop2 !== DataTest.ClassParentA.prototype.prop2);
+		a.assertTrue (child.prop2 === DataTest.ClassChildA2.prototype.prop2);
+		a.assertArraysEquals (child.prop3, DataTest.ClassParentA.prototype.prop3);
 
-		a.assertTrue (child.func1 === ClassParentA.prototype.func1);
-		a.assertTrue (child.func2 !== ClassParentA.prototype.func2);
-		a.assertTrue (child.func2 === ClassChildA2.prototype.func2);
+		a.assertTrue (child.func1 === DataTest.ClassParentA.prototype.func1);
+		a.assertTrue (child.func2 !== DataTest.ClassParentA.prototype.func2);
+		a.assertTrue (child.func2 === DataTest.ClassChildA2.prototype.func2);
 	},
 
 	/**
@@ -148,22 +148,22 @@ GT.create({
 	 */
 	testTripleExtends: function (a) {
 
-		var parent = new ClassParentTriple();
-		var child1 = new ClassChildTriple1();
-		var child2 = new ClassChildTriple2();
+		var parent = new DataTest.ClassParentTriple();
+		var child1 = new DataTest.ClassChildTriple1();
+		var child2 = new DataTest.ClassChildTriple2();
 		
-		a.assertTrue (child2 instanceof ClassParentTriple);
-		a.assertTrue (child2 instanceof ClassChildTriple1);
-		a.assertTrue (child2 instanceof ClassChildTriple2);
-		a.assertTrue (ClassParentTriple.isInstance (child1));
-		a.assertTrue (ClassChildTriple1.isInstance (child1));
-		a.assertTrue (!ClassChildTriple2.isInstance (child1));
-		a.assertTrue (ClassParentTriple.isInstance (child2));
-		a.assertTrue (ClassChildTriple1.isInstance (child2));
-		a.assertTrue (ClassChildTriple2.isInstance (child2));
+		a.assertTrue (child2 instanceof DataTest.ClassParentTriple);
+		a.assertTrue (child2 instanceof DataTest.ClassChildTriple1);
+		a.assertTrue (child2 instanceof DataTest.ClassChildTriple2);
+		a.assertTrue (DataTest.ClassParentTriple.isInstance (child1));
+		a.assertTrue (DataTest.ClassChildTriple1.isInstance (child1));
+		a.assertTrue (!DataTest.ClassChildTriple2.isInstance (child1));
+		a.assertTrue (DataTest.ClassParentTriple.isInstance (child2));
+		a.assertTrue (DataTest.ClassChildTriple1.isInstance (child2));
+		a.assertTrue (DataTest.ClassChildTriple2.isInstance (child2));
 
 		a.assertCompare (
-			ClassChildTriple2,
+			DataTest.ClassChildTriple2,
 			{
 				staticPropLevel1: "aa",
 				staticPropLevel2: 22,
@@ -176,16 +176,16 @@ GT.create({
 				getIdClass: function() {},
 				getReflectionClass: function() {},
 				isInstance: function() {},
-				prototype: ClassChildTriple2.prototype
+				prototype: DataTest.ClassChildTriple2.prototype
 			}
 		);
-		a.assertArraysEquals (ClassChildTriple2.getExtendsClass(), [ClassChildTriple1, ClassParentTriple]);
+		a.assertArraysEquals (DataTest.ClassChildTriple2.getExtendsClass(), [DataTest.ClassChildTriple1, DataTest.ClassParentTriple]);
 
-		a.assertTrue (ClassChildTriple2.staticFuncLevel1() == 'staticFuncLevel1:aa');
-		a.assertTrue (ClassChildTriple2.staticFuncLevel2() == 'staticFuncLevel2:22');
-		a.assertTrue (ClassChildTriple2.staticFuncLevel3() == 'staticFuncLevel3:-33');
-		a.assertTrue (ClassChildTriple2.staticFuncLevel1 === ClassParentTriple.staticFuncLevel1);
-		a.assertTrue (ClassChildTriple2.staticFuncLevel2 === ClassChildTriple1.staticFuncLevel2);
+		a.assertTrue (DataTest.ClassChildTriple2.staticFuncLevel1() == 'staticFuncLevel1:aa');
+		a.assertTrue (DataTest.ClassChildTriple2.staticFuncLevel2() == 'staticFuncLevel2:22');
+		a.assertTrue (DataTest.ClassChildTriple2.staticFuncLevel3() == 'staticFuncLevel3:-33');
+		a.assertTrue (DataTest.ClassChildTriple2.staticFuncLevel1 === DataTest.ClassParentTriple.staticFuncLevel1);
+		a.assertTrue (DataTest.ClassChildTriple2.staticFuncLevel2 === DataTest.ClassChildTriple1.staticFuncLevel2);
 
 		a.assertCompare (
 			child2,
@@ -195,7 +195,7 @@ GT.create({
 				propLevel3: -3,
 				value: "initialize:3",
 
-				self: ClassChildTriple2,
+				self: DataTest.ClassChildTriple2,
 				
 				initialize: function(){},
 				parent: function(){},
@@ -208,36 +208,36 @@ GT.create({
 		a.assertTrue (child2.funcLevel1() == 'funcLevel1:a');
 		a.assertTrue (child2.funcLevel2() == 'funcLevel2:2');
 		a.assertTrue (child2.funcLevel3() == 'funcLevel3:-3');
-		a.assertTrue (child2.funcLevel1 === ClassParentTriple.prototype.funcLevel1);
-		a.assertTrue (child2.funcLevel2 === ClassChildTriple1.prototype.funcLevel2);
+		a.assertTrue (child2.funcLevel1 === DataTest.ClassParentTriple.prototype.funcLevel1);
+		a.assertTrue (child2.funcLevel2 === DataTest.ClassChildTriple1.prototype.funcLevel2);
 	},
 
 	testGetExtendsClass: function (a) {
 		
-		var child = new ClassChildTriple6();
+		var child = new DataTest.ClassChildTriple6();
 
-		a.assertTrue (child instanceof ClassParentTriple);
-		a.assertTrue (child instanceof ClassChildTriple1);
-		a.assertTrue (child instanceof ClassChildTriple2);
-		a.assertTrue (child instanceof ClassChildTriple3);
-		a.assertTrue (child instanceof ClassChildTriple4);
-		a.assertTrue (child instanceof ClassChildTriple5);
-		a.assertTrue (child instanceof ClassChildTriple6);
-		a.assertTrue (ClassParentTriple.isInstance (child));
-		a.assertTrue (ClassChildTriple1.isInstance (child));
-		a.assertTrue (ClassChildTriple2.isInstance (child));
-		a.assertTrue (ClassChildTriple3.isInstance (child));
-		a.assertTrue (ClassChildTriple4.isInstance (child));
-		a.assertTrue (ClassChildTriple5.isInstance (child));
-		a.assertTrue (ClassChildTriple6.isInstance (child));
+		a.assertTrue (child instanceof DataTest.ClassParentTriple);
+		a.assertTrue (child instanceof DataTest.ClassChildTriple1);
+		a.assertTrue (child instanceof DataTest.ClassChildTriple2);
+		a.assertTrue (child instanceof DataTest.ClassChildTriple3);
+		a.assertTrue (child instanceof DataTest.ClassChildTriple4);
+		a.assertTrue (child instanceof DataTest.ClassChildTriple5);
+		a.assertTrue (child instanceof DataTest.ClassChildTriple6);
+		a.assertTrue (DataTest.ClassParentTriple.isInstance (child));
+		a.assertTrue (DataTest.ClassChildTriple1.isInstance (child));
+		a.assertTrue (DataTest.ClassChildTriple2.isInstance (child));
+		a.assertTrue (DataTest.ClassChildTriple3.isInstance (child));
+		a.assertTrue (DataTest.ClassChildTriple4.isInstance (child));
+		a.assertTrue (DataTest.ClassChildTriple5.isInstance (child));
+		a.assertTrue (DataTest.ClassChildTriple6.isInstance (child));
 
-		a.assertArraysEquals (ClassChildTriple6.getExtendsClass(), [
-			ClassChildTriple5,
-			ClassChildTriple4,
-			ClassChildTriple3,
-			ClassChildTriple2,
-			ClassChildTriple1,
-			ClassParentTriple
+		a.assertArraysEquals (DataTest.ClassChildTriple6.getExtendsClass(), [
+			DataTest.ClassChildTriple5,
+			DataTest.ClassChildTriple4,
+			DataTest.ClassChildTriple3,
+			DataTest.ClassChildTriple2,
+			DataTest.ClassChildTriple1,
+			DataTest.ClassParentTriple
 		]);
 
 		a.assertCompare (
@@ -248,7 +248,7 @@ GT.create({
 				propLevel3: -3,
 				value: "initialize:3",
 
-				self: ClassChildTriple6,
+				self: DataTest.ClassChildTriple6,
 				
 				initialize: function(){},
 				parent: function(){},
@@ -261,37 +261,37 @@ GT.create({
 
 	testNoGollumJSClass: function (a) {
 
-		var parent = new ClassParentNoGollumJS();
-		var child = new ClassChildNoGollumJS();
+		var parent = new DataTest.ClassParentNoGollumJS();
+		var child = new DataTest.ClassChildNoGollumJS();
 		
-		a.assertTrue (child instanceof ClassParentNoGollumJS);
-		a.assertTrue (child instanceof ClassChildNoGollumJS);
-		a.assertTrue (ClassChildNoGollumJS.isInstance (child));
+		a.assertTrue (child instanceof DataTest.ClassParentNoGollumJS);
+		a.assertTrue (child instanceof DataTest.ClassChildNoGollumJS);
+		a.assertTrue (DataTest.ClassChildNoGollumJS.isInstance (child));
 
-		a.assertTrue (parent instanceof ClassParentNoGollumJS);
-		a.assertTrue (!(parent instanceof ClassChildNoGollumJS));
-		a.assertTrue (!ClassChildNoGollumJS.isInstance (parent));
+		a.assertTrue (parent instanceof DataTest.ClassParentNoGollumJS);
+		a.assertTrue (!(parent instanceof DataTest.ClassChildNoGollumJS));
+		a.assertTrue (!DataTest.ClassChildNoGollumJS.isInstance (parent));
 
 		a.assertCompare (
-			ClassParentNoGollumJS,
+			DataTest.ClassParentNoGollumJS,
 			{
 				staticPropNoCopy1: "staticPropNoCopy1",
 				Static: {
 					staticPropNoCopy2: "staticPropNoCopy2"
 				},
-				prototype: ClassParentNoGollumJS.prototype
+				prototype: DataTest.ClassParentNoGollumJS.prototype
 			}
 		);
 
 		a.assertCompare (
-			ClassChildNoGollumJS,
+			DataTest.ClassChildNoGollumJS,
 			{
 				__gollumjs__: GollumJS.__running__,
 				getExtendsClass: function() {},
 				getIdClass: function() {},
 				getReflectionClass: function() {},
 				isInstance: function() {},
-				prototype: ClassChildNoGollumJS.prototype
+				prototype: DataTest.ClassChildNoGollumJS.prototype
 			}
 		);
 		
@@ -302,7 +302,7 @@ GT.create({
 				prop2: null,
 				value: "func1",
 
-				self: ClassChildNoGollumJS,
+				self: DataTest.ClassChildNoGollumJS,
 				
 				initialize: function(){},
 				parent: function(){},
@@ -311,8 +311,8 @@ GT.create({
 		);
 
 		a.assertTrue (child.func1() == 'func1');
-		a.assertTrue (child.func1 === ClassChildNoGollumJS.prototype.func1);
-		a.assertTrue (ClassParentNoGollumJS.prototype.func1 === ClassChildNoGollumJS.prototype.func1);
+		a.assertTrue (child.func1 === DataTest.ClassChildNoGollumJS.prototype.func1);
+		a.assertTrue (DataTest.ClassParentNoGollumJS.prototype.func1 === DataTest.ClassChildNoGollumJS.prototype.func1);
 
 	}
 });

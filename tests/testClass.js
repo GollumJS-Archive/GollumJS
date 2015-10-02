@@ -1,7 +1,6 @@
 
 var GollumJS = require(__dirname+'/../index.js');
 var GT       = require(__dirname+'/Unit/testfuncs.js');
-var fs       = require('fs');
 
 require(__dirname+'/Tests/Class/DataClass.js'              );
 require(__dirname+'/Tests/Class/TestClassConstructor.js'   );

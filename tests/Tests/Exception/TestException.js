@@ -52,7 +52,7 @@ GT.create({
 	 */
 	testExtendsException: function (a) {
 
-		var exception = new ClassExceptionA("Super Message3", 18);
+		var exception = new DataTest.ClassExceptionA("Super Message3", 18);
 
 		a.assertTrue (exception instanceof Error);
 		a.assertTrue (exception instanceof GollumJS.Exception);
