@@ -178,11 +178,11 @@
 			var a = new GT.Assert()
 			try {
 				if (typeof group.beforeProcess === 'function') {
-					group.beforeProcess(group);
+					group.beforeProcess(a);
 				}
 				test.call(group, a);
 				if (typeof group.afterProcess === 'function') {
-					group.afterProcess(group);
+					group.afterProcess(a);
 				}
 			} catch (e) {
 				__rtn__.messages = a.messages ? a.messages : [];
