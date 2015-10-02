@@ -5,6 +5,8 @@
 	"src/Class.js",
 	"src/Exception.js",
 
+	"src/Parser/ArgumentsParser.js",
+
 	"src/Cache/Cache.js",
 
 	"src/Reflection/AbstractParser.js",

@@ -79,9 +79,17 @@ GollumJS.Utils = {
 		return typeof window !== 'undefined' ? window : global; 
 	},
 
+	isNodeContext: function() {
+		return typeof module !== 'undefined' && module.exports;
+	},
+
+	isDOMContext: function() {
+		return typeof window !== 'undefined'; 
+	},
+
 	engine: function () {
 		
-		if (typeof module !== 'undefined' && module.exports) {
+		if (this.isNodeContext()) {
 			return this.ENGINE_WEBKIT;
 		}
 
@@ -134,8 +142,19 @@ GollumJS.Utils = {
 
 		services: {
 
-			fileJSParser: 'GollumJS.Reflection.FileJSParser',
-			cache       : 'GollumJS.Cache.Cache'
+			fileJSParser: {
+				class: 'GollumJS.Reflection.FileJSParser',
+				args: [
+					"%fileJSParser.srcPath%",
+					"%fileJSParser.excludes%"
+				]
+			},
+			cache       : {
+				class: 'GollumJS.Cache.Cache',
+				args: [ 
+					"%cache.path%"
+				]
+			}
 
 		}
 
@@ -151,12 +170,16 @@ GollumJS.Utils = {
 
 	GollumJS.get = function (name) {
 
-		if (!_instances[name] && GollumJS.config.services[name]) {
-
-			var service = GollumJS.Reflection.ReflectionClass.getClassByIdentifers (GollumJS.config.services[name].split('.'));
+		if (!_instances[name] && GollumJS.config.services[name] && GollumJS.config.services[name].class) {
+			/*
+			var service = GollumJS.Reflection.ReflectionClass.getClassByIdentifers (GollumJS.config.services[name].class.split('.'));
 			if (service) {
-				_instances[name] = new service ();
+				_instances[name] = new (Function.prototype.bind.apply(
+					service,
+					(new GollumJS.Parser.ArgumentsParser(GollumJS.config.services[name].args ? GollumJS.config.services[name].args : [] )).parse();
+				));
 			}
+			*/
 		}
 
 		return _instances[name];
@@ -484,6 +507,75 @@ GollumJS.Exception = new GollumJS.Class ({
 	}
 });
 
+GollumJS.Parser = GollumJS.Parser || {};
+/**
+ *  @author     Damien Duboeuf
+ *  @version 	1.0
+ */
+GollumJS.Parser.ArgumentsParser = new GollumJS.Class ({
+
+	_args : [],
+
+	/**
+	 * Contructor
+	 * @param Array args
+	 */
+	initialize: function (args) {
+		this._args = typeof args !== 'undefined' ? args: [];
+	},
+
+	_findConfigValue: function (search, rtn) {
+		if (!search.length) {
+			return rtn;
+		}
+		rtn = rtn !== undefined ? rtn : GollumJS.config;
+		if (rtn[search[0]] !== undefined) {
+			rtn = rtn[search[0]];
+			search.shift(); 
+			return this._findConfigValue(search, rtn);
+		}
+		return null;
+	},
+
+	_findFinalString: function (str) {
+
+		var _this = this;
+
+		switch (typeof str) {
+
+			case 'string':
+				// TODO no implement
+				str.replace(/\%[a-zA-Z0-9.]+\%/g, function (match) {
+//				str.replace(new RegExp('[A-Z]', 'g'), function (match) {
+					console.log ("str", str, "match", match, _this._findConfigValue(match.substr(0, match.length-1).substr(1).split('.')));
+					return "cool";
+					return _this._findConfigValue(match.substr(0, match.length-1).substr(1).split('.'));
+				});
+				console.log ("NEW str: ", str);
+				break;
+			default:
+				break;
+		}
+		return str;
+	},
+
+	parse: function () {
+
+		var parsed= [];
+
+		for (var i = 0; i < this._args.length; i++) {
+			if (this._args[i][0] == '@') {
+				parsed.push (GollumJS.get(this._args[i].substr(1)));
+			} else {
+				parsed.push (this._findFinalString(this._args[i]));
+			}
+		}
+
+		return parsed;
+	}
+
+});
+
 GollumJS.Cache = GollumJS.Cache || {};
 /**
  *  @author     Damien Duboeuf
@@ -491,15 +583,27 @@ GollumJS.Cache = GollumJS.Cache || {};
  */
 GollumJS.Cache.Cache = new GollumJS.Class ({
 
+	pathDirectory: "",
 	fs:  null,
 
-	initialize: function () {
-		if (typeof module !== 'undefined' && module.exports) {
+	/**
+	 * Constructeur
+	 * @param string pathDirectory Repertoire du fichier de cache
+	 */
+	initialize: function (pathDirectory) {
+		this.pathDirectory = pathDirectory;
+		if (GollumJS.Utils.isNodeContext()) {
 			this.fs = require('node-fs');
 			this.read();
 		}
 	},
 
+	/**
+	 * Récupère une clef du cache
+	 * @param string key
+	 * @param mixed defaultValue
+	 * @return mixed 
+	 */
 	get: function (key, defaultValue) {
 		if (typeof GollumJS.cache[key] == 'undefined') {
 			return defaultValue ? defaultValue : null;
@@ -507,60 +611,113 @@ GollumJS.Cache.Cache = new GollumJS.Class ({
 		return GollumJS.cache[key];
 	},
 
+	/**
+	 * Affecte une clef au cache
+	 * @param string key
+	 * @param mixed value
+	 * @return GollumJS.Cache.Cache
+	 */
 	set: function (key, value) {
 		GollumJS.cache[key] = value;
+		if (!GollumJS.Utils.isNodeContext()) {
+			console.warn("You are not in nodejs mode. The value set in cache don't persist.");
+		}
 		this.write (GollumJS.cache);
 	},
 
+	/**
+	 * Lit le cache depuis le fichier
+	 * @return boolean
+	 */
 	read : function () {
 		if (this.fs) {
 			var path = GollumJS.config.cache.path+"/datas.json";
 			console.log ("Read cache file : ", path);
-			if (!this.fs || this.fs.existsSync(path)) {
+			if (this.fs.existsSync(path)) {
 				GollumJS.cache = JSON.parse(this.fs.readFileSync(path));
+				return true;
+			} else {
+				console.error ("Cache file not found : ", path);
 			}
 		}
+		return false;
 	},
 
+	/**
+     * Création du dossier de cache
+	 * @return boolean
+     */
 	_createCacheDir: function () {
 		if (this.fs) {
 			if (!this.fs.existsSync(GollumJS.config.cache.path)) {
 				this.fs.mkdirSync(GollumJS.config.cache.path, 0777, true);
 			}
+			return true;
 		}
+		return false;
 	},
 
-	write : function () {
-		if (this.fs) {
-			this._createCacheDir();
-			var path = GollumJS.config.cache.path+"/datas.json";
+	/**
+	 * Ecrit le fichier json du cache
+	 * (async method)
+	 * @param function callback
+	 */
+	write : function (callback) {
 
-			this.fs.writeFile(path, JSON.stringify(GollumJS.cache), function(err) {
-				if(err) {
-					return console.error(err);
-				}
-			});
-		}
-	},
+		callback = typeof callback === 'function' ? callback : function() {};
 
-	writeJS: function () {
 		if (this.fs) {
-			this._createCacheDir();
-			
-			var path = GollumJS.config.cache.path+"/datas.js";
-			this.fs.writeFile(
-				path,
-				"GollumJS = typeof GollumJS != undefined ? GollumJS : {};\n" +
-				"GollumJS.cache = " +
-				JSON.stringify(GollumJS.cache) + 
-				";"
-				, 
-				function(err) {
+			if(this._createCacheDir()) {
+				
+				var path = GollumJS.config.cache.path+"/datas.json";
+				this.fs.writeFile(path, JSON.stringify(GollumJS.cache), function(err) {
 					if(err) {
-						return console.error(err);
+						console.error(err);		
 					}
-				}
-			);
+					callback (err);
+				});
+
+			} else {
+				callback ("Can't create cache directory: "+GollumJS.config.cache.path);
+			}
+		} else {
+			callback ("For write cache you must be in mode NodeJS.");
+		}
+	},
+
+	/**
+	 * Ecrit le fichier js du cache
+	 * (async method)
+	 * @param function callback
+	 */
+	writeJS: function (callback) {
+
+		callback = typeof callback === 'function' ? callback : function() {};
+
+		if (this.fs) {
+			if(this._createCacheDir()) {
+			
+				var path = GollumJS.config.cache.path+"/datas.js";
+				this.fs.writeFile(
+					path,
+					"GollumJS = typeof GollumJS != undefined ? GollumJS : {};\n" +
+					"GollumJS.cache = " +
+					JSON.stringify(GollumJS.cache) + 
+					";"
+					, 
+					function(err) {
+						if(err) {
+							return console.error(err);
+						}
+						callback (err);
+					}
+				);
+
+			} else {
+				callback ("Can't create cache directory: "+GollumJS.config.cache.path);
+			}
+		} else {
+			callback ("For write cache you must be in mode NodeJS.");
 		}
 	}
 

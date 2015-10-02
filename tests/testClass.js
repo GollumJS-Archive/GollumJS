@@ -13,6 +13,12 @@ require(__dirname+'/Tests/Class/TestClassParent.js'        );
 require(__dirname+'/Tests/Exception/DataException.js');
 require(__dirname+'/Tests/Exception/TestException.js');
 
+
+require(__dirname+'/Tests/Parser/DataParser.js');
+require(__dirname+'/Tests/Parser/TestArgumentsParser.js');
+
+require(__dirname+'/Tests/Cache/TestWriteCache.js');
+
 var results = GT.runAll();
 
 console.log ("");

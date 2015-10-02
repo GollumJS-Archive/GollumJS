@@ -12,8 +12,19 @@
 
 		services: {
 
-			fileJSParser: 'GollumJS.Reflection.FileJSParser',
-			cache       : 'GollumJS.Cache.Cache'
+			fileJSParser: {
+				class: 'GollumJS.Reflection.FileJSParser',
+				args: [
+					"%fileJSParser.srcPath%",
+					"%fileJSParser.excludes%"
+				]
+			},
+			cache       : {
+				class: 'GollumJS.Cache.Cache',
+				args: [ 
+					"%cache.path%"
+				]
+			}
 
 		}
 
@@ -29,11 +40,14 @@
 
 	GollumJS.get = function (name) {
 
-		if (!_instances[name] && GollumJS.config.services[name]) {
-
-			var service = GollumJS.Reflection.ReflectionClass.getClassByIdentifers (GollumJS.config.services[name].split('.'));
+		if (!_instances[name] && GollumJS.config.services[name] && GollumJS.config.services[name].class) {
+			
+			var service = GollumJS.Reflection.ReflectionClass.getClassByIdentifers (GollumJS.config.services[name].class.split('.'));
 			if (service) {
-				_instances[name] = new service ();
+				_instances[name] = new (Function.prototype.bind.apply(
+					service,
+					(new GollumJS.Parser.ArgumentsParser(GollumJS.config.services[name].args ? GollumJS.config.services[name].args : [] )).parse()
+				));
 			}
 		}
 

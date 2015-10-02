@@ -167,7 +167,7 @@
 			__list__.push(testGroup);
 		};
 
-		GT.run = function (test) {
+		GT.run = function (test, group) {
 			
 			var __rtn__ = {
 				sucessNumber: 0,
@@ -177,7 +177,13 @@
 
 			var a = new GT.Assert()
 			try {
+				if (typeof group.beforeProcess === 'function') {
+					group.beforeGroup();
+				}
 				test(a);
+				if (typeof group.afterProcess === 'function') {
+					group.beforeGroup();
+				}
 			} catch (e) {
 				__rtn__.messages = a.messages ? a.messages : [];
 
@@ -205,11 +211,6 @@
 					__rtn__.exception    = "Assert Failure"
 					__rtn__.result       = GT.Assert.RESULT_KO;
 					__rtn__.stack        = a.results[i].stack;
-					__rtn__.stack0        = a.results[i].stack[0];
-					__rtn__.stack1        = a.results[i].stack[1];
-					__rtn__.stack2        = a.results[i].stack[2];
-					__rtn__.stack3        = a.results[i].stack[3];
-					__rtn__.stack4        = a.results[i].stack[4];
 				}
 			}
 
@@ -226,7 +227,7 @@
 					i.substr(0, 4) == 'test'
 				) {
 					console.log (" - Run test: "+i);
-					__rtn__[i] = GT.run(group[i]);
+					__rtn__[i] = GT.run(group[i], group);
 				}
 			}
 

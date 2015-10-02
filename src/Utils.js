@@ -75,9 +75,17 @@ GollumJS.Utils = {
 		return typeof window !== 'undefined' ? window : global; 
 	},
 
+	isNodeContext: function() {
+		return typeof module !== 'undefined' && module.exports;
+	},
+
+	isDOMContext: function() {
+		return typeof window !== 'undefined'; 
+	},
+
 	engine: function () {
 		
-		if (typeof module !== 'undefined' && module.exports) {
+		if (this.isNodeContext()) {
 			return this.ENGINE_WEBKIT;
 		}
 
