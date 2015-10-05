@@ -82,7 +82,7 @@ GollumJS.Utils = {
 	},
 
 	isNodeContext: function() {
-		return typeof module !== 'undefined' && module.exports;
+		return !!(typeof module !== 'undefined' && module.exports);
 	},
 
 	isDOMContext: function() {
@@ -135,7 +135,7 @@ GollumJS.Utils = {
 	var config = {
 
 		node: {
-			gollumjs_path: typeof __dirname__ !== 'undefined' ? __dirname__ : null // Fonctionne uniquement en version node
+			gollumjs_path: typeof __dirname !== 'undefined' ? __dirname : "" // Fonctionne uniquement en context nodejs
 		},
 
 		fileJSParser: {
@@ -193,6 +193,11 @@ GollumJS.Utils = {
 
 		return _instances[name];
 	};
+
+	GollumJS.getParameter = function (key) {
+		var parsed = (new GollumJS.Parser.ArgumentsParser([arg])).parse();
+		return parsed[0] !== undefined ? parsed[0] : null ;
+	} 
 
 }) ();
 
@@ -533,7 +538,7 @@ GollumJS.Parser.ArgumentsParser = new GollumJS.Class ({
 		this._args = typeof args !== 'undefined' ? args: [];
 	},
 
-	_findConfigValue: function (search, rtn) {
+	_findConfigValue: function (search, str, rtn) {
 		if (!search.length) {
 			return rtn;
 		}
@@ -541,7 +546,7 @@ GollumJS.Parser.ArgumentsParser = new GollumJS.Class ({
 		if (rtn[search[0]] !== undefined) {
 			rtn = rtn[search[0]];
 			search.shift(); 
-			return this._findConfigValue(search, rtn);
+			return this._findConfigValue(search, str, rtn);
 		}
 		return null;
 	},
@@ -549,35 +554,52 @@ GollumJS.Parser.ArgumentsParser = new GollumJS.Class ({
 	_findFinalArgument: function (arg) {
 
 		var _this = this;
+		var rtn = arg
 
 		switch (typeof arg) {
 
 			case 'string':
 				if (arg[0] == '@') {
-					arg = GollumJS.get(this._args[i].substr(1));
+					rtn = GollumJS.get(arg.substr(1));
 				} else {
-					arg = arg.replace(new RegExp('\%[a-zA-Z0-9.]+\%', 'g'), function (match, start) {
-						return _this._findConfigValue(match.substr(0, match.length-1).substr(1).split('.'));
+					var hasReplaced = false;
+					arg.replace(new RegExp('\%[a-zA-Z0-9._]+\%', 'i'), function (match, start) {
+						if (match == arg) {
+							rtn = _this._findConfigValue(match.substr(0, match.length-1).substr(1).split('.'), arg);
+						} else {
+							rtn = 
+								arg.substr(0, start) +
+								_this._findConfigValue(match.substr(0, match.length-1).substr(1).split('.'), arg) +
+								arg.substr(match.length+start)
+							;
+						}
+						hasReplaced = true;
 					});
+					if (hasReplaced || typeof rtn != "string") {
+						rtn = this._findFinalArgument(rtn);
+					}
 				}
 				break;
 			case 'object':
 				if (Object.prototype.toString.call(arg) === '[object Array]') {
+					rtn = [];
 					for (var i = 0; i < arg.length; i++) {
-						arg[i] = this._findFinalArgument(arg[i]);
+						rtn.push(this._findFinalArgument(arg[i]));
 					}
 				} else {
+					rtn = {};
 					for (var i in arg) {
-						arg[i] = this._findFinalArgument(arg[i]);
+						rtn[i] = this._findFinalArgument(arg[i]);
 					}
 				}
+				break;
 			default:
 				break;
 		}
-		return arg;
+		return rtn;
 	},
 
-	parse: function (args) {
+	parse: function () {
 		var parsed = [];
 
 		for (var i = 0; i < this._args.length; i++) {
@@ -1075,8 +1097,6 @@ GollumJS.Reflection.FileJSParser.FileJSParser = new GollumJS.Class ({
 		this._excludesFiles = excludesFiles;
 		var datas = cache.get(this.self.CACHE_KEY);
 
-		console.log (arguments);return;
-
 		if (datas) {
 			this.classList = {};
 			for (var i in datas) {
@@ -1102,36 +1122,55 @@ GollumJS.Reflection.FileJSParser.FileJSParser = new GollumJS.Class ({
 	},
 
 	parseSources: function () {
-
 		for (var i = 0; i < this._srcPath.length; i++) {
 			this.parseFiles (this.getFiles (this._srcPath[i]));
 		}
-
 	},
 
-	getFiles: function (dir, files_){
-
-		files_ = files_ || [];
+	isExclude: function (filePath) {
 		
-		var fs = require('fs');
-		var files = fs.readdirSync(dir);
+		var fs   = require('fs');
+		var path = require('path');
 
-		for (var i in files){
-			var name = dir + '/' + files[i];
-			if (
-				this._excludesFiles.indexOf(files[i]) == -1 &&
-				this._excludesPath.indexOf(files[i]) != 0
-			) {
+		console.log ("aa"+filePath, this._excludesFiles.indexOf(path.basename(filePath)) != -1, !fs.existsSync(filePath));
 
-				if (fs.statSync(name).isDirectory()) {
-						this.getFiles(name, files_);
-					
-				} else {
-					files_.push(name);
-				}
+		if (
+			!fs.existsSync(filePath) || 
+			this._excludesFiles.indexOf(path.basename(filePath)) != -1
+		) {
+			return true;
+		}
+		for (var i = 0; i < this._excludesPath.length; i++) {
+			
+			console.log ("bb", fs.realpathSync(this._excludesPath[i]), fs.realpathSync(filePath), fs.realpathSync(this._excludesPath[i]) == fs.realpathSync(filePath));
+
+			if (fs.realpathSync(this._excludesPath[i]) == fs.realpathSync(filePath)) {
+				return true;
 			}
 		}
-		return files_;
+		return false;
+	},
+
+	getFiles: function (source, files) {
+
+		files = files || [];
+		var fs = require('fs');
+
+		if (
+			fs.existsSync(source) &&
+			!this.isExclude(source)
+		) {
+			if (fs.statSync(source).isDirectory()) {
+				var subFiles = fs.readdirSync(source);
+				for (var i in subFiles) {
+					this.getFiles(source + '/' + subFiles[i], files);
+				}
+			} else {
+				files.push(source + '/' + subFiles[i]);
+				console.log(files, this.isExclude(source));
+			}
+		}
+		return files;
 	},
 
 	parseFiles: function (files) {
@@ -1146,7 +1185,6 @@ GollumJS.Reflection.FileJSParser.FileJSParser = new GollumJS.Class ({
 			if (file.substr (-3) == '.js') {
 
 				content = fs.readFileSync(file, {encoding: 'utf-8'});
-
 				try {
 					var parser = new GollumJS.Reflection.ClassParser(content);
 					for(var j = 0; j < parser.classList.length; j++) {

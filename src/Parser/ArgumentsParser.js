@@ -15,7 +15,7 @@ GollumJS.Parser.ArgumentsParser = new GollumJS.Class ({
 		this._args = typeof args !== 'undefined' ? args: [];
 	},
 
-	_findConfigValue: function (search, rtn) {
+	_findConfigValue: function (search, str, rtn) {
 		if (!search.length) {
 			return rtn;
 		}
@@ -23,7 +23,7 @@ GollumJS.Parser.ArgumentsParser = new GollumJS.Class ({
 		if (rtn[search[0]] !== undefined) {
 			rtn = rtn[search[0]];
 			search.shift(); 
-			return this._findConfigValue(search, rtn);
+			return this._findConfigValue(search, str, rtn);
 		}
 		return null;
 	},
@@ -31,7 +31,7 @@ GollumJS.Parser.ArgumentsParser = new GollumJS.Class ({
 	_findFinalArgument: function (arg) {
 
 		var _this = this;
-		var rtn = null;
+		var rtn = arg
 
 		switch (typeof arg) {
 
@@ -39,9 +39,22 @@ GollumJS.Parser.ArgumentsParser = new GollumJS.Class ({
 				if (arg[0] == '@') {
 					rtn = GollumJS.get(arg.substr(1));
 				} else {
-					rtn = arg.replace(new RegExp('\%[a-zA-Z0-9.]+\%', 'g'), function (match, start) {
-						return _this._findConfigValue(match.substr(0, match.length-1).substr(1).split('.'));
+					var hasReplaced = false;
+					arg.replace(new RegExp('\%[a-zA-Z0-9._]+\%', 'i'), function (match, start) {
+						if (match == arg) {
+							rtn = _this._findConfigValue(match.substr(0, match.length-1).substr(1).split('.'), arg);
+						} else {
+							rtn = 
+								arg.substr(0, start) +
+								_this._findConfigValue(match.substr(0, match.length-1).substr(1).split('.'), arg) +
+								arg.substr(match.length+start)
+							;
+						}
+						hasReplaced = true;
 					});
+					if (hasReplaced || typeof rtn != "string") {
+						rtn = this._findFinalArgument(rtn);
+					}
 				}
 				break;
 			case 'object':
@@ -51,14 +64,13 @@ GollumJS.Parser.ArgumentsParser = new GollumJS.Class ({
 						rtn.push(this._findFinalArgument(arg[i]));
 					}
 				} else {
-					rtn= {};
+					rtn = {};
 					for (var i in arg) {
 						rtn[i] = this._findFinalArgument(arg[i]);
 					}
 				}
 				break;
 			default:
-				rtn = arg
 				break;
 		}
 		return rtn;

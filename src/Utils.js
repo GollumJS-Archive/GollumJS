@@ -76,7 +76,7 @@ GollumJS.Utils = {
 	},
 
 	isNodeContext: function() {
-		return typeof module !== 'undefined' && module.exports;
+		return !!(typeof module !== 'undefined' && module.exports);
 	},
 
 	isDOMContext: function() {

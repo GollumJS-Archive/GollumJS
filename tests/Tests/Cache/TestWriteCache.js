@@ -34,8 +34,8 @@ GT.create({
 		this.cache.set("testVar1", "testValue1");
 
 		a.assertTrue (GollumJS.cache["testVar1"] === "testValue1");
-
-
+		
+		delete this.cache["testVar1"];
 	},
 
 	/**
@@ -55,6 +55,7 @@ GT.create({
 				i++;
 			};
 		}
+		delete this.cache["testVar1"];
 	},
 
 	/**
@@ -82,6 +83,7 @@ GT.create({
 				};
 			}
 		}
+		delete this.cache["testVar1"];
 	}
 
 });

@@ -43,7 +43,7 @@ GT.create({
 		a.assertArraysEquals (args3.parse(), [ "configurationTest1After" ]);
 		a.assertArraysEquals (args4.parse(), [ "BeforeconfigurationTest1After" ]);
 		a.assertArraysEquals (args5.parse(), [ "configurationTest1/configurationTest2" ]);
-		a.assertArraysEquals (args6.parse(), [ "3" ]);
+		a.assertArraysEquals (args6.parse(), [ 3 ]);
 		
 		delete GollumJS.config.testFakeConfig;
 	},
@@ -83,7 +83,7 @@ GT.create({
 		a.assertArraysEquals (args.parse()[0], [
 			"configurationTest1",
 			"configurationTest2",
-			"3",
+			3,
 			GollumJS.get("fakeService")
 		]);
 		a.assertTrue (typeof args.parse()[1] === 'undefined');
@@ -113,13 +113,63 @@ GT.create({
 		a.assertCompare (args.parse()[0], {
 			arg1: "configurationTest1",
 			arg2: "configurationTest2",
-			arg3: "3",
+			arg3: 3,
 			arg4: GollumJS.get("fakeService")
 		});
 		a.assertTrue (typeof args.parse()[1] === 'undefined');
 
 		delete GollumJS.config.testFakeConfig;
 		delete GollumJS.config.services.fakeService;
+	},
+
+	testConfigArgIntoConfigArg: function (a) {
+		GollumJS.config.testFakeConfig = {
+			config1: "configurationTest1",
+			config2: "%testFakeConfig.config1%2",
+			config3: "%testFakeConfig.config2%3",
+			config4: [
+				"%testFakeConfig.config1%",
+				"%testFakeConfig.config2%",
+				"%testFakeConfig.config3%"
+			]
+		};
+
+		var args = new GollumJS.Parser.ArgumentsParser([
+			"%testFakeConfig.config3%", 
+			[
+				"%testFakeConfig.config1%",
+				"%testFakeConfig.config2%",
+				"%testFakeConfig.config3%",
+			],
+			"%testFakeConfig.config4%",
+			"%testFakeConfig%"
+		]);
+
+		a.assertCompare (args.parse(), [
+			"configurationTest123",
+			[ 
+				"configurationTest1",
+				"configurationTest12", 
+				"configurationTest123"
+			],
+			[ 
+				"configurationTest1",
+				"configurationTest12", 
+				"configurationTest123"
+			],
+			{
+				config1: "configurationTest1",
+				config2: "configurationTest12",
+				config3: "configurationTest123",
+				config4: [
+					"configurationTest1",
+					"configurationTest12", 
+					"configurationTest123"
+				]
+			}
+		]);
+
+		delete GollumJS.config.testFakeConfig;
 	},
 
 	testComplexArg: function (a) {

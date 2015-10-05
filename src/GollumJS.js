@@ -3,7 +3,7 @@
 	var config = {
 
 		node: {
-			gollumjs_path: typeof __dirname__ !== 'undefined' ? __dirname__ : "" // Fonctionne uniquement en context nodejs
+			gollumjs_path: typeof __dirname !== 'undefined' ? __dirname : "" // Fonctionne uniquement en context nodejs
 		},
 
 		fileJSParser: {
@@ -61,5 +61,10 @@
 
 		return _instances[name];
 	};
+
+	GollumJS.getParameter = function (key) {
+		var parsed = (new GollumJS.Parser.ArgumentsParser([arg])).parse();
+		return parsed[0] !== undefined ? parsed[0] : null ;
+	} 
 
 }) ();
