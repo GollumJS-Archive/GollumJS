@@ -18,6 +18,8 @@ require(__dirname+'/Tests/Parser/TestArgumentsParser.js');
 
 require(__dirname+'/Tests/Cache/TestWriteCache.js');
 
+require(__dirname+'/Tests/Reflection/FileJSParserTest.js');
+
 var results = GT.runAll();
 
 console.log ("");
@@ -27,4 +29,4 @@ console.log ("= Result unit testing =");
 console.log ("=======================");
 console.log ("");
 
-console.log (results);
+console.log (JSON.stringify(results, null, 2));

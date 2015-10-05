@@ -28,34 +28,47 @@ GollumJS.Parser.ArgumentsParser = new GollumJS.Class ({
 		return null;
 	},
 
-	_findFinalString: function (str) {
+	_findFinalArgument: function (arg) {
 
 		var _this = this;
+		var rtn = null;
 
-		switch (typeof str) {
+		switch (typeof arg) {
 
 			case 'string':
-				// TODO no implement
-				str = str.replace(new RegExp('\%[a-zA-Z0-9.]+\%', 'g'), function (match, start) {
-					return _this._findConfigValue(match.substr(0, match.length-1).substr(1).split('.'));
-				});
+				if (arg[0] == '@') {
+					rtn = GollumJS.get(arg.substr(1));
+				} else {
+					rtn = arg.replace(new RegExp('\%[a-zA-Z0-9.]+\%', 'g'), function (match, start) {
+						return _this._findConfigValue(match.substr(0, match.length-1).substr(1).split('.'));
+					});
+				}
+				break;
+			case 'object':
+				if (Object.prototype.toString.call(arg) === '[object Array]') {
+					rtn = [];
+					for (var i = 0; i < arg.length; i++) {
+						rtn.push(this._findFinalArgument(arg[i]));
+					}
+				} else {
+					rtn= {};
+					for (var i in arg) {
+						rtn[i] = this._findFinalArgument(arg[i]);
+					}
+				}
 				break;
 			default:
+				rtn = arg
 				break;
 		}
-		return str;
+		return rtn;
 	},
 
 	parse: function () {
-
-		var parsed= [];
+		var parsed = [];
 
 		for (var i = 0; i < this._args.length; i++) {
-			if (this._args[i][0] == '@') {
-				parsed.push (GollumJS.get(this._args[i].substr(1)));
-			} else {
-				parsed.push (this._findFinalString(this._args[i]));
-			}
+			parsed.push (this._findFinalArgument(this._args[i]));
 		}
 
 		return parsed;

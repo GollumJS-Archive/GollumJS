@@ -11,7 +11,9 @@
 
 	"src/Reflection/AbstractParser.js",
 	"src/Reflection/ClassParser.js",
-	"src/Reflection/FileJSParser.js",
+	"src/Reflection/FileJSParser/FileJSParser.js",
+	"src/Reflection/FileJSParser/FileJSParserException.js",
+	"src/Reflection/FileJSParser/FileJSParserNodeJSContextException.js",
 	"src/Reflection/MethodParser.js",
 	"src/Reflection/PropertyParser.js",
 	"src/Reflection/ReflectionClass.js",

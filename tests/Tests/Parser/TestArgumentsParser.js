@@ -62,6 +62,66 @@ GT.create({
 		delete GollumJS.config.services.fakeService;
 	},
 
+	testArrayArg: function (a) {
+
+		GollumJS.config.services.fakeService = {
+			class: "DataTest.FakeServiceForParser"
+		}
+		GollumJS.config.testFakeConfig = {
+			config1: "configurationTest1",
+			config2: "configurationTest2",
+			config3: 3
+		};
+
+		var args = new GollumJS.Parser.ArgumentsParser([ [
+			"%testFakeConfig.config1%",
+			"%testFakeConfig.config2%",
+			"%testFakeConfig.config3%",
+			"@fakeService"
+		] ]);
+
+		a.assertArraysEquals (args.parse()[0], [
+			"configurationTest1",
+			"configurationTest2",
+			"3",
+			GollumJS.get("fakeService")
+		]);
+		a.assertTrue (typeof args.parse()[1] === 'undefined');
+
+		delete GollumJS.config.testFakeConfig;
+		delete GollumJS.config.services.fakeService;
+	},
+
+	testObjectArg: function (a) {
+
+		GollumJS.config.services.fakeService = {
+			class: "DataTest.FakeServiceForParser"
+		}
+		GollumJS.config.testFakeConfig = {
+			config1: "configurationTest1",
+			config2: "configurationTest2",
+			config3: 3
+		};
+
+		var args = new GollumJS.Parser.ArgumentsParser([ {
+			arg1: "%testFakeConfig.config1%",
+			arg2: "%testFakeConfig.config2%",
+			arg3: "%testFakeConfig.config3%",
+			arg4: "@fakeService"
+		} ]);
+
+		a.assertCompare (args.parse()[0], {
+			arg1: "configurationTest1",
+			arg2: "configurationTest2",
+			arg3: "3",
+			arg4: GollumJS.get("fakeService")
+		});
+		a.assertTrue (typeof args.parse()[1] === 'undefined');
+
+		delete GollumJS.config.testFakeConfig;
+		delete GollumJS.config.services.fakeService;
+	},
+
 	testComplexArg: function (a) {
 		GollumJS.config.services.fakeService = {
 			class: "DataTest.FakeServiceForParser"
@@ -83,6 +143,38 @@ GT.create({
 			"string",
 			GollumJS.get("fakeService")
 		]);
+
+		delete GollumJS.config.services.fakeService;
+		delete GollumJS.config.testFakeConfig;
+	},
+
+	testArgToContructor: function (a) {
+		GollumJS.config.services.fakeService = {
+			class: "DataTest.FakeServiceForParser"
+		}
+		GollumJS.config.services.fakeServiceArg = {
+			class: "DataTest.FakeServiceForParserArgument",
+			args: [
+				"%testFakeConfig.config1%",
+				15,
+				"string",
+				"@fakeService"
+			]
+		}
+		GollumJS.config.testFakeConfig = {
+			config1: "configurationTest1"
+		}
+
+		var service = GollumJS.get('fakeServiceArg');
+		a.assertTrue (service.args[0] == "configurationTest1");
+		a.assertTrue (service.args[1] == 15);
+		a.assertTrue (service.args[2] == "string");
+		a.assertTrue (service.args[3] == GollumJS.get("fakeService"));
+		a.assertTrue (typeof service.args[4] === "undefined");
+
+		delete GollumJS.config.services.fakeService;
+		delete GollumJS.config.services.fakeServiceArg;
+		delete GollumJS.config.testFakeConfig;
 	}
 
 });

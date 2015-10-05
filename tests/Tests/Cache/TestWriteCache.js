@@ -41,6 +41,25 @@ GT.create({
 	/**
 	 * Test si un constructeur simple
 	 */
+	testWrite: function (a) {
+		
+		this.cache.set("testVar1", "testValue1");
+		var sync = false;
+		this.cache.write();
+		if (GollumJS.Utils.isNodeContext()) {
+			var i = 0;
+			while (!this.fs.existsSync("./tmp/cache/datas.json")){
+				if (i > 10000) {
+					throw "Error \"./tmp/cache/datas.js\" not created";
+				}
+				i++;
+			};
+		}
+	},
+
+	/**
+	 * Test si un constructeur simple
+	 */
 	testWriteJS: function (a) {
 		
 		this.cache.set("testVar1", "testValue1");
@@ -52,8 +71,16 @@ GT.create({
 			sync = true;
 		});
 		if (GollumJS.Utils.isNodeContext()) {
-			while (sync);
-			a.assertTrue (this.fs.existsSync("./tmp/cache/datas.js"));
+			var i = 0;
+			if (GollumJS.Utils.isNodeContext()) {
+				var i = 0;
+				while (!this.fs.existsSync("./tmp/cache/datas.js")){
+					if (i > 10000) {
+						throw "Error \"./tmp/cache/datas.js\" not created";
+					}
+					i++;
+				};
+			}
 		}
 	}
 

@@ -132,9 +132,14 @@ GollumJS.Utils = {
 	
 	var config = {
 
+		node: {
+			gollumjs_path: typeof __dirname__ !== 'undefined' ? __dirname__ : null // Fonctionne uniquement en version node
+		},
+
 		fileJSParser: {
-			srcPath: [ './' ],
-			excludes: ['.git', '.svn', 'gollumjs.js', 'gollumjs-min.js', 'index.js']
+			srcPath: [ './src', '%node.gollumjs_path%/index.js' ],
+			excludesPath: ["%node.gollumjs_path%/src"],
+			excludesFiles: ['.git', '.svn']
 		},
 		cache: {
 			path: './tmp/cache',
@@ -143,10 +148,12 @@ GollumJS.Utils = {
 		services: {
 
 			fileJSParser: {
-				class: 'GollumJS.Reflection.FileJSParser',
+				class: 'GollumJS.Reflection.FileJSParser.FileJSParser',
 				args: [
+					"@cache",
 					"%fileJSParser.srcPath%",
-					"%fileJSParser.excludes%"
+					"%fileJSParser.excludesPath%",
+					"%fileJSParser.excludesFiles%"
 				]
 			},
 			cache       : {
@@ -171,13 +178,14 @@ GollumJS.Utils = {
 	GollumJS.get = function (name) {
 
 		if (!_instances[name] && GollumJS.config.services[name] && GollumJS.config.services[name].class) {
-			
-			var service = GollumJS.Reflection.ReflectionClass.getClassByIdentifers (GollumJS.config.services[name].class.split('.'));
-			if (service) {
-				_instances[name] = new (Function.prototype.bind.apply(
-					service,
-					(new GollumJS.Parser.ArgumentsParser(GollumJS.config.services[name].args ? GollumJS.config.services[name].args : [] )).parse()
-				));
+			var __service__ = GollumJS.Reflection.ReflectionClass.getClassByIdentifers (GollumJS.config.services[name].class.split('.'));
+			var __args__    = (new GollumJS.Parser.ArgumentsParser(
+				GollumJS.config.services[name].args ? GollumJS.config.services[name].args : [] 
+			)).parse();
+			__args__.unshift(null);
+
+			if (__service__) {
+				_instances[name] = new (Function.prototype.bind.apply(__service__, __args__));
 			}
 		}
 
@@ -536,34 +544,42 @@ GollumJS.Parser.ArgumentsParser = new GollumJS.Class ({
 		return null;
 	},
 
-	_findFinalString: function (str) {
+	_findFinalArgument: function (arg) {
 
 		var _this = this;
 
-		switch (typeof str) {
+		switch (typeof arg) {
 
 			case 'string':
-				// TODO no implement
-				str = str.replace(new RegExp('\%[a-zA-Z0-9.]+\%', 'g'), function (match, start) {
-					return _this._findConfigValue(match.substr(0, match.length-1).substr(1).split('.'));
-				});
+				if (arg[0] == '@') {
+					arg = GollumJS.get(this._args[i].substr(1));
+				} else {
+					arg = arg.replace(new RegExp('\%[a-zA-Z0-9.]+\%', 'g'), function (match, start) {
+						return _this._findConfigValue(match.substr(0, match.length-1).substr(1).split('.'));
+					});
+				}
 				break;
+			case 'object':
+				if (Object.prototype.toString.call(arg) === '[object Array]') {
+					for (var i = 0; i < arg.length; i++) {
+						arg[i] = this._findFinalArgument(arg[i]);
+					}
+				} else {
+					for (var i in arg) {
+						arg[i] = this._findFinalArgument(arg[i]);
+					}
+				}
 			default:
 				break;
 		}
-		return str;
+		return arg;
 	},
 
-	parse: function () {
-
-		var parsed= [];
+	parse: function (args) {
+		var parsed = [];
 
 		for (var i = 0; i < this._args.length; i++) {
-			if (this._args[i][0] == '@') {
-				parsed.push (GollumJS.get(this._args[i].substr(1)));
-			} else {
-				parsed.push (this._findFinalString(this._args[i]));
-			}
+			parsed.push (this._findFinalArgument(this._args[i]));
 		}
 
 		return parsed;
@@ -1030,21 +1046,34 @@ GollumJS.Reflection.ClassParser = new GollumJS.Class ({
 
 
 GollumJS.Reflection = GollumJS.Reflection || {};
+GollumJS.Reflection.FileJSParser = GollumJS.Reflection.FileJSParser || {};
 /**
  *  @author     Damien Duboeuf
  *  @version 	1.0
  */
-GollumJS.Reflection.FileJSParser = new GollumJS.Class ({
+GollumJS.Reflection.FileJSParser.FileJSParser = new GollumJS.Class ({
+
+	Static: {
+		CACHE_KEY: "fileJSParser.classList"
+	},
 
 	/**
 	 * @var [GollumJS.Reflection.ReflectionClass]
 	 */
 	classList: null,
+	_cache: null,
+	_srcPath: null,
+	_excludesPath: null,
+	_excludesFiles: null,
 
-	initialize: function () {
-		
-		var cache = GollumJS.get("cache");
-		var datas = cache.get("app.classList");
+	initialize: function (cache, srcPath, excludesPath, excludesFiles) {
+
+		this._srcPath       = srcPath;
+		this._excludesPath  = excludesPath;
+		this._excludesFiles = excludesFiles;
+		var datas = cache.get(this.self.CACHE_KEY);
+
+		console.log (arguments);return;
 
 		if (datas) {
 			this.classList = {};
@@ -1055,39 +1084,45 @@ GollumJS.Reflection.FileJSParser = new GollumJS.Class ({
 			}
 		}
 		if (!this.classList) {
+
+			if (!GollumJS.Utils.isNodeContext()) {
+				throw new GollumJS.Reflection.FileJSParser.FileJSParserNodeJSContextException("Your are not in nodejs context. FileJSParser must be work only in nodejs context. You must run cache generator \"./bin/generate.js\" in nodejs then load cache/datas.js");
+			}
+
 			this.classList = {};
 			this.parseSources ();
 			datas = {};
 			for (var i in this.classList) {
 				datas[i] = this.classList[i].serialiseInfos();
 			}
-			cache.set("app.classList", datas);
+			cache.set(this.self.CACHE_KEY, datas);
 		}
 	},
 
 	parseSources: function () {
 
-		for (var i = 0; i < GollumJS.config.fileJSParser.srcPath.length; i++) {
-			var path = GollumJS.config.fileJSParser.srcPath[i];
-			this.parseFiles (this.getFiles (path, GollumJS.config.fileJSParser.excludes));
+		for (var i = 0; i < this._srcPath.length; i++) {
+			this.parseFiles (this.getFiles (this._srcPath[i]));
 		}
 
 	},
 
-	getFiles: function (dir, excludes, files_){
+	getFiles: function (dir, files_){
 
 		files_ = files_ || [];
-		excludes = excludes || [];
 		
 		var fs = require('fs');
 		var files = fs.readdirSync(dir);
 
 		for (var i in files){
 			var name = dir + '/' + files[i];
-			if (excludes.indexOf(files[i]) == -1) {
+			if (
+				this._excludesFiles.indexOf(files[i]) == -1 &&
+				this._excludesPath.indexOf(files[i]) != 0
+			) {
 
 				if (fs.statSync(name).isDirectory()) {
-						this.getFiles(name, excludes, files_);
+						this.getFiles(name, files_);
 					
 				} else {
 					files_.push(name);
@@ -1125,6 +1160,26 @@ GollumJS.Reflection.FileJSParser = new GollumJS.Class ({
 		}
 	}
 
+});
+
+GollumJS.Reflection = GollumJS.Reflection || {};
+GollumJS.Reflection.FileJSParser = GollumJS.Reflection.FileJSParser || {};
+/**
+ *  @author     Damien Duboeuf
+ *  @version 	1.0
+ */
+GollumJS.Reflection.FileJSParser.FileJSParserException = new GollumJS.Class ({
+	Extends: GollumJS.Exception
+});
+
+GollumJS.Reflection = GollumJS.Reflection || {};
+GollumJS.Reflection.FileJSParser = GollumJS.Reflection.FileJSParser || {};
+/**
+ *  @author     Damien Duboeuf
+ *  @version 	1.0
+ */
+GollumJS.Reflection.FileJSParser.FileJSParserNodeJSContextException = new GollumJS.Class ({
+	Extends: GollumJS.Reflection.FileJSParser.FileJSParserException
 });
 
 GollumJS.Reflection = GollumJS.Reflection || {};
