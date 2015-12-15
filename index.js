@@ -142,6 +142,18 @@ GollumJS.Utils = {
 				}
 			}
 		};
+	},
+
+	each: function (iterable, cb) {
+		if (typeof iterable.length == 'undefined') {
+			for (var i in iterable) {
+				cb.call(iterable[i], i);
+			}
+		} else {
+			for (var i = 0; i < iterable.length; i++) {
+				cb.call(iterable[i], i);
+			}
+		}
 	}
 
 };
