@@ -124,6 +124,22 @@ GollumJS.Utils = {
 		}
  
 		return this.ENGINE_OTHER;
+	},
+
+	step: function (maxCall, finishCb, stepCb) {
+		var called = 0;
+		return function () {
+			called++;
+			if (maxCall == called) {
+				if (typeof finishCb == 'function') {
+					finishCb();
+				}
+			} else {
+				if (typeof stepCb == 'function') {
+					stepCb();
+				}
+			}
+		};
 	}
 
 };
