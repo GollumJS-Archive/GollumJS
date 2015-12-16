@@ -141,13 +141,19 @@ GollumJS.Utils = {
 	each: function (iterable, cb) {
 		if (typeof iterable.length == 'undefined') {
 			for (var i in iterable) {
-				cb.call(iterable[i], i);
+				if (cb.call(iterable[i], i, iterable[i]) === false) {
+					break;
+				}
 			}
 		} else {
-			for (var i = 0; i < iterable.length; i++) {
-				cb.call(iterable[i], i);
+			var l = iterable.length;
+			for (var i = 0; i < l; i++) {
+				if (cb.call(iterable[i], i, iterable[i]) === false) {
+					break;
+				}
 			}
 		}
+		return iterable;
 	}
 
 };

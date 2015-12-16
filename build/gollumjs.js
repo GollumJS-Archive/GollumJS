@@ -2,6 +2,10 @@ var GollumJS = typeof (typeof window !== 'undefined' ? window : global).GollumJS
 GollumJS.__init__ = true;
 GollumJS.__running__ = "GollumJS_"+new Date().getTime()+"_"+parseInt(Math.random()*100000, 10);
 
+GollumJS.namespace = function (_ns_, cb) {
+	cb.call(_ns_, _ns_);
+};
+
 
 "use strict";
 
@@ -145,13 +149,19 @@ GollumJS.Utils = {
 	each: function (iterable, cb) {
 		if (typeof iterable.length == 'undefined') {
 			for (var i in iterable) {
-				cb.call(iterable[i], i);
+				if (cb.call(iterable[i], i, iterable[i]) === false) {
+					break;
+				}
 			}
 		} else {
-			for (var i = 0; i < iterable.length; i++) {
-				cb.call(iterable[i], i);
+			var l = iterable.length;
+			for (var i = 0; i < l; i++) {
+				if (cb.call(iterable[i], i, iterable[i]) === false) {
+					break;
+				}
 			}
 		}
+		return iterable;
 	}
 
 };
