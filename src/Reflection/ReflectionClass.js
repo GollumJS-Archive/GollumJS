@@ -18,22 +18,14 @@ GollumJS.Reflection.ReflectionClass = new GollumJS.Class ({
 	Static: {
 
 		getClassByName: function (name, target) {
-
-			target = target || window;
-
+			target = target || GollumJS.Utils.global();
 			return this.getClassByIdentifers (name.split ('.'), target);
 		},
 
 		getClassByIdentifers: function (identifiers, target, i) {
 
-			if (!target) {
-				if (typeof module !== 'undefined' && module.exports) {
-					target = global;
-				} else {
-					target = window;
-				}
-			}
-
+			target = target || GollumJS.Utils.global();
+			
 			i = i || 0;
 
 			if (i >= identifiers.length) {

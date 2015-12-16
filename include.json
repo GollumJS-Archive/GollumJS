@@ -1,6 +1,7 @@
 [
 	"src/namespace.js",
 	"src/Utils.js",
+	"src/Utils/Collection.js",
 	"src/GollumJS.js",
 	"src/Class.js",
 	"src/Exception.js",

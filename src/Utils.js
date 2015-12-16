@@ -1,4 +1,3 @@
-
 "use strict";
 
 GollumJS.Utils = {
@@ -120,43 +119,6 @@ GollumJS.Utils = {
 		}
  
 		return this.ENGINE_OTHER;
-	},
-
-	step: function (maxCall, finishCb, stepCb) {
-		var called = 0;
-		if (maxCall <= 0) {
-			finishCb();
-		}
-		return function () {
-			called++;
-			if (maxCall == called) {
-				if (typeof finishCb == 'function') {
-					finishCb();
-				}
-			} else {
-				if (typeof stepCb == 'function') {
-					stepCb();
-				}
-			}
-		};
-	},
-
-	each: function (iterable, cb) {
-		if (typeof iterable.length == 'undefined') {
-			for (var i in iterable) {
-				if (cb.call(iterable[i], i, iterable[i]) === false) {
-					break;
-				}
-			}
-		} else {
-			var l = iterable.length;
-			for (var i = 0; i < l; i++) {
-				if (cb.call(iterable[i], i, iterable[i]) === false) {
-					break;
-				}
-			}
-		}
-		return iterable;
 	}
 
 };
