@@ -4,7 +4,7 @@ console.log ("=== Build GollumJSClass ===");
 
 fs = require('fs');
 
-fs.readFile(__dirname+"/../includes.json", "utf8", function(err, data) {
+fs.readFile(__dirname+"/../include.json", "utf8", function(err, data) {
 	if (err) throw err;
 	
 	var json = JSON.parse (data);

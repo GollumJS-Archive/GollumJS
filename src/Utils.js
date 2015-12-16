@@ -124,6 +124,9 @@ GollumJS.Utils = {
 
 	step: function (maxCall, finishCb, stepCb) {
 		var called = 0;
+		if (maxCall <= 0) {
+			finishCb();
+		}
 		return function () {
 			called++;
 			if (maxCall == called) {
