@@ -63,7 +63,7 @@
 	};
 
 	GollumJS.getParameter = function (key) {
-		var parsed = (new GollumJS.Parser.ArgumentsParser([arg])).parse();
+		var parsed = (new GollumJS.Parser.ArgumentsParser(['%'+key+'%'])).parse();
 		return parsed[0] !== undefined ? parsed[0] : null ;
 	} 
 
