@@ -739,7 +739,7 @@ GollumJS.Cache.Cache = new GollumJS.Class ({
 	 */
 	read : function () {
 		if (this.fs) {
-			var path = GollumJS.config.cache.path+"/datas.json";
+			var path = this.pathDirectory+"/datas.json";
 			console.log ("Read cache file : ", path);
 			if (this.fs.existsSync(path)) {
 				GollumJS.cache = JSON.parse(this.fs.readFileSync(path));

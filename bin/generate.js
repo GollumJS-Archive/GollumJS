@@ -4,7 +4,7 @@ var rmdir = require('rimraf').sync;
 
 
 var generate = function () {
-	var GollumJS = require(__dirname+'../index.js');
+	var GollumJS = require(__dirname+'/../index.js');
 
 	console.log ("Clear file : "+GollumJS.config.cache.path);
 	rmdir (GollumJS.config.cache.path);
