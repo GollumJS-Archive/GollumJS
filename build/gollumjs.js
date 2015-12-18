@@ -268,7 +268,53 @@ GollumJS.NS(GollumJS.Utils, function() {
 	GollumJS.getParameter = function (key) {
 		var parsed = (new GollumJS.Parser.ArgumentsParser(['%'+key+'%'])).parse();
 		return parsed[0] !== undefined ? parsed[0] : null ;
-	} 
+	};
+
+	(function () {
+		
+		console       = typeof console       !== 'undefined' ? console       : function() {};
+		console.log   = typeof console.log   !== 'undefined' ? console.log   : function() {};
+		console.error = typeof console.error !== 'undefined' ? console.error : console.log;
+		console.info  = typeof console.info  !== 'undefined' ? console.info  : console.log;
+		console.warn  = typeof console.warn  !== 'undefined' ? console.warn  : console.log;
+		console.debug = typeof console.debug !== 'undefined' ? console.debug : console.info;
+		console.debug = typeof console.trace !== 'undefined' ? console.trace : console.log;
+		
+		var trace = console.error;
+		console.error = function () {
+			
+			var args = [];
+			var display = [];
+
+			for (var i = 0; i < arguments.length; i++) {
+				args.push(arguments[i]);
+			}
+			
+			for (var i = 0; i < arguments.length; i++) {
+				var arg = args.shift();
+				 if (arg instanceof Error || GollumJS.Exception.isInstance (arg)) {
+				 	if (display.length) {
+						trace.apply(console, display);
+					}	
+					trace.call(console, '=== Error === ');
+					if (arg.message) {
+						trace.call(console, '  message: '+arg.message);
+					} else {
+						trace.call(console, "  ", arg);
+					}
+					if (arg.stack) {
+						trace.call(console, '  stack:\n  '+arg.stack+"\n");
+					}
+
+					trace.call(console, arg);
+
+					return console.error.apply(console, args);
+				}
+				display.push(arg);
+			}
+			return trace.apply(console, display);
+		};
+	})();
 
 }) ();
 
