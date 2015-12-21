@@ -5,6 +5,7 @@
 	"src/GollumJS.js",
 	"src/Class.js",
 	"src/Exception.js",
+	"src/Promise.js",
 
 	"src/Parser/ArgumentsParser.js",
 
