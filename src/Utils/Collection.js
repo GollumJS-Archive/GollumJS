@@ -48,12 +48,15 @@ GollumJS.NS(GollumJS.Utils, function() {
 			return iterable;
 		},
 
-		eachStep: function (iterable, cbIter, cbDone, cbStep) {
+		eachStep: function (iterable, cbIter, cbStep) {
+			var _this = this;
+			return new GollumJS.Promise (function (resolve, reject) {
+				var step = this.step(this.length(iterable), resolve, cbStep);
+				return _this.each(iterable, function (i, value) {
+					return cbIter.call(value, i, value, step);
+				})
+			});
 
-			var step = this.step(this.length(iterable), cbDone, cbStep);
-			return this.each(iterable, function (i, value) {
-				return cbIter.call(value, i, value, step);
-			})
 		}
 	};
 
