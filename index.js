@@ -648,14 +648,16 @@ GollumJS.NS(GollumJS, function() {
 	if (GollumJS.Utils.isNodeContext()) {
 		this.Promise = require('rsvp').Promise;
 	} else {
-		if (!GollumJS.Utils.global().RSVP || !GollumJS.Utils.global().RSVP.Promise) {
+		if (typeof GollumJS.Utils.global().RSVP == 'undefined' || typeof GollumJS.Utils.global().RSVP.Promise == 'undefined') {
 			var script = document.createElement("script");
 			script.type = "text/javascript";
 			script.src = "http://rsvpjs-builds.s3.amazonaws.com/rsvp-latest.min.js";
-			$("head").append(s);
+			GollumJS.Utils.addDOMEvent(script, 'load', function() {
+				GollumJS.Promise = GollumJS.Utils.global().RSVP.Promise;
+			});
 			document.body.appendChild(script);
-			this.Promise = GollumJS.Utils.global().RSVP.Promise;
 		}
+		
 	}
 
 });
