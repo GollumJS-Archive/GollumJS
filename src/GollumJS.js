@@ -15,6 +15,11 @@
 			path: './tmp/cache',
 		},
 
+		dependency: {
+			// 'rsvp': '//rsvpjs-builds.s3.amazonaws.com/rsvp-latest.min.js'
+			'rsvp': "//127.0.0.1:8383/static/bower_components/rsvp.js/rsvp.js"
+		},
+
 		services: {
 
 			fileJSParser: {

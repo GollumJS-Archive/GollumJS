@@ -91,6 +91,21 @@ GollumJS.NS(GollumJS, function() {
 			}
 		},
 
+		include: function (url) {
+			if (GollumJS.Utils.isDOMContext()) {
+				var req = new XMLHttpRequest();
+				req.open("GET", url, false); // 'false': synchronous.
+				req.send(null);
+
+				var s = document.createElement("script");
+				s.type = "text/javascript";
+				s.text = req.responseText;
+				document.getElementsByTagName("head")[0].appendChild(s);
+			} else {
+				throw new GollumJS.Exception("include not implement in node context.");
+			}
+		},
+
 		global: function () {
 			return typeof window !== 'undefined' ? window : global; 
 		},
@@ -221,6 +236,11 @@ GollumJS.NS(GollumJS.Utils, function() {
 		},
 		cache: {
 			path: './tmp/cache',
+		},
+
+		dependency: {
+			// 'rsvp': '//rsvpjs-builds.s3.amazonaws.com/rsvp-latest.min.js'
+			'rsvp': "//127.0.0.1:8383/static/bower_components/rsvp.js/rsvp.js"
 		},
 
 		services: {
@@ -643,25 +663,6 @@ GollumJS.Exception = new GollumJS.Class ({
 	}
 });
 
-GollumJS.NS(GollumJS, function() {
-
-	if (GollumJS.Utils.isNodeContext()) {
-		this.Promise = require('rsvp').Promise;
-	} else {
-		if (typeof GollumJS.Utils.global().RSVP == 'undefined' || typeof GollumJS.Utils.global().RSVP.Promise == 'undefined') {
-			var script = document.createElement("script");
-			script.type = "text/javascript";
-			script.src = "http://rsvpjs-builds.s3.amazonaws.com/rsvp-latest.min.js";
-			GollumJS.Utils.addDOMEvent(script, 'load', function() {
-				GollumJS.Promise = GollumJS.Utils.global().RSVP.Promise;
-			});
-			document.body.appendChild(script);
-		}
-		
-	}
-
-});
-
 GollumJS.Parser = GollumJS.Parser || {};
 /**
  *  @author     Damien Duboeuf
@@ -748,6 +749,21 @@ GollumJS.Parser.ArgumentsParser = new GollumJS.Class ({
 		}
 
 		return parsed;
+	}
+
+});
+
+GollumJS.NS(GollumJS, function() {
+
+	if (GollumJS.Utils.isNodeContext()) {
+		this.Promise = require('rsvp').Promise;
+	} else {
+		if (typeof GollumJS.Utils.global().RSVP == 'undefined' || typeof GollumJS.Utils.global().RSVP.Promise == 'undefined') {
+		 	var url = GollumJS.getParameter('dependency.rsvp');
+		 	console.warn ("Dependency not found load:", url);
+			GollumJS.Utils.include(url);
+		}
+		this.Promise = GollumJS.Utils.global().RSVP.Promise;
 	}
 
 });

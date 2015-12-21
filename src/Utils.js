@@ -72,6 +72,21 @@ GollumJS.NS(GollumJS, function() {
 			}
 		},
 
+		include: function (url) {
+			if (GollumJS.Utils.isDOMContext()) {
+				var req = new XMLHttpRequest();
+				req.open("GET", url, false); // 'false': synchronous.
+				req.send(null);
+
+				var s = document.createElement("script");
+				s.type = "text/javascript";
+				s.text = req.responseText;
+				document.getElementsByTagName("head")[0].appendChild(s);
+			} else {
+				throw new GollumJS.Exception("include not implement in node context.");
+			}
+		},
+
 		global: function () {
 			return typeof window !== 'undefined' ? window : global; 
 		},
