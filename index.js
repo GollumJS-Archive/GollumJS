@@ -211,10 +211,9 @@ GollumJS.NS(GollumJS.Utils, function() {
 		},
 
 		eachStep: function (iterable, cbIter, cbStep) {
-			var _this = this;
 			return new GollumJS.Promise (function (resolve, reject) {
-				var step = this.step(this.length(iterable), resolve, cbStep);
-				return _this.each(iterable, function (i, value) {
+				var step = GollumJS.Utils.Collection.step(GollumJS.Utils.Collection.length(iterable), resolve, cbStep);
+				return GollumJS.Utils.Collection.each(iterable, function (i, value) {
 					return cbIter.call(value, i, value, step);
 				})
 			});
