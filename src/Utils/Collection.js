@@ -4,16 +4,23 @@ GollumJS.NS(GollumJS.Utils, function() {
 
 		step: function (maxCall, cbFinish, cbStep) {
 			var called = 0;
+			var results = [];
+
 			if (maxCall <= 0) {
 				cbFinish();
 			}
 			return function () {
+				if (arguments.length == 1) {
+					results.push(arguments[0]);
+				} else if (arguments.length) {
+					results.push(arguments);
+				}
 				called++;
 				if (maxCall == called) {
-					cbFinish();
+					cbFinish(results);
 				} else {
 					if (typeof cbStep == 'function') {
-						cbStep();
+						cbStep(results);
 					}
 				}
 			};

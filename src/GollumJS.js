@@ -17,7 +17,7 @@
 
 		dependency: {
 			// 'rsvp': '//rsvpjs-builds.s3.amazonaws.com/rsvp-latest.min.js'
-			'rsvp': "//127.0.0.1:8383/static/bower_components/rsvp.js/rsvp.js"
+			'rsvp': "//127.0.0.1:8383/static/rsvp-latest.min.js"
 		},
 
 		services: {
@@ -82,40 +82,42 @@
 		console.debug = typeof console.debug !== 'undefined' ? console.debug : console.info;
 		console.debug = typeof console.trace !== 'undefined' ? console.trace : console.log;
 		
-		var trace = console.error;
-		console.error = function () {
-			
-			var args = [];
-			var display = [];
+		if (!!(typeof module !== 'undefined' && module.exports)) {
+			var trace = console.error;
+			console.error = function () {
+				
+				var args = [];
+				var display = [];
 
-			for (var i = 0; i < arguments.length; i++) {
-				args.push(arguments[i]);
-			}
-			
-			for (var i = 0; i < arguments.length; i++) {
-				var arg = args.shift();
-				 if (arg instanceof Error || GollumJS.Exception.isInstance (arg)) {
-				 	if (display.length) {
-						trace.apply(console, display);
-					}	
-					trace.call(console, '=== Error === ');
-					if (arg.message) {
-						trace.call(console, '  message: '+arg.message);
-					} else {
-						trace.call(console, "  ", arg);
-					}
-					if (arg.stack) {
-						trace.call(console, '  stack:\n  '+arg.stack+"\n");
-					}
-
-					trace.call(console, arg);
-
-					return console.error.apply(console, args);
+				for (var i = 0; i < arguments.length; i++) {
+					args.push(arguments[i]);
 				}
-				display.push(arg);
-			}
-			return trace.apply(console, display);
-		};
+				
+				for (var i = 0; i < arguments.length; i++) {
+					var arg = args.shift();
+					 if (arg instanceof Error || GollumJS.Exception.isInstance (arg)) {
+					 	if (display.length) {
+							trace.apply(console, display);
+						}	
+						trace.call(console, '=== Error === ');
+						if (arg.message) {
+							trace.call(console, '  message: '+arg.message);
+						} else {
+							trace.call(console, "  ", arg);
+						}
+						if (arg.stack) {
+							trace.call(console, '  stack:\n  '+arg.stack+"\n");
+						}
+
+						trace.call(console, arg);
+
+						return console.error.apply(console, args);
+					}
+					display.push(arg);
+				}
+				return trace.apply(console, display);
+			};
+		}
 	})();
 
 }) ();
