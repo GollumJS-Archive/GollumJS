@@ -41,7 +41,10 @@ GollumJS.NS(GollumJS, function() {
 			return target;
 		},
 
-		extend: function(destination, source) {
+		extend: function(destination, source, mergeArray) {
+			
+			mergeArray = typeof mergeArray != 'undefined' ? mergeArray : true;
+			
 			for (var property in source) {
 
 				if (source[property] == null) {
@@ -54,6 +57,13 @@ GollumJS.NS(GollumJS, function() {
 						destination[property] = {};
 					}
 					GollumJS.Utils.extend (destination[property], source[property]);
+				} else
+				if (
+					mergeArray &&
+					typeof (destination[property]) == 'object' && Object.prototype.toString.call( destination[property] ) === '[object Array]' &&
+					typeof (source     [property]) == 'object' && Object.prototype.toString.call( source     [property] ) === '[object Array]'
+				) {
+					destination[property] = destination[property].concat(source[property]);
 				} else {
 					destination[property] = GollumJS.Utils.clone(source[property]);
 				}
@@ -136,6 +146,36 @@ GollumJS.NS(GollumJS, function() {
 			}
 	 
 			return this.ENGINE_OTHER;
+		},
+		
+		engineVersion: function (minorVersion) {
+			
+			var version = "0";
+			
+			if (this.isNodeContext()) {
+				return this.ENGINE_WEBKIT;
+			}
+
+			if (
+				typeof navigator           != "undefined" &&
+				typeof navigator.userAgent != "undefined"
+			) {
+
+				var ua = navigator.userAgent.toLowerCase();
+				var match =
+					/(chrome)[ \/]([\w.]+)/.exec(ua) ||
+					/(webkit)[ \/]([\w.]+)/.exec(ua) ||
+					/(opera)(?:.*version|)[ \/]([\w.]+)/.exec(ua) ||
+					/(msie) ([\w.]+)/.exec(ua) ||
+					/(trident)[ \/]([\w.]+)/.exec(ua)||
+					ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) || []
+				;
+				version = match[2] || "0";
+				version = (version.indexOf('.') != -1  && !minorVersion) ? version.substr(0, version.indexOf('.')) : version;
+				
+			}
+	 
+			return version;
 		}
 
 	};

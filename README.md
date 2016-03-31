@@ -1,1 +1,1 @@
-# Class.js
+# GollumJS

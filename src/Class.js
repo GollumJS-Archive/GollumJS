@@ -38,6 +38,9 @@
 		}
 
 		var gjsObject = function () {
+			for (var i in this) {
+				this[i] = GollumJS.Utils.clone(this[i]);
+			} 
 			implementation.initialize.apply(this, arguments);
 			return this;
 		};

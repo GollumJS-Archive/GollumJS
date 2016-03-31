@@ -6,18 +6,17 @@
 			gollumjs_path: typeof __dirname !== 'undefined' ? __dirname : "" // Fonctionne uniquement en context nodejs
 		},
 
-		fileJSParser: {
-			srcPath: [ './src', '%node.gollumjs_path%/index.js' ],
+		src: {
+			path: [ './src', '%node.gollumjs_path%/index.js' ],
 			excludesPath: ["%node.gollumjs_path%/src"],
-			excludesFiles: ['.git', '.svn']
+			excludesFiles: ['.git', '.svn', '.hg']
 		},
 		cache: {
 			path: './tmp/cache',
 		},
 
 		dependency: {
-			// 'rsvp': '//rsvpjs-builds.s3.amazonaws.com/rsvp-latest.min.js'
-			'rsvp': "//127.0.0.1:8383/static/rsvp-latest.min.js"
+			'rsvp': '//rsvpjs-builds.s3.amazonaws.com/rsvp-latest.min.js'
 		},
 
 		services: {
