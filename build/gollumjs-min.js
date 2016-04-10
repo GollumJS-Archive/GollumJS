@@ -329,13 +329,17 @@ GollumJS.NS(GollumJS.Utils, function() {
 			__args__.unshift(null);
 
 			if (__service__) {
-				_instances[name] = new (Function.prototype.bind.apply(__service__, __args__));
+				GollumJS.set(name, new (Function.prototype.bind.apply(__service__, __args__)));
 			}
 		}
 
 		return _instances[name];
 	};
 
+	GollumJS.set = function (name, object) {
+		_instances[name] = object;
+	};
+	
 	GollumJS.getParameter = function (key) {
 		var parsed = (new GollumJS.Parser.ArgumentsParser(['%'+key+'%'])).parse();
 		return parsed[0] !== undefined ? parsed[0] : null ;
