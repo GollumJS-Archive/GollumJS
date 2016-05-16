@@ -50,9 +50,11 @@
 	var _instances = {};
 
 	GollumJS.get = function (name) {
-
+		
 		if (!_instances[name] && GollumJS.config.services[name] && GollumJS.config.services[name].class) {
-			var __service__ = GollumJS.Reflection.ReflectionClass.getClassByIdentifers (GollumJS.config.services[name].class.split('.'));
+			
+			var finalName = GollumJS.Parser.ArgumentsParser.parseConfig(GollumJS.config.services[name].class);
+			var __service__ = GollumJS.Reflection.ReflectionClass.getClassByName (finalName);
 			var __args__    = (new GollumJS.Parser.ArgumentsParser(
 				GollumJS.config.services[name].args ? GollumJS.config.services[name].args : [] 
 			)).parse();
@@ -60,6 +62,8 @@
 
 			if (__service__) {
 				GollumJS.set(name, new (Function.prototype.bind.apply(__service__, __args__)));
+			} else {
+				console.warn('Class service '+name+' not found: ', GollumJS.config.services[name]);
 			}
 		}
 
