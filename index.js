@@ -275,6 +275,7 @@ GollumJS.NS(GollumJS.Utils, function() {
 	var config = {
 
 		node: {
+			web_path: './web',
 			gollumjs_path: typeof __dirname !== 'undefined' ? __dirname : "" // Fonctionne uniquement en context nodejs
 		},
 
@@ -347,8 +348,7 @@ GollumJS.NS(GollumJS.Utils, function() {
 	};
 	
 	GollumJS.getParameter = function (key) {
-		var parsed = (new GollumJS.Parser.ArgumentsParser(['%'+key+'%'])).parse();
-		return parsed[0] !== undefined ? parsed[0] : null ;
+		return GollumJS.Parser.ArgumentsParser.parseConfig('%'+key+'%');
 	};
 
 	(function () {
@@ -359,7 +359,7 @@ GollumJS.NS(GollumJS.Utils, function() {
 		console.info  = typeof console.info  !== 'undefined' ? console.info  : console.log;
 		console.warn  = typeof console.warn  !== 'undefined' ? console.warn  : console.log;
 		console.debug = typeof console.debug !== 'undefined' ? console.debug : console.info;
-		console.debug = typeof console.trace !== 'undefined' ? console.trace : console.log;
+		console.trace = typeof console.trace !== 'undefined' ? console.trace : console.log;
 		
 		var trace = console.error;
 		console.error = function () {
@@ -406,7 +406,7 @@ GollumJS.NS(GollumJS.Utils, function() {
  * 	Extends    : Implémente l'héritage simple par l'attribut Extends
  *               Appel au methode parente par ce même attribut grâce à this.parent()
  *  Static   : insertion de variable Static dans l'objet 
- *             Si dans Static domReady existe elle sera appelé automatiquement à la fin du cahrgement de la page
+ *             Si dans Static contextReady existe elle sera appelé automatiquement à la fin du cahrgement de la page
  *  this.parent() : Dans une methode this.parent() permet d'accéder à la Class mère de l'objet
  *  this.self : self exist toujours dans l'objet et permet d'accéder au constructeur de l'objet
  *  @namespace	
@@ -414,15 +414,16 @@ GollumJS.NS(GollumJS.Utils, function() {
  *  @version 	1.0
  */
 
-(function () {
+GollumJS.NS(GollumJS, function() {
 
 	var __countClass__ = 0;
+	var __domLoaded__ = false;
 
 	/**
 	 * Objet Class permettant de créer une otion objet avancé
 	 * @param {} implementation
 	 */
-	GollumJS.Class = function (implementation) {
+	this.Class = function (implementation) {
 
 		if (typeof(implementation.initialize) != 'function') {
 			implementation.initialize = function () {};
@@ -437,7 +438,7 @@ GollumJS.NS(GollumJS.Utils, function() {
 				}
 			}
 		}
-
+		
 		var gjsObject = function () {
 			for (var i in this) {
 				this[i] = GollumJS.Utils.clone(this[i]);
@@ -496,13 +497,16 @@ GollumJS.NS(GollumJS.Utils, function() {
 			
 			// Recopie des methode depuis les extends
 			for (var j in __extends__[i].prototype) {
-				(function (name, called) {
-					if (typeof (called) == 'function') {
-						gjsObject.prototype[name] = called;
-					} else {
-						gjsObject.prototype[name] = GollumJS.Utils.clone (called);
-					}
-				})(j,  __extends__[i].prototype[j]);
+				try {
+					(function (name, called) {
+						if (typeof (called) == 'function') {
+							gjsObject.prototype[name] = called;
+						} else {
+							gjsObject.prototype[name] = GollumJS.Utils.clone (called);
+						}
+					})(j,  __extends__[i].prototype[j]);
+				} catch (e) {
+				}
 			}
 		}
 		__extends__ = __extends__.reverse();
@@ -608,25 +612,28 @@ GollumJS.NS(GollumJS.Utils, function() {
 
 				for (var i = 0; i < __parent__.__extends__.length; i++) {
 					for (var j in __parent__.__extends__[i].prototype) {
-						if (
-							typeof __parent__.__extends__[i].prototype[j] == 'function' &&
-							 typeof __parent__[j] == 'undefined'
-						) {
-							(function (i, j) {
-								__parent__[j] = function () {
-									var target = __parent__.__scope__ !== undefined ? __parent__.__scope__ : __parent__.__extends__[i];
-									
-									if (GollumJS.Utils.isGollumJsClass (target)) {
-										if (target) {
-											var __oldExtends__ = __parent__.__extends__;
-											__parent__.__extends__ = target.getExtendsClass();
-											var __rtn__ = target.prototype[j].apply(__this__, arguments);
-											__parent__.__extends__ = __oldExtends__;
-											return __rtn__;
+						try {
+							if (
+								typeof __parent__.__extends__[i].prototype[j] == 'function' &&
+								 typeof __parent__[j] == 'undefined'
+							) {
+								(function (i, j) {
+									__parent__[j] = function () {
+										var target = __parent__.__scope__ !== undefined ? __parent__.__scope__ : __parent__.__extends__[i];
+										
+										if (GollumJS.Utils.isGollumJsClass (target)) {
+											if (target) {
+												var __oldExtends__ = __parent__.__extends__;
+												__parent__.__extends__ = target.getExtendsClass();
+												var __rtn__ = target.prototype[j].apply(__this__, arguments);
+												__parent__.__extends__ = __oldExtends__;
+												return __rtn__;
+											}
 										}
 									}
-								}
-							})(i, j);
+								})(i, j);
+							}
+						} catch (e) {
 						}
 					}
 				}
@@ -636,6 +643,22 @@ GollumJS.NS(GollumJS.Utils, function() {
 			__parent__.__scope__ = scope;
 			return __parent__;
 		};
+		
+		///////////////
+		// DOM Ready //
+		///////////////
+		
+		if (GollumJS.Utils.isDOMContext()) {
+			GollumJS.Utils.addDOMEvent(window, 'load', function () {
+				__domLoaded__ = true;
+				if (typeof gjsObject.contextReady == 'function') {
+					gjsObject.contextReady();
+				}
+			});
+			if (__domLoaded__ && typeof gjsObject.contextReady == 'function') {
+				gjsObject.contextReady();
+			}
+		}
 
 		///////////////////////////////
 		// Generate Class Properties //
@@ -648,7 +671,7 @@ GollumJS.NS(GollumJS.Utils, function() {
 		return gjsObject;
 	};
 
-})();
+});
 
 /**
  *  Class exception générique

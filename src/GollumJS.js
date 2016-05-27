@@ -3,6 +3,7 @@
 	var config = {
 
 		node: {
+			web_path: './web',
 			gollumjs_path: typeof __dirname !== 'undefined' ? __dirname : "" // Fonctionne uniquement en context nodejs
 		},
 
@@ -75,8 +76,7 @@
 	};
 	
 	GollumJS.getParameter = function (key) {
-		var parsed = (new GollumJS.Parser.ArgumentsParser(['%'+key+'%'])).parse();
-		return parsed[0] !== undefined ? parsed[0] : null ;
+		return GollumJS.Parser.ArgumentsParser.parseConfig('%'+key+'%');
 	};
 
 	(function () {
@@ -87,7 +87,7 @@
 		console.info  = typeof console.info  !== 'undefined' ? console.info  : console.log;
 		console.warn  = typeof console.warn  !== 'undefined' ? console.warn  : console.log;
 		console.debug = typeof console.debug !== 'undefined' ? console.debug : console.info;
-		console.debug = typeof console.trace !== 'undefined' ? console.trace : console.log;
+		console.trace = typeof console.trace !== 'undefined' ? console.trace : console.log;
 		
 		var trace = console.error;
 		console.error = function () {
