@@ -1,6 +1,6 @@
 
 
-console.log ("=== Build GollumJSClass ===");
+console.log ("=== Build GollumJS ===");
 
 fs = require('fs');
 
@@ -41,10 +41,11 @@ fs.readFile(__dirname+"/../include.json", "utf8", function(err, data) {
 			content+
 			"\nglobal.GollumJS = GollumJS; \n} module.exports = global.GollumJS; ",
 			function(err) {
-			if(err) {
-				return console.error(err);
+				if(err) {
+					return console.error(err);
+				}
+				console.log (__dirname+"/../index.js => OK");
 			}
-			console.log (__dirname+"/../index.js => OK");
-		});
+		);
 	});
 });

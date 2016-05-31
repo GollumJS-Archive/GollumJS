@@ -651,8 +651,8 @@ GollumJS.NS(GollumJS, function() {
 		if (GollumJS.Utils.isDOMContext()) {
 			GollumJS.Utils.addDOMEvent(window, 'load', function () {
 				__domLoaded__ = true;
-				if (typeof gjsObject.contextReady == 'function') {
-					gjsObject.contextReady();
+				if (typeof gjsObject.onContextReady == 'function') {
+					gjsObject.onContextReady();
 				}
 			});
 			if (__domLoaded__ && typeof gjsObject.contextReady == 'function') {
@@ -667,7 +667,11 @@ GollumJS.NS(GollumJS, function() {
 		gjsObject.__gollumjs__ = GollumJS.__running__;	
 
 		gjsObject.prototype.self = gjsObject; // Racourcis
-
+		
+		if (typeof gjsObject.onClassCreated == 'function') {
+			gjsObject.onClassCreated();
+		}
+		
 		return gjsObject;
 	};
 
