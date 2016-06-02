@@ -2,6 +2,15 @@ GollumJS.NS(GollumJS.Utils, function() {
 
 	this.Collection = {
 
+		/**
+		 * Return a function for called after.
+		 * If this function is call 'maxCall' times then the call back 'cbFinish' is called.
+		 * For each called on this function the optional callback cbStep is called. 
+		 * @param  {int}      maxCall
+		 * @param  {Function} cbFinish
+		 * @param  {Function} cbStep (optional)
+         * @return {Function}
+         */
 		step: function (maxCall, cbFinish, cbStep) {
 			var called = 0;
 			var results = [];
@@ -26,6 +35,10 @@ GollumJS.NS(GollumJS.Utils, function() {
 			};
 		},
 
+		/**
+		 * @param  {Array|object} iterable
+		 * @return {int}
+		 */
 		length: function (iterable) {
 			if (typeof iterable.length == 'undefined') {
 				var l = 0;
@@ -37,6 +50,14 @@ GollumJS.NS(GollumJS.Utils, function() {
 			return iterable.length;
 		},
 
+		/**
+		 * Call 'cb' for all object into 'iterable'
+		 * 'cb' called with params 'key', 'value' with scope bind to 'value'
+		 * 
+		 * @param  {Array|object} iterable
+		 * @param  {function}     cb
+		 * @return {Array|object}
+		 */
 		each: function (iterable, cb) {
 			if (typeof iterable.length == 'undefined') {
 				for (var i in iterable) {
@@ -54,7 +75,19 @@ GollumJS.NS(GollumJS.Utils, function() {
 			}
 			return iterable;
 		},
-
+		
+		/**
+		 * Return a promise if resolve when all element in 'iterable' is called with 'cbIter'
+		 * The callback 'cbIter' is called with params 'key', 'value', 'step'.
+		 * And 'step' is a callback who is called when the action is finish.
+		 * 
+		 * The params 'cbStep' is callback called after 'step' is called.
+		 * 
+		 * @param  {Array|object} iterable
+		 * @param  {function}     cbIter
+		 * @param  {function}     cbStep (optional)
+		 * @return {Promise}
+		 */
 		eachStep: function (iterable, cbIter, cbStep) {
 			return new GollumJS.Promise (function (resolve, reject) {
 				var step = GollumJS.Utils.Collection.step(GollumJS.Utils.Collection.length(iterable), resolve, cbStep);
