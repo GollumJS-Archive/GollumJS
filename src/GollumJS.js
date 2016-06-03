@@ -1,7 +1,9 @@
 (function () {
 	
 	var config = {
-
+		
+		debug: false,
+		
 		node: {
 			web_path: './web',
 			gollumjs_path: typeof __dirname !== 'undefined' ? __dirname : "" // Fonctionne uniquement en context nodejs
