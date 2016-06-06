@@ -23,9 +23,9 @@ GollumJS.Parser.ArgumentsParser = new GollumJS.Class ({
 
 			var _this = this;
 			var rtn = arg
-
+			
 			switch (typeof arg) {
-
+				
 				case 'string':
 					if (arg[0] == '@') {
 						rtn = GollumJS.get(arg.substr(1));

@@ -354,7 +354,8 @@ GollumJS.NS(GollumJS.Utils, function() {
 	GollumJS.cache = {};
 
 	var _instances = {};
-
+	var _tags = {};
+	
 	GollumJS.get = function (name) {
 		
 		if (!_instances[name] && GollumJS.config.services[name] && GollumJS.config.services[name].class) {
@@ -365,17 +366,52 @@ GollumJS.NS(GollumJS.Utils, function() {
 				GollumJS.config.services[name].args ? GollumJS.config.services[name].args : [] 
 			)).parse();
 			__args__.unshift(null);
-
+			
 			if (__service__) {
-				GollumJS.set(name, new (Function.prototype.bind.apply(__service__, __args__)));
+				var instance = new (Function.prototype.bind.apply(__service__, __args__));
+				
+				if (typeof GollumJS.config.services[name].inject != 'undefined') {
+					for (var method in GollumJS.config.services[name].inject) {
+						var tags = GollumJS.getByTag(GollumJS.config.services[name].inject[method]);
+						for (var i = 0; i < tags.length; i++) {
+							var instanceTag = tags[i].instance;
+							delete(tags[i].instance);
+							instance[method](instanceTag, tags[i]);
+						}
+					}
+				}
+				
+				GollumJS.set(name, instance);
 			} else {
 				console.warn('Class service '+name+' not found: ', GollumJS.config.services[name]);
 			}
 		}
-
+		
 		return _instances[name];
 	};
-
+	
+	GollumJS.getByTag = function (tag) {
+		if (typeof _tags[tag] == 'undefined') {
+			_tags[tag] = [];
+			
+			for (var id in GollumJS.config.services) {
+				if (typeof GollumJS.config.services[id].tags != 'undefined') {
+					var config = GollumJS.config.services[id].tags;
+					for (var i = 0; i < config.length; i++) {
+						if (config[i].name == tag) {
+							_tags[tag].push(
+								GollumJS.Utils.extend({
+									instance: GollumJS.get(id)
+								}, config[i])
+							);
+						}
+					}
+				}
+			}
+		}
+		return _tags[tag];
+	};
+	
 	GollumJS.set = function (name, object) {
 		_instances[name] = object;
 	};
@@ -383,7 +419,7 @@ GollumJS.NS(GollumJS.Utils, function() {
 	GollumJS.getParameter = function (key) {
 		return GollumJS.Parser.ArgumentsParser.parseConfig('%'+key+'%');
 	};
-
+	
 	(function () {
 		
 		console       = typeof console       !== 'undefined' ? console       : function() {};
@@ -429,7 +465,7 @@ GollumJS.NS(GollumJS.Utils, function() {
 			return trace.apply(console, display);
 		};
 	})();
-
+	
 }) ();
 
 /**
@@ -670,8 +706,7 @@ GollumJS.NS(GollumJS, function() {
 						}
 					}
 				}
-
-
+				
 			}
 			__parent__.__scope__ = scope;
 			return __parent__;
@@ -807,9 +842,9 @@ GollumJS.Parser.ArgumentsParser = new GollumJS.Class ({
 
 			var _this = this;
 			var rtn = arg
-
+			
 			switch (typeof arg) {
-
+				
 				case 'string':
 					if (arg[0] == '@') {
 						rtn = GollumJS.get(arg.substr(1));

@@ -236,8 +236,7 @@ GollumJS.NS(GollumJS, function() {
 						}
 					}
 				}
-
-
+				
 			}
 			__parent__.__scope__ = scope;
 			return __parent__;
