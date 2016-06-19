@@ -827,7 +827,7 @@ GollumJS.Parser = GollumJS.Parser || {};
 GollumJS.Parser.ArgumentsParser = new GollumJS.Class ({
 	
 	Static: {
-		_findConfigValue: function (search, str, rtn) {
+		_findConfigValue: function (search, rtn) {
 			if (!search.length) {
 				return rtn;
 			}
@@ -835,7 +835,7 @@ GollumJS.Parser.ArgumentsParser = new GollumJS.Class ({
 			if (rtn[search[0]] !== undefined) {
 				rtn = rtn[search[0]];
 				search.shift(); 
-				return this._findConfigValue(search, str, rtn);
+				return this._findConfigValue(search, rtn);
 			}
 			return null;
 		},
@@ -854,16 +854,19 @@ GollumJS.Parser.ArgumentsParser = new GollumJS.Class ({
 						var hasReplaced = false;
 						arg.replace(new RegExp('\%[a-zA-Z0-9._]+\%', 'i'), function (match, start) {
 							if (match == arg) {
-								rtn = _this._findConfigValue(match.substr(0, match.length-1).substr(1).split('.'), arg);
+								rtn = _this._findConfigValue(match.substr(0, match.length-1).substr(1).split('.'));
 							} else {
 								rtn = 
 									arg.substr(0, start) +
-									_this._findConfigValue(match.substr(0, match.length-1).substr(1).split('.'), arg) +
+									_this._findConfigValue(match.substr(0, match.length-1).substr(1).split('.')) +
 									arg.substr(match.length+start)
 								;
 							}
 							hasReplaced = true;
 						});
+						if (rtn === null) {
+							break;
+						}
 						if (hasReplaced || typeof rtn != "string") {
 							rtn = this.parseConfig(rtn);
 						}
