@@ -1,7 +1,7 @@
 {
   "name": "gollumjs",
   "description": "It's a JS Frameworks. This implementation of non-prototyped object for the JS. Adds a service system. And annotations for objects (WIP) .",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": "Damien Duboeuf <smeagolworms4@gmail.com>",
   "license": "GPLv2",
   "engines": {
