@@ -1,1 +1,2 @@
 # GollumJS
+# DEPRECATED MODULE
